@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.example.administrator.mycamera.view.CameraGLSurfaceView
+            android:id="@+id/gl_surfaceView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@+id/camera_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/flash_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <com.example.administrator.mycamera.view.buttonview.CameraBottomView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/camera_bottom"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal">
+
+    </com.example.administrator.mycamera.view.buttonview.CameraBottomView>
+
+</RelativeLayout>
