@@ -7,7 +7,7 @@ import com.example.administrator.mycamera.manager.CameraManager;
  * 将CameraActivity的方法给实现此接口的类使用
  */
 
-public interface ICamera {
+public interface ICameraActivity {
     void onPauseSuper();
 
     void onResumeSuper(CameraManager.CameraProxy cameraProxy);

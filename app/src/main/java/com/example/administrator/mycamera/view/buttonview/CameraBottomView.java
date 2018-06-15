@@ -60,7 +60,7 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
         switch (v.getId()) {
             case R.id.ib_shutter:
                 if (mBottomClickListener != null) {
-                    mBottomClickListener.shutterClick();
+                    mBottomClickListener.shutterClick(ibShutter);
                 }
                 break;
 

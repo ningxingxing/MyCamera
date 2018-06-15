@@ -8,7 +8,6 @@ import android.os.Message;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
-import com.example.administrator.mycamera.utils.CameraInterface;
 import com.example.administrator.mycamera.utils.CameraState;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SaveImageUtils;
@@ -19,7 +18,7 @@ import java.lang.ref.WeakReference;
  * Created by Administrator on 2018/5/21.
  */
 
-public class TakePhotoPresenter implements ICamera {
+public class TakePhotoPresenter implements ICameraActivity {
 
     private final String TAG = "Cam_TakePhotoPresenter";
     private ITakePhoto mTakePhoto;
@@ -96,6 +95,7 @@ public class TakePhotoPresenter implements ICamera {
         if (mCameraDevice == null || mTakePhoto == null) return;
 
         mParameters = mCameraDevice.getParameters();
+
 
     }
 

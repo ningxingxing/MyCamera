@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:background="@null"
-        android:src="@drawable/shutter_button_selector" />
+        android:src="@drawable/selector_video" />
 
 
     <ImageButton

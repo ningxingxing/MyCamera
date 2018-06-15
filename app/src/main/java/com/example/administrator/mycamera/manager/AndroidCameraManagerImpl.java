@@ -311,7 +311,7 @@ class AndroidCameraManagerImpl implements CameraManager {
                             mParamsToSet.unflatten((String) msg.obj);
                             mCamera.setParameters(mParamsToSet);
                         }catch (RuntimeException e){
-                            Log.d(TAG, "handleMessage: ==set_PARAMETERS fail");
+                            Log.e(TAG, "setCameraParameters exception: " + e.getMessage());
                         }
                         return;
 

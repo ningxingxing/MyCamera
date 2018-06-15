@@ -20,21 +20,36 @@
             android:layout_weight="1"
             android:visibility="gone" />
 
-        <View
-            android:id="@+id/flash_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:visibility="gone" />
+
     </FrameLayout>
 
     <com.example.administrator.mycamera.view.buttonview.CameraBottomView
+        android:id="@+id/camera_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/camera_bottom"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal">
 
     </com.example.administrator.mycamera.view.buttonview.CameraBottomView>
+
+    <View
+        android:id="@+id/flash_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone" />
+
+
+    <SeekBar
+        android:id="@+id/evSeekBar"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.example.administrator.mycamera.view.buttonview.CameraTopView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.example.administrator.mycamera.view.buttonview.CameraTopView>
 
 </RelativeLayout>

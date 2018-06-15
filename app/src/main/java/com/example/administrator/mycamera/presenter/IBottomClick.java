@@ -1,5 +1,7 @@
 package com.example.administrator.mycamera.presenter;
 
+import android.widget.ImageButton;
+
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
 
 /**
@@ -10,7 +12,7 @@ public interface IBottomClick {
 
     void videoClick();
 
-    void shutterClick();
+    void shutterClick(ImageButton id);
 
     void imageClick(CircleImageView id);
 }

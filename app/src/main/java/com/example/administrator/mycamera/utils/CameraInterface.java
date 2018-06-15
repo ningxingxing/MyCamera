@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.os.Handler;
 
 import com.example.administrator.mycamera.manager.CameraManager;
@@ -13,7 +14,7 @@ import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.manager.CameraManagerFactory;
 
 import java.util.List;
-import android.hardware.Camera.Parameters;
+
 /**
  * Created by Administrator on 2018/5/31.
  */
@@ -23,6 +24,7 @@ public class CameraInterface {
 
     private static CameraInterface instance;
     private Parameters mParams;
+    private Camera mCamera;
     private boolean isPreviewing = false;
     private float mPreviwRate = -1f;
     private static final int CAMERA_ID = 0; //后置摄像头
@@ -75,7 +77,7 @@ public class CameraInterface {
         LogUtils.e(TAG, "doStartPreview...");
         if (isPreviewing) {
             mCameraDevice.stopPreview();
-            mCameraDevice=null;
+            mCameraDevice = null;
             return;
         }
         if (mCameraDevice != null) {
@@ -94,6 +96,7 @@ public class CameraInterface {
         if (mCameraDevice != null) {
             mParams = mCameraDevice.getParameters();
             mParams.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
+            LogUtils.e(TAG, "ev=" + mParams.getMaxExposureCompensation());
 //          CamParaUtil.getInstance().printSupportPictureSize(mParams);
 //          CamParaUtil.getInstance().printSupportPreviewSize(mParams);
             //设置PreviewSize和PictureSize
@@ -103,10 +106,11 @@ public class CameraInterface {
             Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
                     mParams.getSupportedPreviewSizes(), previewRate, 1200);
             mParams.setPreviewSize(previewSize.width, previewSize.height);
-            LogUtils.e(TAG,"previewSize.width="+previewSize.width + " previewSize.height="+previewSize.height);
+            LogUtils.e(TAG, "previewSize.width=" + previewSize.width + " previewSize.height=" + previewSize.height);
 
             mCameraDevice.setDisplayOrientation(90);
-           // List<Camera.Size> supported = mParams.getSupportedPictureSizes();
+            mParams.setPreviewFormat(PixelFormat.YCbCr_420_SP);
+            // List<Camera.Size> supported = mParams.getSupportedPictureSizes();
 
 //          CamParaUtil.getInstance().printSupportFocusMode(mParams);
             List<String> focusModes = mParams.getSupportedFocusModes();
@@ -123,10 +127,6 @@ public class CameraInterface {
             LogUtils.e(TAG, "最终设置:PreviewSize--With = " + mParams.getPreviewSize().width
                     + "Height = " + mParams.getPreviewSize().height);
         }
-    }
-
-    public void setPictureSize(Parameters pictureSize){
-
     }
 
 

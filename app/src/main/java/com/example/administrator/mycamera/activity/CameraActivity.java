@@ -6,18 +6,24 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
+import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.presenter.IBottomClick;
 import com.example.administrator.mycamera.presenter.ITakePhoto;
 import com.example.administrator.mycamera.presenter.TakePhotoPresenter;
 import com.example.administrator.mycamera.utils.CameraInterface;
+import com.example.administrator.mycamera.utils.CameraParameter;
+import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
@@ -34,9 +40,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
     private TakePhotoPresenter mTakePhotoPresenter;
     private CameraBottomView mCameraBottom;
     private CameraProxy mCameraDevice;
+    private Parameters mParameters;
     private int mCameraId = 0;
     private CircleImageView mImageButton;
     private View mFlashOverlay;
+    private SeekBar mEvSeekBar;
+
+    private FlashOverlayAnimation mFlashOverlayAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,34 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
         mCameraBottom.setBottomClickListener(this);
 
         mFlashOverlay = (View)findViewById(R.id.flash_overlay);
+        mFlashOverlayAnimation = new FlashOverlayAnimation();
+
+        mEvSeekBar = (SeekBar)findViewById(R.id.evSeekBar);
+    }
+
+    private void initData() {
+
+        int MaxEV = CameraParameter.getCameraMaxExposureCompensation(mParameters);
+        mEvSeekBar.setMax(MaxEV);
+        CameraPreference.saveIntPreference(this,CameraPreference.KEY_EXPOSURE_COMPENSATION,MaxEV);
+        CameraParameter.getCameraSupportedSceneMode(mParameters);
+        mEvSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                LogUtils.e(TAG,"progress="+progress);
+                CameraParameter.setCameraExposureCompensation(mCameraDevice,mParameters,progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
     }
 
@@ -71,10 +109,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
 
         if (mCameraDevice==null) {
             mCameraDevice = CameraInterface.getInstance().openCamera(CameraActivity.this, mCameraId, null, null);
+            mParameters = mCameraDevice.getParameters();
         }
         mGlSurfaceView.onResume();
         mGlSurfaceView.bringToFront();
         mTakePhotoPresenter.onResumeSuper(mCameraDevice);
+        initData();
 
     }
 
@@ -84,8 +124,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
     }
 
     @Override
-    public void shutterClick() {
-        mTakePhotoPresenter.shutterClick();
+    public void shutterClick(ImageButton id) {
+        if (mTakePhotoPresenter!=null) {
+            mTakePhotoPresenter.shutterClick();
+            showFlashOverlayAnimation();
+        }
+    }
+
+    public void showFlashOverlayAnimation(){
+        mFlashOverlayAnimation.startFlashAnimation(mFlashOverlay);
     }
 
     @Override
