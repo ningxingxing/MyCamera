@@ -4,17 +4,22 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.util.Util;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.model.CameraPreference;
@@ -23,6 +28,7 @@ import com.example.administrator.mycamera.presenter.ITakePhoto;
 import com.example.administrator.mycamera.presenter.TakePhotoPresenter;
 import com.example.administrator.mycamera.utils.CameraInterface;
 import com.example.administrator.mycamera.utils.CameraParameter;
+import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
@@ -71,7 +77,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
     }
 
     private void initData() {
-
+        CameraUtils.setBrightnessForCamera(getWindow());
         int MaxEV = CameraParameter.getCameraMaxExposureCompensation(mParameters);
         mEvSeekBar.setMax(MaxEV);
         CameraPreference.saveIntPreference(this,CameraPreference.KEY_EXPOSURE_COMPENSATION,MaxEV);
@@ -127,13 +133,22 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
     public void shutterClick(ImageButton id) {
         if (mTakePhotoPresenter!=null) {
             mTakePhotoPresenter.shutterClick();
-            showFlashOverlayAnimation();
         }
     }
 
+    @Override
     public void showFlashOverlayAnimation(){
-        mFlashOverlayAnimation.startFlashAnimation(mFlashOverlay);
+        //启动闪光灯动画
+        if (mFlashOverlayAnimation!=null) {
+            mFlashOverlayAnimation.startFlashAnimation(mFlashOverlay);
+        }
     }
+
+    @Override
+    public void displayProgress(boolean disable) {
+        mCameraBottom.displayProgress(disable);
+    }
+
 
     @Override
     public void imageClick(CircleImageView imageButton) {
@@ -238,4 +253,5 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
@@ -24,6 +25,7 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
     private ImageButton ibVideo;
     private ImageButton ibShutter;
     private CircleImageView ibImage;
+    private ProgressBar mProgressBar;
 
     private IBottomClick mBottomClickListener;
 
@@ -52,6 +54,8 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
 
         ibImage = (CircleImageView) findViewById(R.id.ib_image);
         ibImage.setOnClickListener(this);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
 
@@ -80,9 +84,19 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
 
     /**
      * 实例化bottomClickListener
+     *
      * @param iBottomClick
      */
     public void setBottomClickListener(IBottomClick iBottomClick) {
         this.mBottomClickListener = iBottomClick;
+    }
+
+    public void displayProgress(boolean disable) {
+        if (disable) {
+            mProgressBar.setVisibility(VISIBLE);
+        } else {
+            mProgressBar.setVisibility(GONE);
+        }
+
     }
 }

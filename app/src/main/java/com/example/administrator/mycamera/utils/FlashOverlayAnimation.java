@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
 
 /**
  * Created by Administrator on 2018/6/15.
@@ -12,7 +11,7 @@ import android.view.animation.Animation;
 
 public class FlashOverlayAnimation {
 
-    private int DELAY_TIME = 300;
+    private int DELAY_TIME = 250;
 
     public void startFlashAnimation(final View view) {
         view.setVisibility(View.VISIBLE);

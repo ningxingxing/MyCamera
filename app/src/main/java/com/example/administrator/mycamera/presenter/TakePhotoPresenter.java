@@ -54,6 +54,7 @@ public class TakePhotoPresenter implements ICameraActivity {
 
                     case FINISH_PICTURE:
                         mCameraState = CameraState.STATE_PREVIEW;
+                        mTakePhoto.displayProgress(false);
                         LogUtils.e(TAG, "handleMessage mCameraState=" + mCameraState);
                         break;
                 }
@@ -95,8 +96,6 @@ public class TakePhotoPresenter implements ICameraActivity {
         if (mCameraDevice == null || mTakePhoto == null) return;
 
         mParameters = mCameraDevice.getParameters();
-
-
     }
 
 
@@ -111,6 +110,9 @@ public class TakePhotoPresenter implements ICameraActivity {
             mCameraDevice.takePicture(mHandler, new ShutterCallback(true),
                     new RawPictureCallback(), new PostViewPictureCallback(),
                     new JpegPictureCallback());
+
+            mTakePhoto.showFlashOverlayAnimation();
+            mTakePhoto.displayProgress(true);
         }
 
     }

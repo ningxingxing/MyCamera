@@ -8,4 +8,8 @@ public interface IBaseCamera {
     void startPreview();
 
     void stopPreview();
+
+    void showFlashOverlayAnimation();
+
+    void displayProgress(boolean disable);
 }

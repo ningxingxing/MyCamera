@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="shutter_selector_start">#00FFFF</color>
+    <color name="shutter_selector_center">#E0FFFF</color>
+    <color name="shutter_selector_end">#FFFFFF</color>
 </resources>
