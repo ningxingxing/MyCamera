@@ -1,55 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <com.example.administrator.mycamera.view.CameraGLSurfaceView
-            android:id="@+id/gl_surfaceView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <FrameLayout
-            android:id="@+id/camera_preview"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.example.administrator.mycamera.view.CameraGLSurfaceView
+                android:id="@+id/gl_surfaceView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/camera_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone" />
+
+
+        </FrameLayout>
+
+        <com.example.administrator.mycamera.view.buttonview.CameraBottomView
+            android:id="@+id/camera_bottom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal">
+
+        </com.example.administrator.mycamera.view.buttonview.CameraBottomView>
+
+        <View
+            android:id="@+id/flash_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
             android:visibility="gone" />
 
 
-    </FrameLayout>
+        <SeekBar
+            android:id="@+id/evSeekBar"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
-    <com.example.administrator.mycamera.view.buttonview.CameraBottomView
-        android:id="@+id/camera_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_horizontal">
+        <com.example.administrator.mycamera.view.buttonview.CameraTopView
+            android:id="@+id/camera_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </com.example.administrator.mycamera.view.buttonview.CameraBottomView>
+        </com.example.administrator.mycamera.view.buttonview.CameraTopView>
 
-    <View
-        android:id="@+id/flash_overlay"
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:visibility="gone" />
+        android:layout_gravity="end"
+        android:background="@android:color/black">
 
+        <TextView
+            android:id="@+id/tv_setting"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="设置"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
 
-    <SeekBar
-        android:id="@+id/evSeekBar"
-        android:layout_width="210dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+    </FrameLayout>
 
-    <com.example.administrator.mycamera.view.buttonview.CameraTopView
+    <FrameLayout
+        android:id="@+id/content_frame1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/black">
 
-    </com.example.administrator.mycamera.view.buttonview.CameraTopView>
-
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tv_model"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="设置"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+    </FrameLayout>
+</android.support.v4.widget.DrawerLayout>

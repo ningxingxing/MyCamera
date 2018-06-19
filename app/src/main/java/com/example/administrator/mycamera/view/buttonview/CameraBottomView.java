@@ -5,14 +5,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
-import com.example.administrator.mycamera.presenter.IBottomClick;
-import com.example.administrator.mycamera.utils.LogUtils;
+import com.example.administrator.mycamera.port.IBottomClick;
 
 /**
  * 底部摄像拍照缩略图显示

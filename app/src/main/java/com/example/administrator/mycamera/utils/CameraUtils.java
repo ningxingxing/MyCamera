@@ -24,10 +24,13 @@ public class CameraUtils {
     /**
      * 强制设置屏幕亮度为最大值
      */
-    public static void setBrightnessForCamera(Window window) {
+    public static void setBrightnessForCamera(Window window, boolean isHdPreView) {
         final WindowManager.LayoutParams layout = window.getAttributes();
-        layout.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL;
+        if (isHdPreView) {
+            layout.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL;
+        } else {
+            layout.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        }
         window.setAttributes(layout);
-       // layout.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
     }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="screen_all"
+    >
+
+        <CheckBoxPreference
+            android:key="pref_camera_hdr_key"
+            android:icon="@mipmap/ic_launcher"
+            android:title="222"
+            android:summary="333"
+            android:defaultValue="false" />
+
+
+    <!--android:layout="@layout/storage_group_title"-->
+   <!-- android:layout="@layout/setting_checkbox_item"
+    android:widgetLayout="@layout/checkbox_icon"-->
+</PreferenceScreen>

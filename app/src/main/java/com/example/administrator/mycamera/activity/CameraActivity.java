@@ -4,26 +4,24 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.TextureView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.Util;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.model.CameraPreference;
-import com.example.administrator.mycamera.presenter.IBottomClick;
+import com.example.administrator.mycamera.port.IBottomClick;
+import com.example.administrator.mycamera.port.ITopClick;
 import com.example.administrator.mycamera.presenter.ITakePhoto;
 import com.example.administrator.mycamera.presenter.TakePhotoPresenter;
 import com.example.administrator.mycamera.utils.CameraInterface;
@@ -39,12 +37,14 @@ import com.example.administrator.mycamera.view.buttonview.CircleImageView;
  * Created by Administrator on 2018/5/21.
  */
 
-public class CameraActivity extends Activity implements ITakePhoto, IBottomClick, LoaderManager.LoaderCallbacks<Cursor>, TextureView.SurfaceTextureListener {
+public class CameraActivity extends Activity implements ITakePhoto, IBottomClick,ITopClick, LoaderManager.LoaderCallbacks<Cursor>, TextureView.SurfaceTextureListener {
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
     private TakePhotoPresenter mTakePhotoPresenter;
     private CameraBottomView mCameraBottom;
+    private DrawerLayout mDrawerLayout;
+
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
     private int mCameraId = 0;
@@ -53,11 +53,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
     private SeekBar mEvSeekBar;
 
     private FlashOverlayAnimation mFlashOverlayAnimation;
+    private CameraParameter mCameraParameter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_preview);
+
         initView();
 
     }
@@ -74,10 +76,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
         mFlashOverlayAnimation = new FlashOverlayAnimation();
 
         mEvSeekBar = (SeekBar)findViewById(R.id.evSeekBar);
+
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+       // mDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
     private void initData() {
-        CameraUtils.setBrightnessForCamera(getWindow());
+        CameraUtils.setBrightnessForCamera(getWindow(),false);
         int MaxEV = CameraParameter.getCameraMaxExposureCompensation(mParameters);
         mEvSeekBar.setMax(MaxEV);
         CameraPreference.saveIntPreference(this,CameraPreference.KEY_EXPOSURE_COMPENSATION,MaxEV);
@@ -254,4 +259,28 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomClick
 
     }
 
+    @Override
+    public void cameraFlash() {
+       // CameraParameter.setCameraFlashMode(mParameters,);
+    }
+
+    @Override
+    public void cameraDelay() {
+
+    }
+
+    @Override
+    public void cameraWhiteBalance() {
+
+    }
+
+    @Override
+    public void cameraScene() {
+
+    }
+
+    @Override
+    public void cameraSwitch() {
+
+    }
 }
