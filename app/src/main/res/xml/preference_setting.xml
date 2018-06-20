@@ -1,17 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="screen_all"
-    >
+    android:key="screen_all">
 
-        <CheckBoxPreference
-            android:key="pref_camera_hdr_key"
-            android:icon="@mipmap/ic_launcher"
-            android:title="222"
-            android:summary="333"
-            android:defaultValue="false" />
+    <Preference
+        android:icon="@drawable/setting_picture"
+        android:key="key_picture_size"
+        android:summary="@string/summery_picture_size"
+        android:title="@string/title_picture_size" />
 
+    <!--<CheckBoxPreference-->
+    <!--android:defaultValue="false"-->
+    <!--android:icon="@mipmap/ic_launcher"-->
+    <!--android:key="pref_camera_hdr_key"-->
+    <!--android:summary="@string/summery_picture_size"-->
+    <!--android:title="@string/title_picture_size"-->
+    <!--android:visibility="gone" />-->
 
-    <!--android:layout="@layout/storage_group_title"-->
-   <!-- android:layout="@layout/setting_checkbox_item"
-    android:widgetLayout="@layout/checkbox_icon"-->
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_auxiliary_line"
+        android:key="key_auxiliary_line"
+        android:summary="@string/summery_auxiliary_line"
+        android:title="@string/title_auxiliary_line" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_location"
+        android:key="key_location"
+        android:summary="@string/summery_save_position_info"
+        android:title="@string/title_save_position_info" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_take_picture_sound"
+        android:key="key_volume_sound"
+        android:summary="@string/summery_photo_sound"
+        android:title="@string/title_take_photo_sound" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_sound"
+        android:key="key_delay_sound"
+        android:summary="@string/summery__delay_sound"
+        android:title="@string/title_delay_sound" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_focused_sound"
+        android:key="key_focused_sound"
+        android:summary="@string/summery_focused_sound"
+        android:title="@string/title_focused_sound" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_sound"
+        android:key="key_take_picture_sound"
+        android:summary="@string/summery_photographing_sound"
+        android:title="@string/title_photographing_sound" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/setting_ic_hd"
+        android:key="key_hd_preview"
+        android:summary="@string/summery_hd_preview"
+        android:title="@string/title_hd_preview" />
+
 </PreferenceScreen>

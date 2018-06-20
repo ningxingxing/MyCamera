@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.administrator.mycamera.R;
-import com.example.administrator.mycamera.port.ITopClick;
+import com.example.administrator.mycamera.port.ITopItem;
 
 /**
  * Created by Administrator on 2018/6/14.
@@ -22,7 +22,7 @@ public class CameraTopView extends LinearLayout implements View.OnClickListener 
     private ImageView ivScene;
     private ImageView ivSwitch;
 
-    private ITopClick mTopClickListener;
+    private ITopItem mTopClickListener;
 
     public CameraTopView(Context context) {
         this(context, null);
@@ -92,7 +92,7 @@ public class CameraTopView extends LinearLayout implements View.OnClickListener 
         }
     }
 
-    public void setTopClickListener(ITopClick iTopClickListener) {
-        this.mTopClickListener = iTopClickListener;
+    public void setTopClickListener(ITopItem iTopItemListener) {
+        this.mTopClickListener = iTopItemListener;
     }
 }

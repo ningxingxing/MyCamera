@@ -13,4 +13,6 @@ public interface ICameraActivity {
     void onResumeSuper(CameraManager.CameraProxy cameraProxy);
 
     void shutterClick();
+
+
 }

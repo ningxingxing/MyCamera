@@ -27,6 +27,15 @@ public class CameraPreference {
 
     public static final String KEY_ISO_MODE = "iso";
 
+    public static final String KEY_PICTURE_SIZE="key_picture_size";
+    public static final String KEY_AUXILIARY_LINE = "key_auxiliary_line";
+    public static final String KEY_LOCATION = "key_location";
+    public static final String KEY_TAKE_PICTURE_SOUND = "key_take_picture_sound";
+    public static final String KEY_DELAY_SOUND = "key_delay_sound";
+    public static final String KEY_FOCUSED_SOUND = "key_focused_sound";
+    public static final String KEY_VOLUME_SOUND= "key_volume_sound";
+    public static final String KEY_HD_PREVIEW = "key_hd_preview";
+
 
     public static void setCameraId(Context context, int cameraId) {
         SharedPreferences pref = context.getSharedPreferences(CAMERA_ID, Context.MODE_PRIVATE);

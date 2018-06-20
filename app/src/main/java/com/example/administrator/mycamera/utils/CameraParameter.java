@@ -16,10 +16,6 @@ import java.util.List;
 public class CameraParameter {
     private static final String TAG = "Cam_CameraParameter";
 
-    public void initCameraParameter(Context context, CameraProxy cameraDevice, Parameters parameters) {
-
-    }
-
     /**
      * set camera exposure compensation
      *

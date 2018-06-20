@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">MyCamera</string>
+
+    <!--照片尺寸-->
+    <string name="settings">Settings</string>
+    <string name="title_picture_size">照片尺寸</string>
+    <string name="summery_picture_size">1200万像素</string>
+    <string name="title_auxiliary_line">辅助线</string>
+    <string name="summery_auxiliary_line">拍照时添加辅助线</string>
+    <string name="title_save_position_info">存储位置信息</string>
+    <string name="summery_save_position_info">设置是否记录拍照时候的地理位置</string>
+    <string name="title_photographing_sound">拍照声</string>
+    <string name="summery_photographing_sound">是否开启拍照声</string>
+    <string name="title_delay_sound">倒计时过程发出的声音</string>
+    <string name="summery__delay_sound">是否设置倒计时声音</string>
+    <string name="title_take_photo_sound">音量拍照声</string>
+    <string name="summery_photo_sound">是否设置按下音量键拍照</string>
+    <string name="title_focused_sound">聚焦声</string>
+    <string name="summery_focused_sound">是否开启拍照时聚焦声音</string>
+    <string name="title_hd_preview">高清预览</string>
+    <string name="summery_hd_preview">是否高清预览</string>
+    <string name="picture_x">x</string>
 </resources>

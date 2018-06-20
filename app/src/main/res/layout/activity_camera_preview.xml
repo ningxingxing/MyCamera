@@ -61,7 +61,7 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/content_frame"
+        android:id="@+id/content_setting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="end"
@@ -69,18 +69,19 @@
 
         <TextView
             android:id="@+id/tv_setting"
-            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="设置"
             android:layout_gravity="center_horizontal"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:text="设置"
             android:textColor="@android:color/white"
             android:textSize="22sp" />
 
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/content_frame1"
+        android:id="@+id/content_model"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -88,11 +89,11 @@
 
         <TextView
             android:id="@+id/tv_model"
-            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="设置"
             android:layout_gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="模式选择"
             android:textColor="@android:color/white"
             android:textSize="22sp" />
     </FrameLayout>

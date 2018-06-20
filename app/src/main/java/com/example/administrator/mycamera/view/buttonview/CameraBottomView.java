@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.administrator.mycamera.R;
-import com.example.administrator.mycamera.port.IBottomClick;
+import com.example.administrator.mycamera.port.IBottomItem;
 
 /**
  * 底部摄像拍照缩略图显示
@@ -24,7 +24,7 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
     private CircleImageView ibImage;
     private ProgressBar mProgressBar;
 
-    private IBottomClick mBottomClickListener;
+    private IBottomItem mBottomClickListener;
 
     public CameraBottomView(Context context) {
         this(context, null);
@@ -82,10 +82,10 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
     /**
      * 实例化bottomClickListener
      *
-     * @param iBottomClick
+     * @param iBottomItem
      */
-    public void setBottomClickListener(IBottomClick iBottomClick) {
-        this.mBottomClickListener = iBottomClick;
+    public void setBottomClickListener(IBottomItem iBottomItem) {
+        this.mBottomClickListener = iBottomItem;
     }
 
     public void displayProgress(boolean disable) {
