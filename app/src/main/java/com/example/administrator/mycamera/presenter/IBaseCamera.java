@@ -12,4 +12,6 @@ public interface IBaseCamera {
     void showFlashOverlayAnimation();
 
     void displayProgress(boolean disable);
+
+    void showThumbnail();
 }

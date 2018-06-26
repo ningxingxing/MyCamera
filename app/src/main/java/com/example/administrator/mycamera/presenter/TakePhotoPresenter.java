@@ -55,6 +55,7 @@ public class TakePhotoPresenter implements ICameraActivity {
                     case FINISH_PICTURE:
                         mCameraState = CameraState.STATE_PREVIEW;
                         mTakePhoto.displayProgress(false);
+                        mTakePhoto.showThumbnail();
                         LogUtils.e(TAG, "handleMessage mCameraState=" + mCameraState);
                         break;
                 }

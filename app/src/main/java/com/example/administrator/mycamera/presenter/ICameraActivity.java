@@ -14,5 +14,4 @@ public interface ICameraActivity {
 
     void shutterClick();
 
-
 }

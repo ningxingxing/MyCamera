@@ -1,6 +1,7 @@
 package com.example.administrator.mycamera.view.buttonview;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,5 +96,9 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
             mProgressBar.setVisibility(GONE);
         }
 
+    }
+
+    public void showThumbnail(Bitmap bitmap){
+        ibImage.setImageBitmap(bitmap);
     }
 }
