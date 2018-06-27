@@ -8,6 +8,7 @@ import android.os.Message;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
+import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraState;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SaveImageUtils;
@@ -55,8 +56,11 @@ public class TakePhotoPresenter implements ICameraActivity {
                     case FINISH_PICTURE:
                         mCameraState = CameraState.STATE_PREVIEW;
                         mTakePhoto.displayProgress(false);
-                        mTakePhoto.showThumbnail();
                         LogUtils.e(TAG, "handleMessage mCameraState=" + mCameraState);
+                        break;
+
+                    case CameraConstant.SUCCESS_UPDATE_IMAGE_ToDb:
+                        mTakePhoto.showThumbnail();
                         break;
                 }
             }
@@ -164,7 +168,7 @@ public class TakePhotoPresenter implements ICameraActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    SaveImageUtils.saveImage(mActivity, jpegData);
+                    SaveImageUtils.saveImage(mHandler,mActivity, jpegData);
                     mHandler.sendEmptyMessage(FINISH_PICTURE);
                 }
             }).start();

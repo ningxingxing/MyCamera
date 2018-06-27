@@ -8,6 +8,7 @@ import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +24,7 @@ import java.util.Locale;
 public class SaveImageUtils {
     private static final String TAG = "Cam_SaveImageUtils";
 
-    public static void saveImage(Context context, byte[] data) {
+    public static void saveImage(Handler handler,Context context, byte[] data) {
         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
         bmp = rotateBitmapByDegree(bmp, 90);
         FileOutputStream fOut = null;
@@ -42,7 +43,7 @@ public class SaveImageUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            updateImageToDb(context, path);
+            updateImageToDb(handler,context, path);
         }
     }
 
@@ -72,13 +73,14 @@ public class SaveImageUtils {
      * @param context
      * @param filename
      */
-    private static void updateImageToDb(Context context, String filename) {
+    private static void updateImageToDb(final Handler handler, Context context, String filename) {
         MediaScannerConnection.scanFile(context,
                 new String[]{filename}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
                         LogUtils.e("updateImageToDb success", "path " + path + ":" + "uri=" + uri);
                         //getBitmapDegree(path);
+                        handler.sendEmptyMessage(CameraConstant.SUCCESS_UPDATE_IMAGE_ToDb);
                     }
                 });
     }

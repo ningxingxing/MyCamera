@@ -58,6 +58,13 @@
 
         </com.example.administrator.mycamera.view.buttonview.CameraTopView>
 
+
+        <com.example.administrator.mycamera.view.AuxiliaryLineView
+            android:id="@+id/auxiliary_line"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.example.administrator.mycamera.view.AuxiliaryLineView>
     </RelativeLayout>
 
     <FrameLayout

@@ -1,13 +1,11 @@
 package com.example.administrator.mycamera.fragment;
 
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -108,6 +106,12 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 }
                 break;
 
+            case CameraPreference.KEY_AUXILIARY_LINE:
+                if (mISettingFragment!=null) {
+                    boolean isAuxiliaryLine = mSharedPreferences.getBoolean(CameraPreference.KEY_AUXILIARY_LINE, false);
+                    mISettingFragment.setAuxiliaryLine(isAuxiliaryLine);
+                }
+                break;
         }
     }
 

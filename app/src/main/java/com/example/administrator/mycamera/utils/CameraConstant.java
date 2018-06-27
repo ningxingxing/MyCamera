@@ -5,5 +5,6 @@ package com.example.administrator.mycamera.utils;
  */
 
 public class CameraConstant {
-    public static int OPEN_CAMERA_PHOTO = 1001;
+    public static final int OPEN_CAMERA_PHOTO = 1001;
+    public static final int SUCCESS_UPDATE_IMAGE_ToDb = 1002;
 }

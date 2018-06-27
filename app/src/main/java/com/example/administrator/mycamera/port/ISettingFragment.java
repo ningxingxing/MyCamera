@@ -10,4 +10,6 @@ public interface ISettingFragment {
 
     void showPictureSizeSelect();
 
+    void setAuxiliaryLine(boolean flag);
+
 }

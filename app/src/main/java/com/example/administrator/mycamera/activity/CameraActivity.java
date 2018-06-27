@@ -41,6 +41,7 @@ import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
+import com.example.administrator.mycamera.view.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
 import com.example.administrator.mycamera.view.PictureSizeDialog;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
@@ -58,11 +59,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     private TakePhotoPresenter mTakePhotoPresenter;
     private CameraBottomView mCameraBottom;
     private DrawerLayout mDrawerLayout;
+    private AuxiliaryLineView mAuxiliaryLine;
+    private View mFlashOverlay;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
     private int mCameraId = 0;
-    private View mFlashOverlay;
     private SeekBar mEvSeekBar;
 
     private FlashOverlayAnimation mFlashOverlayAnimation;
@@ -97,6 +99,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.addDrawerListener(this);
+        mAuxiliaryLine = (AuxiliaryLineView) findViewById(R.id.auxiliary_line);
     }
 
     private void initData() {
@@ -186,7 +189,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     @Override
     public void showThumbnail() {
         Bitmap bitmap = Thumbnail.getImageThumbnail(CameraActivity.this);
-        if (bitmap!=null) {
+        if (bitmap != null) {
             mCameraBottom.showThumbnail(bitmap);
         }
     }
@@ -273,6 +276,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
     /**
      * add fragment
+     *
      * @param fragment
      * @param containerViewId
      * @param tag
@@ -291,32 +295,36 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
      */
     private void removeFragment() {
         FragmentTransaction ft = mFragmentManager.beginTransaction();
-        if (mSettingFragment.isVisible()) {
-            ft.remove(mSettingFragment);
+        if (ft!=null) {
+            if (mSettingFragment != null && mSettingFragment.isVisible()) {
+                ft.remove(mSettingFragment);
+            }
+            if (mModelFragment != null && mModelFragment.isVisible()) {
+                ft.remove(mModelFragment);
+            }
+            ft.commit();
         }
-        if (mModelFragment.isVisible()) {
-            ft.remove(mModelFragment);
-        }
-        ft.commit();
     }
 
     /**
      * when window focus changed change window brightness
+     *
      * @param hasFocus
      */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus){
+        if (hasFocus) {
             boolean isHdPreview = mSharedPreferences.getBoolean(CameraPreference.KEY_HD_PREVIEW, false);
             CameraUtils.setBrightnessForCamera(getWindow(), isHdPreview);
-            LogUtils.e(TAG,"initFragment isHdPreview="+isHdPreview);
+            LogUtils.e(TAG, "initFragment isHdPreview=" + isHdPreview);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LogUtils.e(TAG,"onDestroy");
         removeFragment();
     }
 
@@ -327,7 +335,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
     @Override
     public void showPictureSizeSelect() {
-        PictureSizeDialog pictureSizeDialog =new PictureSizeDialog(CameraActivity.this,mParameters);
+        PictureSizeDialog pictureSizeDialog = new PictureSizeDialog(CameraActivity.this, mParameters);
         pictureSizeDialog.show();
+    }
+
+    @Override
+    public void setAuxiliaryLine(boolean flag) {
+        mAuxiliaryLine.setAuxiliaryLine(flag);
     }
 }
