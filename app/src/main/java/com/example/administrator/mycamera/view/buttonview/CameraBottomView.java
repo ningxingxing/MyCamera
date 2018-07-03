@@ -4,13 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.port.IBottomItem;
+import com.example.administrator.mycamera.utils.LogUtils;
 
 /**
  * 底部摄像拍照缩略图显示
@@ -98,7 +101,21 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
 
     }
 
-    public void showThumbnail(Bitmap bitmap){
-        ibImage.setImageBitmap(bitmap);
+    public void showThumbnail(Bitmap bitmap) {
+        if (bitmap != null) {
+            ibImage.setImageBitmap(bitmap);
+        }
     }
+
+    public void showThumbnailPath(String path) {
+        Glide.with(getContext())
+                .load(path)
+                .animate(R.anim.thumbnail_anim)
+                .centerCrop()
+                .thumbnail(1f)
+                .error(R.drawable.icon_photo_error)
+                .into(ibImage);
+    }
+
+
 }

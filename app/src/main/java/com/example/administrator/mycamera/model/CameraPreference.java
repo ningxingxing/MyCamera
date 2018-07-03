@@ -36,6 +36,8 @@ public class CameraPreference {
     public static final String KEY_VOLUME_SOUND= "key_volume_sound";
     public static final String KEY_HD_PREVIEW = "key_hd_preview";
 
+    public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
+
 
     public static void setCameraId(Context context, int cameraId) {
         SharedPreferences pref = context.getSharedPreferences(CAMERA_ID, Context.MODE_PRIVATE);

@@ -1,6 +1,8 @@
 package com.example.administrator.mycamera.presenter;
 
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -8,6 +10,7 @@ import android.os.Message;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
+import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraState;
 import com.example.administrator.mycamera.utils.LogUtils;
@@ -36,6 +39,7 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     private MainHandler mHandler;
     private final int FINISH_PICTURE = 5;
+    private boolean isLongClick = false;
 
 
     private class MainHandler extends Handler {
@@ -61,6 +65,12 @@ public class TakePhotoPresenter implements ICameraActivity {
 
                     case CameraConstant.SUCCESS_UPDATE_IMAGE_ToDb:
                         mTakePhoto.showThumbnail();
+                        break;
+
+                    case CameraConstant.FOCUS_SUCCESS:
+                        if (isLongClick) {
+                            takePicture();
+                        }
                         break;
                 }
             }
@@ -103,14 +113,30 @@ public class TakePhotoPresenter implements ICameraActivity {
         mParameters = mCameraDevice.getParameters();
     }
 
-
     @Override
     public void shutterClick() {
+        takePicture();
+    }
 
+    @Override
+    public void longClickTakePicture() {
+        manuallyAutoFocus();
+        isLongClick = true;
+    }
+
+    @Override
+    public void onClickAutoFocus() {
+        if (mCameraDevice == null) return;
+        isLongClick = false;
+        manuallyAutoFocus();
+
+    }
+
+    private void takePicture() {
         if (mPaused || mCameraDevice == null) return;
         LogUtils.e(TAG, "shutterClick =" + mCameraState);
 
-        if (mCameraState == CameraState.STATE_PREVIEW) {
+        if (mCameraState == CameraState.STATE_PREVIEW || mCameraState == CameraState.STATE_FOCUSED_FINISH) {
             mCameraState = CameraState.STATE_EDIT;
             mCameraDevice.takePicture(mHandler, new ShutterCallback(true),
                     new RawPictureCallback(), new PostViewPictureCallback(),
@@ -119,7 +145,17 @@ public class TakePhotoPresenter implements ICameraActivity {
             mTakePhoto.showFlashOverlayAnimation();
             mTakePhoto.displayProgress(true);
         }
+    }
 
+    private class AutoFocusCallback implements CameraManager.CameraAFMoveCallback {
+
+        @Override
+        public void onAutoFocusMoving(boolean moving, CameraProxy camera) {
+            if (mPaused) return;
+            mCameraState = CameraState.STATE_FOCUSED_FINISH;
+
+            LogUtils.e(TAG, "onAutoFocusMoving");
+        }
     }
 
     private final class ShutterCallback implements CameraManager.CameraShutterCallback {
@@ -168,10 +204,39 @@ public class TakePhotoPresenter implements ICameraActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    SaveImageUtils.saveImage(mHandler,mActivity, jpegData);
+                    SaveImageUtils.saveImage(mHandler, mActivity, jpegData);
                     mHandler.sendEmptyMessage(FINISH_PICTURE);
                 }
             }).start();
         }
+    }
+
+    /**
+     * 手动对焦
+     */
+    private void manuallyAutoFocus() {
+        mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        mCameraDevice.setParameters(mParameters);
+        mCameraDevice.autoFocus(mHandler, new CameraManager.CameraAFCallback() {
+            @Override
+            public void onAutoFocus(boolean success, CameraProxy camera) {
+                if (success) {
+                    mCameraDevice.cancelAutoFocus();
+                    if (!Build.MODEL.equals("KORIDY H30")) {
+                        mParameters = mCameraDevice.getParameters();
+                        mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);// 1连续对焦
+                        camera.setParameters(mParameters);
+                    } else {
+                        mParameters = mCameraDevice.getParameters();
+                        mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                        camera.setParameters(mParameters);
+                    }
+                    mCameraState = CameraState.STATE_FOCUSED_FINISH;
+                    mTakePhoto.focusAnimationFinish();
+                    mHandler.sendEmptyMessage(CameraConstant.FOCUS_SUCCESS);
+                }
+                LogUtils.e(TAG, "manuallyAutoFocus success=" + success);
+            }
+        });
     }
 }

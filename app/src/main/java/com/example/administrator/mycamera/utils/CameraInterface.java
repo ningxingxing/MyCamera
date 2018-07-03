@@ -7,12 +7,14 @@ import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.os.Handler;
 
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.manager.CameraManagerFactory;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -101,12 +103,11 @@ public class CameraInterface {
 //          CamParaUtil.getInstance().printSupportPreviewSize(mParams);
             //设置PreviewSize和PictureSize
             Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
-                    mParams.getSupportedPictureSizes(), previewRate, 1200);
+                    mParams.getSupportedPictureSizes(), previewRate, 120);
             mParams.setPictureSize(pictureSize.width, pictureSize.height);
-            Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
-                    mParams.getSupportedPreviewSizes(), previewRate, 1200);
-            mParams.setPreviewSize(previewSize.width, previewSize.height);
-            LogUtils.e(TAG, "previewSize.width=" + previewSize.width + " previewSize.height=" + previewSize.height);
+//            Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
+//                    mParams.getSupportedPreviewSizes(), previewRate, 120);
+            mParams.setPreviewSize(mParams.getPreviewSize().width, mParams.getPreviewSize().height);
 
             mCameraDevice.setDisplayOrientation(90);
             mParams.setPreviewFormat(PixelFormat.YCbCr_420_SP);
@@ -192,6 +193,29 @@ public class CameraInterface {
                 Context.DEVICE_POLICY_SERVICE);
         if (dpm.getCameraDisabled(null)) {
             throw new CameraDisabledException();
+        }
+    }
+
+    // 控制图像的正确显示方向
+    private void setDispaly(Camera camera,Parameters parameters) {
+        if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
+            setDisplayOrientation(camera, -90);
+        } else {
+            parameters.setRotation(-90);
+        }
+
+    }
+
+    // 实现的图像的正确显示
+    private void setDisplayOrientation(Camera camera, int i) {
+        Method downPolymorphic;
+        try {
+            downPolymorphic = camera.getClass().getMethod("setDisplayOrientation", new Class[] { int.class });
+            if (downPolymorphic != null) {
+                downPolymorphic.invoke(camera, new Object[] { i });
+            }
+        } catch (Exception e) {
+            LogUtils.e("Came_e", "图像出错");
         }
     }
 }

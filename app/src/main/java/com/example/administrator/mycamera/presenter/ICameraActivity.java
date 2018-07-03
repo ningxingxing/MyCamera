@@ -14,4 +14,7 @@ public interface ICameraActivity {
 
     void shutterClick();
 
+    void longClickTakePicture();
+
+    void onClickAutoFocus();
 }

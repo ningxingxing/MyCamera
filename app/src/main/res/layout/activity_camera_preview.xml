@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="@color/black_four"
             android:gravity="center_horizontal">
 
         </com.example.administrator.mycamera.view.buttonview.CameraBottomView>
@@ -54,17 +55,28 @@
         <com.example.administrator.mycamera.view.buttonview.CameraTopView
             android:id="@+id/camera_top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/black_four">
 
         </com.example.administrator.mycamera.view.buttonview.CameraTopView>
 
 
-        <com.example.administrator.mycamera.view.AuxiliaryLineView
+        <com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView
             android:id="@+id/auxiliary_line"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
-        </com.example.administrator.mycamera.view.AuxiliaryLineView>
+        </com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView>
+
+        <com.example.administrator.mycamera.view.buttonview.FocusAnimationView
+            android:id="@+id/focus_animation_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+
     </RelativeLayout>
 
     <FrameLayout
@@ -80,10 +92,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:padding="10dp"
-            android:visibility="gone"
             android:text="设置"
             android:textColor="@android:color/white"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:visibility="gone" />
 
     </FrameLayout>
 

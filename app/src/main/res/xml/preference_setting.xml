@@ -8,13 +8,11 @@
         android:summary="@string/summery_picture_size"
         android:title="@string/title_picture_size" />
 
-    <!--<CheckBoxPreference-->
-    <!--android:defaultValue="false"-->
-    <!--android:icon="@mipmap/ic_launcher"-->
-    <!--android:key="pref_camera_hdr_key"-->
-    <!--android:summary="@string/summery_picture_size"-->
-    <!--android:title="@string/title_picture_size"-->
-    <!--android:visibility="gone" />-->
+    <Preference
+        android:icon="@drawable/setting_picture"
+        android:key="key_picture_size"
+        android:summary="@string/title_window_proportion_size"
+        android:title="@string/title_window_proportion" />
 
     <CheckBoxPreference
         android:defaultValue="false"

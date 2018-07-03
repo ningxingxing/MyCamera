@@ -6,6 +6,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.TextureView.SurfaceTextureListener;
 
@@ -118,6 +119,5 @@ public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.
     public SurfaceTexture getSurfaceTexture() {
         return mSurface;
     }
-
 
 }

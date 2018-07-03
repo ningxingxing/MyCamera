@@ -15,7 +15,12 @@ import android.provider.MediaStore;
 public class Thumbnail {
     private static final String TAG = "Thumbnail";
 
-    public static Bitmap getImageThumbnail(Context context){
+    /**
+     * 获取缩略图显示
+     * @param context
+     * @return
+     */
+    public static String getImageThumbnail(Context context){
         String path = null;
         String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
         String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
@@ -36,7 +41,8 @@ public class Thumbnail {
             LogUtils.e(TAG,"getImageThumbnail path="+path);
         }
 
-        return getImageThumbnail(path,500,500);
+        //return getImageThumbnail(path,500,500);
+        return path;
     }
     private static String getBucketId(String path) {
         return String.valueOf(path.toLowerCase().hashCode());

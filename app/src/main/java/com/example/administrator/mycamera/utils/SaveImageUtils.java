@@ -24,7 +24,13 @@ import java.util.Locale;
 public class SaveImageUtils {
     private static final String TAG = "Cam_SaveImageUtils";
 
-    public static void saveImage(Handler handler,Context context, byte[] data) {
+    /**
+     * 保存图片
+     * @param handler
+     * @param context
+     * @param data
+     */
+    public static void saveImage(Handler handler, Context context, byte[] data) {
         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
         bmp = rotateBitmapByDegree(bmp, 90);
         FileOutputStream fOut = null;
@@ -43,7 +49,7 @@ public class SaveImageUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            updateImageToDb(handler,context, path);
+            updateImageToDb(handler, context, path);
         }
     }
 
@@ -144,6 +150,11 @@ public class SaveImageUtils {
         return returnBm;
     }
 
+    /**
+     * ms to date
+     * @param ms
+     * @return
+     */
     public static String ms2Date(long ms) {
         Date date = new Date(ms);
         SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault());

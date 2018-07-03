@@ -14,4 +14,6 @@ public interface IBaseCamera {
     void displayProgress(boolean disable);
 
     void showThumbnail();
+
+    void focusAnimationFinish();
 }

@@ -7,4 +7,11 @@
     <color name="shutter_selector_start">#00FFFF</color>
     <color name="shutter_selector_center">#E0FFFF</color>
     <color name="shutter_selector_end">#FFFFFF</color>
+
+    <color name="black_two">#40000000</color>
+    <color name="black_four">#40000000</color>
+    <color name="black_eight">#80000000</color>
+
+
+    <color name="yellow">#FFD700</color>
 </resources>

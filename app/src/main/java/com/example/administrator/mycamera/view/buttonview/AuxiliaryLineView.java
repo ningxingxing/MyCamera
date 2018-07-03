@@ -1,4 +1,4 @@
-package com.example.administrator.mycamera.view;
+package com.example.administrator.mycamera.view.buttonview;
 
 import android.content.Context;
 import android.graphics.Canvas;

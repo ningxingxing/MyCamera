@@ -4,32 +4,30 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.provider.SyncStateContract;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
-import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.fragment.ModelFragment;
 import com.example.administrator.mycamera.fragment.SettingFragment;
+import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
+import com.example.administrator.mycamera.manager.GestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.port.IBottomItem;
+import com.example.administrator.mycamera.port.IGestureDetectorManager;
 import com.example.administrator.mycamera.port.ISettingFragment;
 import com.example.administrator.mycamera.port.ITopItem;
 import com.example.administrator.mycamera.presenter.ITakePhoto;
@@ -41,18 +39,20 @@ import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
-import com.example.administrator.mycamera.view.AuxiliaryLineView;
+import com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
 import com.example.administrator.mycamera.view.PictureSizeDialog;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
+import com.example.administrator.mycamera.view.buttonview.CameraTopView;
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
+import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
 
 /**
  * Created by Administrator on 2018/5/21.
  */
 
 public class CameraActivity extends Activity implements ITakePhoto, IBottomItem, ITopItem,
-        ISettingFragment, TextureView.SurfaceTextureListener {
+        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager {
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -61,6 +61,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     private DrawerLayout mDrawerLayout;
     private AuxiliaryLineView mAuxiliaryLine;
     private View mFlashOverlay;
+    private FocusAnimationView mFocusAnimationView;
+    private CameraTopView mCameraTop;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -74,6 +76,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     private SettingFragment mSettingFragment;
     private ModelFragment mModelFragment;
     private SharedPreferences mSharedPreferences;
+
+    private GestureDetectorCompat mGestureDetector;
+
+    private WindowManager mWindowManager;
+    private int mScreenHeight = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +99,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
         mCameraBottom = (CameraBottomView) findViewById(R.id.camera_bottom);
         mCameraBottom.setBottomClickListener(this);
 
+        mCameraTop = (CameraTopView) findViewById(R.id.camera_top);
+
         mFlashOverlay = (View) findViewById(R.id.flash_overlay);
         mFlashOverlayAnimation = new FlashOverlayAnimation();
 
@@ -100,6 +109,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.addDrawerListener(this);
         mAuxiliaryLine = (AuxiliaryLineView) findViewById(R.id.auxiliary_line);
+
+        mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
+        mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new GestureDetectorManager(CameraActivity.this, this));
+
+        mWindowManager = this.getWindowManager();
+        mScreenHeight = mWindowManager.getDefaultDisplay().getHeight();
     }
 
     private void initData() {
@@ -162,6 +177,21 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        float downY = ev.getY();
+        if (downY < mScreenHeight - mCameraBottom.getHeight() && downY > mCameraTop.getHeight()) {
+            mGestureDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+
+    }
+
+    @Override
     public void videoClick() {
 
     }
@@ -188,10 +218,17 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
     @Override
     public void showThumbnail() {
-        Bitmap bitmap = Thumbnail.getImageThumbnail(CameraActivity.this);
-        if (bitmap != null) {
-            mCameraBottom.showThumbnail(bitmap);
+        //Bitmap bitmap = Thumbnail.getImageThumbnail(CameraActivity.this);
+        String path = Thumbnail.getImageThumbnail(CameraActivity.this);
+        if (path != null) {
+            mCameraBottom.showThumbnailPath(path);
         }
+    }
+
+    @Override
+    public void focusAnimationFinish() {
+        mFocusAnimationView.setFocusAnimationCancel();
+        mFocusAnimationView.setVisibility(View.GONE);
     }
 
 
@@ -224,6 +261,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        LogUtils.e(TAG, "onSurfaceTextureAvailable width=" + width + " height=" + height);
         if (mCameraDevice != null) {
             mCameraDevice.setPreviewTexture(surface);
             startPreview();
@@ -295,7 +333,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
      */
     private void removeFragment() {
         FragmentTransaction ft = mFragmentManager.beginTransaction();
-        if (ft!=null) {
+        if (ft != null) {
             if (mSettingFragment != null && mSettingFragment.isVisible()) {
                 ft.remove(mSettingFragment);
             }
@@ -324,7 +362,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LogUtils.e(TAG,"onDestroy");
+        LogUtils.e(TAG, "onDestroy");
         removeFragment();
     }
 
@@ -342,5 +380,21 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     @Override
     public void setAuxiliaryLine(boolean flag) {
         mAuxiliaryLine.setAuxiliaryLine(flag);
+    }
+
+    @Override
+    public void onAutoFocus(MotionEvent event) {
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onClickAutoFocus();
+            mFocusAnimationView.setVisibility(View.VISIBLE);
+            mFocusAnimationView.startFocusAnimation(event.getX(), event.getY());
+        }
+    }
+
+    @Override
+    public void onTakePhoto() {
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.longClickTakePicture();
+        }
     }
 }

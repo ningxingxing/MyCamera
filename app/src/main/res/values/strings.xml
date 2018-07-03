@@ -5,6 +5,8 @@
     <string name="settings">Settings</string>
     <string name="title_picture_size">照片尺寸</string>
     <string name="summery_picture_size">1200万像素</string>
+    <string name="title_window_proportion">拍照画幅</string>
+    <string name="title_window_proportion_size">标准 4:3</string>
     <string name="title_auxiliary_line">辅助线</string>
     <string name="summery_auxiliary_line">拍照时添加辅助线</string>
     <string name="title_save_position_info">存储位置信息</string>
