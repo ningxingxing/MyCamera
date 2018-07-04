@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -36,6 +37,7 @@ import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraInterface;
 import com.example.administrator.mycamera.utils.CameraParameter;
 import com.example.administrator.mycamera.utils.CameraUtils;
+import com.example.administrator.mycamera.utils.DealScreenSwitching;
 import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
@@ -46,6 +48,9 @@ import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
 import com.example.administrator.mycamera.view.buttonview.CameraTopView;
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
 import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Created by Administrator on 2018/5/21.
@@ -145,6 +150,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     }
 
     private void initFragment() {
+        LogUtils.e(TAG, "initFragment mSettingFragment=" + mSettingFragment);
         mFragmentManager = getFragmentManager();
         mSettingFragment = new SettingFragment();
         mModelFragment = new ModelFragment();
@@ -153,6 +159,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mSettingFragment.setISettingFragment(this);
+
     }
 
     @Override
@@ -174,6 +181,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
         mGlSurfaceView.bringToFront();
         mTakePhotoPresenter.onResumeSuper(mCameraDevice);
         initData();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtils.e(TAG, "onDestroy");
+        // removeFragment();
+        mTakePhotoPresenter.onDestroySuper();
     }
 
     @Override
@@ -322,7 +338,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     private void addFragment(Fragment fragment, int containerViewId, String tag) {
         //获取事务
         FragmentTransaction beginTransaction = mFragmentManager.beginTransaction();
-        beginTransaction.add(containerViewId, fragment, tag);
+        beginTransaction.replace(containerViewId, fragment, tag);
         //add current fragment to backStack
         beginTransaction.addToBackStack(tag);
         beginTransaction.commit();
@@ -334,13 +350,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     private void removeFragment() {
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (ft != null) {
-            if (mSettingFragment != null && mSettingFragment.isVisible()) {
+            if (mSettingFragment != null) {
                 ft.remove(mSettingFragment);
+                mSettingFragment = null;
             }
-            if (mModelFragment != null && mModelFragment.isVisible()) {
+            if (mModelFragment != null) {
                 ft.remove(mModelFragment);
+                mSettingFragment = null;
             }
-            ft.commit();
+            ft.commitAllowingStateLoss();
         }
     }
 
@@ -355,15 +373,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
         if (hasFocus) {
             boolean isHdPreview = mSharedPreferences.getBoolean(CameraPreference.KEY_HD_PREVIEW, false);
             CameraUtils.setBrightnessForCamera(getWindow(), isHdPreview);
-            LogUtils.e(TAG, "initFragment isHdPreview=" + isHdPreview);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LogUtils.e(TAG, "onDestroy");
-        removeFragment();
     }
 
     @Override
@@ -397,4 +407,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
             mTakePhotoPresenter.longClickTakePicture();
         }
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        DealScreenSwitching screenSwitching = new DealScreenSwitching();
+//        screenSwitching.invokeFragmentManagerNoteStateNotSaved();
+//    }
+
 }

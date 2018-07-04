@@ -17,4 +17,6 @@ public interface ICameraActivity {
     void longClickTakePicture();
 
     void onClickAutoFocus();
+
+    void onDestroySuper();
 }

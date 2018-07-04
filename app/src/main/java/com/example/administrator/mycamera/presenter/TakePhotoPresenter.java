@@ -1,12 +1,20 @@
 package com.example.administrator.mycamera.presenter;
 
+import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.media.AudioManager;
+import android.media.MediaActionSound;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 
+import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
@@ -15,6 +23,7 @@ import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraState;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SaveImageUtils;
+import com.example.administrator.mycamera.utils.SoundPlay;
 
 import java.lang.ref.WeakReference;
 
@@ -40,7 +49,9 @@ public class TakePhotoPresenter implements ICameraActivity {
     private MainHandler mHandler;
     private final int FINISH_PICTURE = 5;
     private boolean isLongClick = false;
-
+    private SharedPreferences mSharedPreferences;
+    private MediaPlayer mMediaPlayer;
+    private SoundPlay mSoundPool;
 
     private class MainHandler extends Handler {
         private WeakReference weakReference;
@@ -82,6 +93,9 @@ public class TakePhotoPresenter implements ICameraActivity {
         this.mTakePhoto = takePhoto;
 
         mHandler = new MainHandler(context);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        mMediaPlayer = MediaPlayer.create(mActivity, R.raw.video_record1);
+        mSoundPool = new SoundPlay(mActivity);
     }
 
 
@@ -132,6 +146,12 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     }
 
+    @Override
+    public void onDestroySuper() {
+        if (mSoundPool == null) return;
+        mSoundPool.releaseSound();
+    }
+
     private void takePicture() {
         if (mPaused || mCameraDevice == null) return;
         LogUtils.e(TAG, "shutterClick =" + mCameraState);
@@ -144,6 +164,9 @@ public class TakePhotoPresenter implements ICameraActivity {
 
             mTakePhoto.showFlashOverlayAnimation();
             mTakePhoto.displayProgress(true);
+            //拍照点击声音
+            boolean shutterSound = mSharedPreferences.getBoolean(CameraPreference.KEY_VOLUME_SOUND, false);
+            mCameraDevice.enableShutterSound(shutterSound);
         }
     }
 
@@ -215,6 +238,8 @@ public class TakePhotoPresenter implements ICameraActivity {
      * 手动对焦
      */
     private void manuallyAutoFocus() {
+        if (mMediaPlayer == null || mCameraDevice == null || mParameters == null) return;
+
         mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         mCameraDevice.setParameters(mParameters);
         mCameraDevice.autoFocus(mHandler, new CameraManager.CameraAFCallback() {
@@ -234,6 +259,14 @@ public class TakePhotoPresenter implements ICameraActivity {
                     mCameraState = CameraState.STATE_FOCUSED_FINISH;
                     mTakePhoto.focusAnimationFinish();
                     mHandler.sendEmptyMessage(CameraConstant.FOCUS_SUCCESS);
+
+                    //聚焦完成声音
+                    boolean isFocusSound = mSharedPreferences.getBoolean(CameraPreference.KEY_FOCUSED_SOUND, false);
+                    if (isFocusSound) {
+                        // mMediaPlayer.start();
+                        mSoundPool.startPlay(SoundPlay.FOCUS_COMPLETE);
+
+                    }
                 }
                 LogUtils.e(TAG, "manuallyAutoFocus success=" + success);
             }
