@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,7 +33,9 @@ import com.example.administrator.mycamera.port.IGestureDetectorManager;
 import com.example.administrator.mycamera.port.ISettingFragment;
 import com.example.administrator.mycamera.port.ITopItem;
 import com.example.administrator.mycamera.presenter.ITakePhoto;
+import com.example.administrator.mycamera.presenter.IVideoPresenter;
 import com.example.administrator.mycamera.presenter.TakePhotoPresenter;
+import com.example.administrator.mycamera.presenter.VideoPresenter;
 import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraInterface;
 import com.example.administrator.mycamera.utils.CameraParameter;
@@ -56,12 +59,14 @@ import java.lang.reflect.Method;
  * Created by Administrator on 2018/5/21.
  */
 
-public class CameraActivity extends Activity implements ITakePhoto, IBottomItem, ITopItem,
+public class CameraActivity extends Activity implements ITakePhoto,IVideoPresenter, IBottomItem, ITopItem,
         ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager {
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
     private TakePhotoPresenter mTakePhotoPresenter;
+    private VideoPresenter mVideoPresenter;
+
     private CameraBottomView mCameraBottom;
     private DrawerLayout mDrawerLayout;
     private AuxiliaryLineView mAuxiliaryLine;
@@ -87,6 +92,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     private WindowManager mWindowManager;
     private int mScreenHeight = 0;
 
+    private int mCurrentModel = CameraConstant.PHOTO_MODEL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +105,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
 
     private void initView() {
         mTakePhotoPresenter = new TakePhotoPresenter(CameraActivity.this, this);
+        mVideoPresenter = new VideoPresenter(CameraActivity.this,this);
         mGlSurfaceView = (CameraGLSurfaceView) findViewById(R.id.gl_surfaceView);
         mGlSurfaceView.setSurfaceTextureListener(this);
 
@@ -202,20 +210,21 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-
-    }
-
-    @Override
     public void videoClick() {
-
+        if (mCurrentModel ==CameraConstant.PHOTO_MODEL) {
+            mCurrentModel = CameraConstant.VIDEO_MODEL;
+        }else if (mCurrentModel==CameraConstant.VIDEO_MODEL){
+            mCurrentModel = CameraConstant.PHOTO_MODEL;
+        }
     }
 
     @Override
     public void shutterClick(ImageButton id) {
-        if (mTakePhotoPresenter != null) {
+        if (mTakePhotoPresenter != null && mCurrentModel==CameraConstant.PHOTO_MODEL) {
             mTakePhotoPresenter.shutterClick();
+        }
+        if (mVideoPresenter !=null && mCurrentModel ==CameraConstant.VIDEO_MODEL){
+            mVideoPresenter.shutterClick();
         }
     }
 
@@ -269,8 +278,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IBottomItem,
             mCameraDevice.setErrorCallback(null);
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice.setFaceDetectionCallback(null, null);
+            mCameraDevice.setPreviewDataCallbackWithBuffer(null,null);
             mCameraDevice.stopPreview();
             mCameraDevice.release();
+           // mCamera = Camera.open(0);
+            mCameraDevice.lock();
+            mCameraDevice.unlock();
             mCameraDevice = null;
         }
     }

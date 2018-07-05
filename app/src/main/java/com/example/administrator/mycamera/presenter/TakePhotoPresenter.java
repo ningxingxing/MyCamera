@@ -3,18 +3,12 @@ package com.example.administrator.mycamera.presenter;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.media.AudioManager;
-import android.media.MediaActionSound;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.annotation.RequiresApi;
 
-import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
@@ -50,7 +44,7 @@ public class TakePhotoPresenter implements ICameraActivity {
     private final int FINISH_PICTURE = 5;
     private boolean isLongClick = false;
     private SharedPreferences mSharedPreferences;
-    private MediaPlayer mMediaPlayer;
+    //private MediaPlayer mMediaPlayer;
     private SoundPlay mSoundPool;
 
     private class MainHandler extends Handler {
@@ -94,7 +88,7 @@ public class TakePhotoPresenter implements ICameraActivity {
 
         mHandler = new MainHandler(context);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        mMediaPlayer = MediaPlayer.create(mActivity, R.raw.video_record1);
+      //  mMediaPlayer = MediaPlayer.create(mActivity, R.raw.video_record1);
         mSoundPool = new SoundPlay(mActivity);
     }
 
@@ -149,12 +143,12 @@ public class TakePhotoPresenter implements ICameraActivity {
     @Override
     public void onDestroySuper() {
         if (mSoundPool == null) return;
-        mSoundPool.releaseSound();
+        mSoundPool.releasePlayer();
     }
 
     private void takePicture() {
         if (mPaused || mCameraDevice == null) return;
-        LogUtils.e(TAG, "shutterClick =" + mCameraState);
+        LogUtils.e(TAG, "takePicture =" + mCameraState);
 
         if (mCameraState == CameraState.STATE_PREVIEW || mCameraState == CameraState.STATE_FOCUSED_FINISH) {
             mCameraState = CameraState.STATE_EDIT;
@@ -166,7 +160,10 @@ public class TakePhotoPresenter implements ICameraActivity {
             mTakePhoto.displayProgress(true);
             //拍照点击声音
             boolean shutterSound = mSharedPreferences.getBoolean(CameraPreference.KEY_VOLUME_SOUND, false);
-            mCameraDevice.enableShutterSound(shutterSound);
+            if (shutterSound){
+                mSoundPool.startPlay(SoundPlay.SHUTTER_CLICK);
+            }
+            mCameraDevice.enableShutterSound(false);
         }
     }
 
@@ -238,7 +235,7 @@ public class TakePhotoPresenter implements ICameraActivity {
      * 手动对焦
      */
     private void manuallyAutoFocus() {
-        if (mMediaPlayer == null || mCameraDevice == null || mParameters == null) return;
+        if (mCameraDevice == null || mParameters == null) return;
 
         mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         mCameraDevice.setParameters(mParameters);
@@ -264,7 +261,7 @@ public class TakePhotoPresenter implements ICameraActivity {
                     boolean isFocusSound = mSharedPreferences.getBoolean(CameraPreference.KEY_FOCUSED_SOUND, false);
                     if (isFocusSound) {
                         // mMediaPlayer.start();
-                        mSoundPool.startPlay(SoundPlay.FOCUS_COMPLETE);
+                        mSoundPool.startPlay(SoundPlay.START_VIDEO_RECORDING);
 
                     }
                 }

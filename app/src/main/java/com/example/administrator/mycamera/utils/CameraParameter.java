@@ -124,9 +124,9 @@ public class CameraParameter {
         List<String> stringList = null;
         if (parameters != null) {
             stringList = parameters.getSupportedSceneModes();
-            for (int i = 0; i < stringList.size(); i++) {
-                LogUtils.e(TAG, "stringList=" + stringList.get(i).toString());
-            }
+//            for (int i = 0; i < stringList.size(); i++) {
+//                LogUtils.e(TAG, "stringList=" + stringList.get(i).toString());
+//            }
 
         }
         return stringList;
