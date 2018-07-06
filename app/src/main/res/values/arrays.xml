@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="whitebalance_icons_unchecked" translatable="false">
+        <item>@drawable/icon_flash_off</item>
+        <item>@drawable/icon_flash_off</item>
+        <item>@drawable/icon_flash_off</item>
+        <item>@drawable/icon_flash_off</item>
+        <item>@drawable/icon_flash_off</item>
+    </array>
+</resources>

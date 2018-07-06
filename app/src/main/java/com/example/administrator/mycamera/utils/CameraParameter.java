@@ -89,7 +89,13 @@ public class CameraParameter {
      * @return
      */
     public static List<String> getCameraSupportedWhiteBalance(Parameters parameters) {
+        List<String> stringList = null;
         if (parameters != null) {
+            stringList =  parameters.getSupportedWhiteBalance();
+
+            for (int i = 0; i < stringList.size(); i++) {
+                LogUtils.e(TAG, "stringList=" + stringList.get(i).toString());
+            }
             return parameters.getSupportedWhiteBalance();
         }
         return null;

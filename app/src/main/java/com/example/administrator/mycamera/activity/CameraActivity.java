@@ -134,8 +134,9 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
         CameraUtils.setBrightnessForCamera(getWindow(), false);
         int MaxEV = CameraParameter.getCameraMaxExposureCompensation(mParameters);
         mEvSeekBar.setMax(MaxEV);
-        CameraPreference.saveIntPreference(this, CameraPreference.KEY_EXPOSURE_COMPENSATION, MaxEV);
-        CameraParameter.getCameraSupportedSceneMode(mParameters);
+       // CameraPreference.saveIntPreference(this, CameraPreference.KEY_EXPOSURE_COMPENSATION, MaxEV);
+       // CameraParameter.getCameraSupportedSceneMode(mParameters);
+        CameraParameter.getCameraSupportedWhiteBalance(mParameters);
         mEvSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
