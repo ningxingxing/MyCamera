@@ -1,5 +1,6 @@
 package com.example.administrator.mycamera.utils;
 
+import android.hardware.Camera;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -32,5 +33,28 @@ public class CameraUtils {
             layout.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
         }
         window.setAttributes(layout);
+    }
+
+    private static boolean checkCameraFacing(final int facing) {
+
+        final int cameraCount = Camera.getNumberOfCameras();
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        for (int i = 0; i < cameraCount; i++) {
+            Camera.getCameraInfo(i, info);
+            if (facing == info.facing) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasBackFacingCamera() {
+        final int CAMERA_FACING_BACK = 0;
+        return checkCameraFacing(CAMERA_FACING_BACK);
+    }
+
+    public static boolean hasFrontFacingCamera() {
+        final int CAMERA_FACING_BACK = 1;
+        return checkCameraFacing(CAMERA_FACING_BACK);
     }
 }

@@ -13,4 +13,5 @@ public class CameraConstant {
     public static final int VIDEO_MODEL = 1005;
     public static final int BEAUTY_MODEL = 1006;
     public static final int PANORAMIC_MODEL = 1007;
+
 }

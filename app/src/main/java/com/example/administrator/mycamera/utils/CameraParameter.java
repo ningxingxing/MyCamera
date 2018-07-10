@@ -7,6 +7,7 @@ import android.hardware.Camera.Parameters;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.model.CameraPreference;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 /**
@@ -68,14 +69,14 @@ public class CameraParameter {
      * @param parameters
      * @param tag
      */
-    public static void setCameraWhiteBalance(CameraProxy cameraDevice, Parameters parameters, String tag) {
+    public void setCameraWhiteBalance(CameraProxy cameraDevice, Parameters parameters, String tag) {
         if (parameters != null) {
             parameters.setWhiteBalance(tag);
             cameraDevice.setParameters(parameters);
         }
     }
 
-    public static String getCameraWhiteBalance(Parameters parameters) {
+    public String getCameraWhiteBalance(Parameters parameters) {
         if (parameters != null) {
             return parameters.getWhiteBalance();
         }
@@ -88,17 +89,29 @@ public class CameraParameter {
      * @param parameters
      * @return
      */
-    public static List<String> getCameraSupportedWhiteBalance(Parameters parameters) {
+    public List<String> getCameraSupportedWhiteBalance(Parameters parameters) {
         List<String> stringList = null;
         if (parameters != null) {
-            stringList =  parameters.getSupportedWhiteBalance();
-
-            for (int i = 0; i < stringList.size(); i++) {
-                LogUtils.e(TAG, "stringList=" + stringList.get(i).toString());
-            }
+           // stringList = parameters.getSupportedWhiteBalance();
+//            for (int i = 0; i < stringList.size(); i++) {
+//                LogUtils.e(TAG, "stringList=" + stringList.get(i).toString());
+//            }
             return parameters.getSupportedWhiteBalance();
         }
         return null;
+    }
+
+    public boolean isSupportedWhiteBalance(Parameters parameters, String tag) {
+        List<String> stringList = null;
+        if (parameters != null) {
+            stringList = parameters.getSupportedWhiteBalance();
+            for (int i = 0; i < stringList.size(); i++) {
+                if (tag.equals(stringList.get(i))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -107,13 +120,13 @@ public class CameraParameter {
      * @param parameters
      * @param sceneMoe
      */
-    public static void setCameraSceneMode(Parameters parameters, String sceneMoe) {
+    public void setCameraSceneMode(Parameters parameters, String sceneMoe) {
         if (parameters != null) {
             parameters.setSceneMode(sceneMoe);
         }
     }
 
-    public static String getCameraSceneMode(Parameters parameters) {
+    public String getCameraSceneMode(Parameters parameters) {
         if (parameters != null) {
             parameters.getSceneMode();
         }
@@ -126,7 +139,7 @@ public class CameraParameter {
      * @param parameters
      * @return
      */
-    public static List<String> getCameraSupportedSceneMode(Parameters parameters) {
+    public List<String> getCameraSupportedSceneMode(Parameters parameters) {
         List<String> stringList = null;
         if (parameters != null) {
             stringList = parameters.getSupportedSceneModes();
@@ -145,7 +158,7 @@ public class CameraParameter {
      * @param width
      * @param height
      */
-    public static void setCameraPictureSize(Parameters parameters, int width, int height) {
+    public void setCameraPictureSize(Parameters parameters, int width, int height) {
         if (parameters != null) {
             parameters.setPictureSize(width, height);
         }
@@ -157,7 +170,7 @@ public class CameraParameter {
      * @param parameters
      * @return
      */
-    public static Camera.Size getCameraPictureSize(Parameters parameters) {
+    public Camera.Size getCameraPictureSize(Parameters parameters) {
         if (parameters != null) {
             return parameters.getPictureSize();
         }
@@ -170,7 +183,7 @@ public class CameraParameter {
      * @param parameters
      * @return
      */
-    public static List<Camera.Size> getSupportedPictureSizes(Parameters parameters) {
+    public List<Camera.Size> getSupportedPictureSizes(Parameters parameters) {
         List<Camera.Size> sizeList = null;
         if (parameters != null) {
             sizeList = parameters.getSupportedPictureSizes();
@@ -181,24 +194,34 @@ public class CameraParameter {
         return sizeList;
     }
 
-    public static void setCameraFlashMode(Parameters parameters, String flashMode) {
+    public void setCameraFlashMode(Parameters parameters, String flashMode) {
         if (parameters != null) {
             parameters.setFlashMode(flashMode);
         }
     }
 
-    public static String getCameraFlashMode(Parameters parameters) {
+    public String getCameraFlashMode(Parameters parameters) {
         if (parameters != null) {
             return parameters.getFlashMode();
         }
         return "";
     }
 
-    public static List<String> getSupportedFlashModes(Parameters parameters) {
+    public List<String> getSupportedFlashModes(Parameters parameters) {
         if (parameters != null) {
             return parameters.getSupportedFlashModes();
         }
         return null;
+    }
+
+    public boolean isSupportedFlashMode(Parameters parameters,String tag){
+        List<String> sizeList = parameters.getSupportedFlashModes();
+        for (int i=0;i<sizeList.size();i++) {
+            if (tag.equals(sizeList.get(i))){
+                return true;
+            }
+        }
+        return false;
     }
 
 //    public static void setHDR(Parameters parameters){
@@ -221,7 +244,7 @@ public class CameraParameter {
      * @param parameters
      * @return
      */
-    public static String getCameraFocusMode(Parameters parameters) {
+    public String getCameraFocusMode(Parameters parameters) {
         if (parameters != null) {
             return parameters.getFlashMode();
         }
@@ -229,7 +252,7 @@ public class CameraParameter {
     }
 
 
-    public static List<String> getSupportedFocusModes(Parameters parameters) {
+    public List<String> getSupportedFocusModes(Parameters parameters) {
         if (parameters != null) {
             return parameters.getSupportedFocusModes();
         }
@@ -241,13 +264,13 @@ public class CameraParameter {
      *
      * @param parameters
      */
-    public static void switchHDR(Parameters parameters) {
+    public void switchHDR(Parameters parameters) {
         if (parameters != null) {
             parameters.setSceneMode(parameters.SCENE_MODE_HDR);
         }
     }
 
-    public static void setISO(Parameters parameters) {
+    public void setISO(Parameters parameters) {
 
         if (parameters != null) {
             parameters.set(CameraPreference.KEY_ISO_MODE, "iso");
@@ -267,7 +290,7 @@ public class CameraParameter {
         }
     }
 
-    public static int[] chooseBestPreviewFps(List<int[]> fps_ranges) {
+    public int[] chooseBestPreviewFps(List<int[]> fps_ranges) {
 
         LogUtils.d(TAG, "chooseBestPreviewFps()");
         // find value with lowest min that has max >= 30; if more than one of these, pick the one with highest max

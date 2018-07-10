@@ -60,6 +60,15 @@
 
         </com.example.administrator.mycamera.view.buttonview.CameraTopView>
 
+        <com.example.administrator.mycamera.view.buttonview.WhiteBalanceView
+            android:id="@+id/white_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_four"
+            android:visibility="gone">
+
+        </com.example.administrator.mycamera.view.buttonview.WhiteBalanceView>
+
 
         <com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView
             android:id="@+id/auxiliary_line"

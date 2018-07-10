@@ -22,4 +22,13 @@
     <string name="title_hd_preview">高清预览</string>
     <string name="summery_hd_preview">是否高清预览</string>
     <string name="picture_x">x</string>
+
+
+    <string name="pref_camera_whitebalance_entry_auto">Auto</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">Incandescent</string>
+    <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
+
+    <string name="not_support_front_facing_camera">Your device does not support a front-facing camera.</string>
 </resources>

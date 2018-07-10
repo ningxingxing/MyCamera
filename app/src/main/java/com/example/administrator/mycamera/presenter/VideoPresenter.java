@@ -54,4 +54,9 @@ public class VideoPresenter implements ICameraActivity {
     public void onDestroySuper() {
 
     }
+
+    @Override
+    public void switchCamera() {
+
+    }
 }

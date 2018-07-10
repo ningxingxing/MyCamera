@@ -19,4 +19,6 @@ public interface ICameraActivity {
     void onClickAutoFocus();
 
     void onDestroySuper();
+
+    void switchCamera();
 }

@@ -26,6 +26,7 @@ public class PictureSizeDialog extends Dialog {
     private final String TAG = "Cam_PictureSizeDialog";
     private RecyclerView mRecyclerView;
     private PictureSizeAdapter mAdapter;
+    private CameraParameter mCameraParameter;
 
     public PictureSizeDialog(Context context,Parameters parameter) {
         super(context);
@@ -39,13 +40,14 @@ public class PictureSizeDialog extends Dialog {
         //创建并设置Adapter
         mAdapter = new PictureSizeAdapter(context,getData(parameter));
         mRecyclerView.setAdapter(mAdapter);
+        mCameraParameter = new CameraParameter();
         setContentView(contentView);
     }
 
 
     public List<PictureSizeData> getData(Parameters parameter) {
         List<PictureSizeData> pictureSize = new ArrayList<>();
-        List<Camera.Size> supportedSize =  CameraParameter.getSupportedPictureSizes(parameter);
+        List<Camera.Size> supportedSize =  mCameraParameter.getSupportedPictureSizes(parameter);
         if (supportedSize!=null && supportedSize.size()>0) {
             for (int i = 0; i < supportedSize.size(); i++) {
                 PictureSizeData pictureData = new PictureSizeData();

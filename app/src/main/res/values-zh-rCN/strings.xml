@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_camera_whitebalance_entry_auto">自动</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">白炽光</string>
+    <string name="pref_camera_whitebalance_entry_daylight">日光</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">荧光</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">阴天</string>
+    <string name="not_support_front_facing_camera">您的设备不支持前置摄像头.</string>
+</resources>

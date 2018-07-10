@@ -7,9 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -20,11 +18,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.fragment.ModelFragment;
 import com.example.administrator.mycamera.fragment.SettingFragment;
-import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.manager.GestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
@@ -32,6 +30,7 @@ import com.example.administrator.mycamera.port.IBottomItem;
 import com.example.administrator.mycamera.port.IGestureDetectorManager;
 import com.example.administrator.mycamera.port.ISettingFragment;
 import com.example.administrator.mycamera.port.ITopItem;
+import com.example.administrator.mycamera.port.IWhiteBalanceView;
 import com.example.administrator.mycamera.presenter.ITakePhoto;
 import com.example.administrator.mycamera.presenter.IVideoPresenter;
 import com.example.administrator.mycamera.presenter.TakePhotoPresenter;
@@ -40,27 +39,24 @@ import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraInterface;
 import com.example.administrator.mycamera.utils.CameraParameter;
 import com.example.administrator.mycamera.utils.CameraUtils;
-import com.example.administrator.mycamera.utils.DealScreenSwitching;
 import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
-import com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
 import com.example.administrator.mycamera.view.PictureSizeDialog;
+import com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
 import com.example.administrator.mycamera.view.buttonview.CameraTopView;
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
 import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
 /**
  * Created by Administrator on 2018/5/21.
  */
 
-public class CameraActivity extends Activity implements ITakePhoto,IVideoPresenter, IBottomItem, ITopItem,
-        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager {
+public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
+        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView {
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -73,6 +69,7 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
     private View mFlashOverlay;
     private FocusAnimationView mFocusAnimationView;
     private CameraTopView mCameraTop;
+    private WhiteBalanceView mWhiteBalance;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -93,6 +90,11 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
     private int mScreenHeight = 0;
 
     private int mCurrentModel = CameraConstant.PHOTO_MODEL;
+    private int mWhiteBalanceIcons[] = {R.drawable.wb_automatic, R.drawable.wb_daylight,
+            R.drawable.wb_fluorescence, R.drawable.wb_incandescent, R.drawable.wb_overcast};
+
+    private String mWhiteBalanceMode[] = {"auto", "daylight", "fluorescent", "incandescent", "cloudy-daylight"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +102,13 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
         setContentView(R.layout.activity_camera_preview);
 
         initView();
+        initViewData();
         initFragment();
     }
 
     private void initView() {
         mTakePhotoPresenter = new TakePhotoPresenter(CameraActivity.this, this);
-        mVideoPresenter = new VideoPresenter(CameraActivity.this,this);
+        mVideoPresenter = new VideoPresenter(CameraActivity.this, this);
         mGlSurfaceView = (CameraGLSurfaceView) findViewById(R.id.gl_surfaceView);
         mGlSurfaceView.setSurfaceTextureListener(this);
 
@@ -113,6 +116,7 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
         mCameraBottom.setBottomClickListener(this);
 
         mCameraTop = (CameraTopView) findViewById(R.id.camera_top);
+        mCameraTop.setTopClickListener(this);
 
         mFlashOverlay = (View) findViewById(R.id.flash_overlay);
         mFlashOverlayAnimation = new FlashOverlayAnimation();
@@ -122,21 +126,29 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //mDrawerLayout.addDrawerListener(this);
         mAuxiliaryLine = (AuxiliaryLineView) findViewById(R.id.auxiliary_line);
+        mWhiteBalance = (WhiteBalanceView) findViewById(R.id.white_balance);
+        mWhiteBalance.setWhiteBalanceViewClickListener(this);
 
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
         mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new GestureDetectorManager(CameraActivity.this, this));
 
+    }
+
+    private void initViewData() {
         mWindowManager = this.getWindowManager();
         mScreenHeight = mWindowManager.getDefaultDisplay().getHeight();
+
+        mCameraParameter = new CameraParameter();
+
     }
 
     private void initData() {
         CameraUtils.setBrightnessForCamera(getWindow(), false);
         int MaxEV = CameraParameter.getCameraMaxExposureCompensation(mParameters);
         mEvSeekBar.setMax(MaxEV);
-       // CameraPreference.saveIntPreference(this, CameraPreference.KEY_EXPOSURE_COMPENSATION, MaxEV);
-       // CameraParameter.getCameraSupportedSceneMode(mParameters);
-        CameraParameter.getCameraSupportedWhiteBalance(mParameters);
+        // CameraPreference.saveIntPreference(this, CameraPreference.KEY_EXPOSURE_COMPENSATION, MaxEV);
+        // CameraParameter.getCameraSupportedSceneMode(mParameters);
+        mCameraParameter.getCameraSupportedWhiteBalance(mParameters);
         mEvSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -212,19 +224,19 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
 
     @Override
     public void videoClick() {
-        if (mCurrentModel ==CameraConstant.PHOTO_MODEL) {
+        if (mCurrentModel == CameraConstant.PHOTO_MODEL) {
             mCurrentModel = CameraConstant.VIDEO_MODEL;
-        }else if (mCurrentModel==CameraConstant.VIDEO_MODEL){
+        } else if (mCurrentModel == CameraConstant.VIDEO_MODEL) {
             mCurrentModel = CameraConstant.PHOTO_MODEL;
         }
     }
 
     @Override
     public void shutterClick(ImageButton id) {
-        if (mTakePhotoPresenter != null && mCurrentModel==CameraConstant.PHOTO_MODEL) {
+        if (mTakePhotoPresenter != null && mCurrentModel == CameraConstant.PHOTO_MODEL) {
             mTakePhotoPresenter.shutterClick();
         }
-        if (mVideoPresenter !=null && mCurrentModel ==CameraConstant.VIDEO_MODEL){
+        if (mVideoPresenter != null && mCurrentModel == CameraConstant.VIDEO_MODEL) {
             mVideoPresenter.shutterClick();
         }
     }
@@ -279,10 +291,10 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
             mCameraDevice.setErrorCallback(null);
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice.setFaceDetectionCallback(null, null);
-            mCameraDevice.setPreviewDataCallbackWithBuffer(null,null);
+            mCameraDevice.setPreviewDataCallbackWithBuffer(null, null);
             mCameraDevice.stopPreview();
             mCameraDevice.release();
-           // mCamera = Camera.open(0);
+            // mCamera = Camera.open(0);
             mCameraDevice.lock();
             mCameraDevice.unlock();
             mCameraDevice = null;
@@ -300,7 +312,7 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
+        LogUtils.e(TAG, "onSurfaceTextureSizeChanged");
     }
 
     @Override
@@ -314,12 +326,16 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
+        LogUtils.e(TAG, "onSurfaceTextureUpdated");
     }
 
     @Override
     public void cameraFlash() {
-        // CameraParameter.setCameraFlashMode(mParameters,);
+        if (mCameraParameter != null && mParameters != null && mCameraDevice != null) {
+            int flashMode = mCameraTop.setFlashIcon();
+            mParameters.setFlashMode(mCameraTop.getFlashMode(flashMode));
+            mCameraDevice.setParameters(mParameters);
+        }
     }
 
     @Override
@@ -329,6 +345,13 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
 
     @Override
     public void cameraWhiteBalance() {
+        visibleWhiteTopView();
+        String currentWhiteBalance = CameraPreference.getStringPreference(CameraActivity.this, CameraPreference.KEY_WHITE_BALANCE);
+        for (int i = 0; i < mWhiteBalanceMode.length; i++) {
+            if (mWhiteBalanceMode[i].equals(currentWhiteBalance)) {
+                mWhiteBalance.updateSelectIcon(i);
+            }
+        }
 
     }
 
@@ -339,7 +362,16 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
 
     @Override
     public void cameraSwitch() {
+        if (mTakePhotoPresenter!=null){
+            mTakePhotoPresenter.switchCamera();
+        }
+    }
 
+    public void visibleWhiteTopView() {
+        if (mWhiteBalance.getVisibility() == View.GONE) {
+            mWhiteBalance.setVisibility(View.VISIBLE);
+            mCameraTop.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -419,6 +451,21 @@ public class CameraActivity extends Activity implements ITakePhoto,IVideoPresent
     public void onTakePhoto() {
         if (mTakePhotoPresenter != null) {
             mTakePhotoPresenter.longClickTakePicture();
+        }
+    }
+
+    @Override
+    public void onWhiteBalanceClick(String tag, int index) {
+        if (mCameraDevice != null && mParameters != null) {
+            if (mCameraParameter.isSupportedWhiteBalance(mParameters, tag)) {
+                mCameraParameter.setCameraWhiteBalance(mCameraDevice, mParameters, tag);
+                CameraPreference.saveStringPreference(CameraActivity.this, CameraPreference.KEY_WHITE_BALANCE, tag);
+            } else {
+                Toast.makeText(getApplication(), "不支持该模式", Toast.LENGTH_SHORT).show();
+            }
+            mWhiteBalance.setVisibility(View.GONE);
+            mCameraTop.setVisibility(View.VISIBLE);
+            mCameraTop.setWhiteBalanceIcon(mWhiteBalanceIcons[index]);
         }
     }
 

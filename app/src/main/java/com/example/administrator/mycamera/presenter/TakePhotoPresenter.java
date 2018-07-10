@@ -1,19 +1,25 @@
 package com.example.administrator.mycamera.presenter;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
+import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.utils.CameraConstant;
+import com.example.administrator.mycamera.utils.CameraInterface;
+import com.example.administrator.mycamera.utils.CameraParameter;
 import com.example.administrator.mycamera.utils.CameraState;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SaveImageUtils;
@@ -33,6 +39,7 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
+    private CameraParameter mCameraParameter;
     private int mCameraId = 0;
     private int mCameraState = CameraState.STATE_PREVIEW;
     private boolean mPaused = false;
@@ -46,6 +53,7 @@ public class TakePhotoPresenter implements ICameraActivity {
     private SharedPreferences mSharedPreferences;
     //private MediaPlayer mMediaPlayer;
     private SoundPlay mSoundPool;
+    private final AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
 
     private class MainHandler extends Handler {
         private WeakReference weakReference;
@@ -88,8 +96,9 @@ public class TakePhotoPresenter implements ICameraActivity {
 
         mHandler = new MainHandler(context);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
-      //  mMediaPlayer = MediaPlayer.create(mActivity, R.raw.video_record1);
+        //  mMediaPlayer = MediaPlayer.create(mActivity, R.raw.video_record1);
         mSoundPool = new SoundPlay(mActivity);
+        mCameraParameter = new CameraParameter();
     }
 
 
@@ -99,10 +108,12 @@ public class TakePhotoPresenter implements ICameraActivity {
         mPaused = true;
         //关闭相机
         // CameraInterface.getInstance().doStopCamera();
-        mCameraState = CameraState.STATE_PREVIEW;
-        mHandler.removeCallbacksAndMessages(null);
-        mCameraDevice.setPreviewTexture(null);
-        mTakePhoto.stopPreview();
+//        mCameraState = CameraState.STATE_PREVIEW;
+//        mHandler.removeCallbacksAndMessages(null);
+//        mCameraDevice.setPreviewTexture(null);
+//        mTakePhoto.stopPreview();
+
+        closeCamera();
     }
 
     @Override
@@ -123,18 +134,20 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     @Override
     public void shutterClick() {
+        if (mPaused) return;
         takePicture();
     }
 
     @Override
     public void longClickTakePicture() {
+        if (mPaused) return;
         manuallyAutoFocus();
         isLongClick = true;
     }
 
     @Override
     public void onClickAutoFocus() {
-        if (mCameraDevice == null) return;
+        if (mCameraDevice == null || mPaused) return;
         isLongClick = false;
         manuallyAutoFocus();
 
@@ -144,6 +157,35 @@ public class TakePhotoPresenter implements ICameraActivity {
     public void onDestroySuper() {
         if (mSoundPool == null) return;
         mSoundPool.releasePlayer();
+    }
+
+    @Override
+    public void switchCamera() {
+        if (mPaused) return;
+        if (mActivity.getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA_FRONT)) {
+            if (mCameraId == CameraInfo.CAMERA_FACING_FRONT) {
+                mCameraId = CameraInfo.CAMERA_FACING_BACK;
+            } else {
+                mCameraId = CameraInfo.CAMERA_FACING_FRONT;
+            }
+        } else {
+            Toast.makeText(mActivity, R.string.not_support_front_facing_camera,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        closeCamera();
+        openCamera();
+    }
+
+    private void openCamera(){
+        if (mCameraDevice == null) {
+            mCameraDevice = CameraInterface.getInstance().openCamera(mActivity, mCameraId, null, null);
+            if (mCameraDevice==null)return;
+            mParameters = mCameraDevice.getParameters();
+            mTakePhoto.startPreview();
+        }
     }
 
     private void takePicture() {
@@ -160,10 +202,11 @@ public class TakePhotoPresenter implements ICameraActivity {
             mTakePhoto.displayProgress(true);
             //拍照点击声音
             boolean shutterSound = mSharedPreferences.getBoolean(CameraPreference.KEY_VOLUME_SOUND, false);
-            if (shutterSound){
+            mCameraDevice.enableShutterSound(false);
+            if (shutterSound) {
                 mSoundPool.startPlay(SoundPlay.SHUTTER_CLICK);
             }
-            mCameraDevice.enableShutterSound(false);
+
         }
     }
 
@@ -235,10 +278,15 @@ public class TakePhotoPresenter implements ICameraActivity {
      * 手动对焦
      */
     private void manuallyAutoFocus() {
-        if (mCameraDevice == null || mParameters == null) return;
+        if (mCameraDevice == null || mParameters == null || mCameraParameter == null) return;
 
         mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         mCameraDevice.setParameters(mParameters);
+        //set current white balance
+        String currentWhiteBalance = CameraPreference.getStringPreference(mActivity, CameraPreference.KEY_WHITE_BALANCE);
+        if (mCameraParameter.isSupportedWhiteBalance(mParameters, currentWhiteBalance)) {
+            mCameraParameter.setCameraWhiteBalance(mCameraDevice, mParameters, currentWhiteBalance);
+        }
         mCameraDevice.autoFocus(mHandler, new CameraManager.CameraAFCallback() {
             @Override
             public void onAutoFocus(boolean success, CameraProxy camera) {
@@ -264,9 +312,21 @@ public class TakePhotoPresenter implements ICameraActivity {
                         mSoundPool.startPlay(SoundPlay.START_VIDEO_RECORDING);
 
                     }
+
                 }
                 LogUtils.e(TAG, "manuallyAutoFocus success=" + success);
             }
         });
+    }
+
+    private void closeCamera(){
+        if (mCameraDevice != null) {
+            mCameraState = CameraState.STATE_PREVIEW;
+            mHandler.removeCallbacksAndMessages(null);
+            mCameraDevice.setPreviewTexture(null);
+            mTakePhoto.stopPreview();
+            mCameraDevice.release();
+            mCameraDevice = null;
+        }
     }
 }
