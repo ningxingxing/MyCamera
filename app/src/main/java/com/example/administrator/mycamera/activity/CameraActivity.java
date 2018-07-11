@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.fragment.ModelFragment;
 import com.example.administrator.mycamera.fragment.SettingFragment;
+import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.manager.GestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
@@ -94,7 +96,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
             R.drawable.wb_fluorescence, R.drawable.wb_incandescent, R.drawable.wb_overcast};
 
     private String mWhiteBalanceMode[] = {"auto", "daylight", "fluorescent", "incandescent", "cloudy-daylight"};
-
+    private CameraUtils mCameraUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +141,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mScreenHeight = mWindowManager.getDefaultDisplay().getHeight();
 
         mCameraParameter = new CameraParameter();
-
+        mCameraUtils = new CameraUtils();
     }
 
     private void initData() {
@@ -188,6 +190,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         super.onPause();
         mTakePhotoPresenter.onPauseSuper();
         mGlSurfaceView.onPause();
+        LogUtils.e(TAG, "onPause");
     }
 
     @Override
@@ -195,13 +198,14 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         super.onResume();
 
         if (mCameraDevice == null) {
-            mCameraDevice = CameraInterface.getInstance().openCamera(CameraActivity.this, mCameraId, null, null);
-            mParameters = mCameraDevice.getParameters();
+            mCameraId = CameraPreference.getCameraId(CameraActivity.this);
+            openCamera();
         }
         mGlSurfaceView.onResume();
         mGlSurfaceView.bringToFront();
         mTakePhotoPresenter.onResumeSuper(mCameraDevice);
         initData();
+        LogUtils.e(TAG, "onResume");
     }
 
 
@@ -281,7 +285,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     public void startPreview() {
         if (mCameraDevice != null) {
-            CameraInterface.getInstance().initCamera(1.33f);
+            CameraInterface.getInstance().initCamera(CameraActivity.this, 1.33f, mCameraId);
         }
     }
 
@@ -362,9 +366,22 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void cameraSwitch() {
-        if (mTakePhotoPresenter!=null){
-            mTakePhotoPresenter.switchCamera();
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.switchCamera(mCameraDevice);
         }
+    }
+
+    private void openCamera(){
+        if (mCameraDevice==null) {
+            mCameraDevice = CameraInterface.getInstance().openCamera(CameraActivity.this, mCameraId, null, mCameraOpenErrorCallback);
+            mParameters = mCameraDevice.getParameters();
+        }else {
+            mParameters = mCameraDevice.getParameters();
+        }
+    }
+
+    public SurfaceTexture getSurfaceTexture() {
+        return mGlSurfaceView.getSurfaceTexture();
     }
 
     public void visibleWhiteTopView() {
@@ -476,4 +493,31 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 //        screenSwitching.invokeFragmentManagerNoteStateNotSaved();
 //    }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onConfigurationChanged();
+        }
+    }
+
+    public CameraManager.CameraOpenErrorCallback mCameraOpenErrorCallback =
+            new CameraManager.CameraOpenErrorCallback() {
+                @Override
+                public void onCameraDisabled(int cameraId) {
+                    LogUtils.e(TAG,"CameraOpenErrorCallback onCameraDisabled="+cameraId);
+                }
+
+                @Override
+                public void onDeviceOpenFailure(int cameraId) {
+                    LogUtils.e(TAG,"CameraOpenErrorCallback onDeviceOpenFailure="+cameraId);
+
+                }
+
+                @Override
+                public void onReconnectionFailure(CameraManager mgr) {
+                    LogUtils.e(TAG,"CameraOpenErrorCallback onReconnectionFailure="+mgr.toString());
+                }
+            };
 }

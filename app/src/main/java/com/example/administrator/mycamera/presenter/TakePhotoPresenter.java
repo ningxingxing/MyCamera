@@ -21,6 +21,7 @@ import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraInterface;
 import com.example.administrator.mycamera.utils.CameraParameter;
 import com.example.administrator.mycamera.utils.CameraState;
+import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SaveImageUtils;
 import com.example.administrator.mycamera.utils.SoundPlay;
@@ -54,6 +55,9 @@ public class TakePhotoPresenter implements ICameraActivity {
     //private MediaPlayer mMediaPlayer;
     private SoundPlay mSoundPool;
     private final AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
+    private CameraUtils mCameraUtils;
+    private int mDisplayRotation;
+    private int mCameraDisplayOrientation;
 
     private class MainHandler extends Handler {
         private WeakReference weakReference;
@@ -99,6 +103,7 @@ public class TakePhotoPresenter implements ICameraActivity {
         //  mMediaPlayer = MediaPlayer.create(mActivity, R.raw.video_record1);
         mSoundPool = new SoundPlay(mActivity);
         mCameraParameter = new CameraParameter();
+        mCameraUtils = new CameraUtils();
     }
 
 
@@ -160,33 +165,40 @@ public class TakePhotoPresenter implements ICameraActivity {
     }
 
     @Override
-    public void switchCamera() {
+    public void switchCamera(CameraProxy cameraProxy) {
         if (mPaused) return;
-        if (mActivity.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA_FRONT)) {
-            if (mCameraId == CameraInfo.CAMERA_FACING_FRONT) {
-                mCameraId = CameraInfo.CAMERA_FACING_BACK;
-            } else {
-                mCameraId = CameraInfo.CAMERA_FACING_FRONT;
-            }
-        } else {
-            Toast.makeText(mActivity, R.string.not_support_front_facing_camera,
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+        mCameraId =  mCameraUtils.getCameraId(mActivity,mCameraId);
         closeCamera();
         openCamera();
     }
 
-    private void openCamera(){
-        if (mCameraDevice == null) {
-            mCameraDevice = CameraInterface.getInstance().openCamera(mActivity, mCameraId, null, null);
-            if (mCameraDevice==null)return;
-            mParameters = mCameraDevice.getParameters();
-            mTakePhoto.startPreview();
+    @Override
+    public void onConfigurationChanged() {
+        setDisplayOrientation();
+    }
+
+    private void setDisplayOrientation() {
+        if (mCameraUtils != null && mCameraDevice != null && mActivity != null) {
+            mDisplayRotation = mCameraUtils.getDisplayRotation(mActivity);
+            mCameraDisplayOrientation = mCameraUtils.getDisplayOrientation(mDisplayRotation, mCameraId);
+            LogUtils.e(TAG,"setDisplayOrientation mDisplayRotation="+mDisplayRotation + " mCameraDisplayOrientation="+mCameraDisplayOrientation);
+            mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         }
     }
+
+    private void openCamera() {
+        if (mCameraDevice == null) {
+            mCameraDevice = CameraInterface.getInstance().openCamera(mActivity, mCameraId, mHandler, mActivity.mCameraOpenErrorCallback);
+        }
+        if (mCameraDevice != null) {
+            mParameters = mCameraDevice.getParameters();
+            mCameraDevice.setPreviewTexture(mActivity.getSurfaceTexture());
+            mCameraDevice.startPreview();
+           // setDisplayOrientation();
+        }
+    }
+
+
 
     private void takePicture() {
         if (mPaused || mCameraDevice == null) return;
@@ -259,9 +271,10 @@ public class TakePhotoPresenter implements ICameraActivity {
 
         @Override
         public void onPictureTaken(final byte[] jpegData, CameraProxy camera) {
-            if (mPaused || jpegData == null || mTakePhoto == null || mHandler == null) return;
+            if (mPaused || jpegData == null || mTakePhoto == null || mHandler == null || mCameraDevice == null)
+                return;
             LogUtils.e(TAG, "onPictureTaken jpegData=" + jpegData);
-            mTakePhoto.startPreview();
+            mCameraDevice.startPreview();
             // mCameraState = CameraState.STATE_EDIT;
 
             new Thread(new Runnable() {
@@ -319,7 +332,7 @@ public class TakePhotoPresenter implements ICameraActivity {
         });
     }
 
-    private void closeCamera(){
+    private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraState = CameraState.STATE_PREVIEW;
             mHandler.removeCallbacksAndMessages(null);
@@ -329,4 +342,6 @@ public class TakePhotoPresenter implements ICameraActivity {
             mCameraDevice = null;
         }
     }
+
+
 }

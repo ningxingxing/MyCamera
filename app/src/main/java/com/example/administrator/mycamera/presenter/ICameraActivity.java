@@ -1,6 +1,6 @@
 package com.example.administrator.mycamera.presenter;
 
-import com.example.administrator.mycamera.manager.CameraManager;
+import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 
 /**
  * Created by Administrator on 2018/6/5.
@@ -10,7 +10,7 @@ import com.example.administrator.mycamera.manager.CameraManager;
 public interface ICameraActivity {
     void onPauseSuper();
 
-    void onResumeSuper(CameraManager.CameraProxy cameraProxy);
+    void onResumeSuper(CameraProxy cameraProxy);
 
     void shutterClick();
 
@@ -20,5 +20,7 @@ public interface ICameraActivity {
 
     void onDestroySuper();
 
-    void switchCamera();
+    void switchCamera(CameraProxy cameraProxy);
+
+    void onConfigurationChanged();
 }

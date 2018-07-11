@@ -56,7 +56,12 @@ public class VideoPresenter implements ICameraActivity {
     }
 
     @Override
-    public void switchCamera() {
+    public void switchCamera(CameraProxy cameraProxy) {
+
+    }
+
+    @Override
+    public void onConfigurationChanged() {
 
     }
 }

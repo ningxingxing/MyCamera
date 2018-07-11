@@ -10,6 +10,7 @@ import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Handler;
 
+import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.manager.CameraManagerFactory;
@@ -89,12 +90,13 @@ public class CameraInterface {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            initCamera(1.33f);
+           // initCamera(1.33f);
         }
 
     }
 
-    public void initCamera(float previewRate) {
+    public void initCamera(CameraActivity activity, float previewRate,int cameraId) {
+        CameraUtils cameraUtils = new CameraUtils();
         if (mCameraDevice != null) {
             mParams = mCameraDevice.getParameters();
             mParams.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
@@ -109,7 +111,8 @@ public class CameraInterface {
 //                    mParams.getSupportedPreviewSizes(), previewRate, 120);
             mParams.setPreviewSize(mParams.getPreviewSize().width, mParams.getPreviewSize().height);
 
-            mCameraDevice.setDisplayOrientation(90);
+            int degree = cameraUtils.getCameraDisplayOrientation(activity, cameraId);
+            mCameraDevice.setDisplayOrientation(degree);
             mParams.setPreviewFormat(PixelFormat.YCbCr_420_SP);
             // List<Camera.Size> supported = mParams.getSupportedPictureSizes();
 
@@ -155,7 +158,7 @@ public class CameraInterface {
             mCameraDevice.release();
             mCameraDevice = null;
         }
-
+        LogUtils.e(TAG, "open CameraId:" + cameraId );
         if (mCameraDevice == null) {
             mCameraDevice = CameraManagerFactory.getAndroidCameraManager().cameraOpen(handler, cameraId, cb);
             if (mCameraDevice == null) {
