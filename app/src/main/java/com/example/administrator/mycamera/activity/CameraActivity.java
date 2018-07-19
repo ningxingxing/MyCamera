@@ -7,9 +7,11 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -361,7 +363,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void cameraScene() {
-
+        mCameraTop.setBackgroundColor(0);
     }
 
     @Override
