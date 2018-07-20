@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.example.administrator.mycamera.R;
@@ -167,7 +168,8 @@ public class TakePhotoPresenter implements ICameraActivity {
     @Override
     public void switchCamera(CameraProxy cameraProxy) {
         if (mPaused) return;
-        mCameraId =  mCameraUtils.getCameraId(mActivity,mCameraId);
+
+        mCameraId = mCameraUtils.getCameraId(mActivity, CameraPreference.getCameraId(mActivity));
         closeCamera();
         openCamera();
     }
@@ -175,6 +177,16 @@ public class TakePhotoPresenter implements ICameraActivity {
     @Override
     public void onConfigurationChanged() {
         setDisplayOrientation();
+    }
+
+    @Override
+    public void onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                shutterClick();
+                break;
+        }
     }
 
     private void setDisplayOrientation() {
@@ -192,12 +204,11 @@ public class TakePhotoPresenter implements ICameraActivity {
         }
         if (mCameraDevice != null) {
             mParameters = mCameraDevice.getParameters();
+            setDisplayOrientation();
             mCameraDevice.setPreviewTexture(mActivity.getSurfaceTexture());
             mCameraDevice.startPreview();
-           // setDisplayOrientation();
         }
     }
-
 
 
     private void takePicture() {

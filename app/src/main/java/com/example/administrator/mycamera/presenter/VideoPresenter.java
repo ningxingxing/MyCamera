@@ -1,6 +1,7 @@
 package com.example.administrator.mycamera.presenter;
 
 import android.hardware.Camera.Parameters;
+import android.view.KeyEvent;
 
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
@@ -62,6 +63,11 @@ public class VideoPresenter implements ICameraActivity {
 
     @Override
     public void onConfigurationChanged() {
+
+    }
+
+    @Override
+    public void onKeyUp(int keyCode, KeyEvent event) {
 
     }
 }

@@ -14,4 +14,9 @@
 
 
     <color name="yellow">#FFD700</color>
+
+
+    <color name="share_popup_background">#DA000000</color>
+    <color name="share_popup_blackout">#ff090909</color>
+    <color name="share_icon_background">#80000000</color>
 </resources>

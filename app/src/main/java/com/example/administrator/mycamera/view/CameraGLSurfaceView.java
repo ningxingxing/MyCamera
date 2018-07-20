@@ -6,9 +6,14 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.TextureView.SurfaceTextureListener;
+
+import com.example.administrator.mycamera.utils.LogUtils;
+
+import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,6 +23,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
+    private final String TAG = "Cam_CameraGLSurfaceView";
     private Context mContext;
     private SurfaceTexture mSurface;
     private int mTextureID = -1;
@@ -86,6 +92,7 @@ public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         mSurface.updateTexImage();
         float[] mtx = new float[16];
+      //  LogUtils.e(TAG,"onDrawFrame mtx=" + Arrays.toString(mtx));
         mSurface.getTransformMatrix(mtx);
         //如果不调用mDirectDrawer.draw(mtx);不会显示任何东西
         mDirectDrawer.draw(mtx);

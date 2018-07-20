@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
@@ -502,6 +503,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         if (mTakePhotoPresenter != null) {
             mTakePhotoPresenter.onConfigurationChanged();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mTakePhotoPresenter!=null){
+            mTakePhotoPresenter.onKeyUp(keyCode,event);
+        }
+       // return super.onKeyDown(keyCode, event);
+        return true;//不设置声音
     }
 
     public CameraManager.CameraOpenErrorCallback mCameraOpenErrorCallback =

@@ -113,6 +113,7 @@ public class CameraInterface {
 
             int degree = cameraUtils.getCameraDisplayOrientation(activity, cameraId);
             mCameraDevice.setDisplayOrientation(degree);
+
             mParams.setPreviewFormat(PixelFormat.YCbCr_420_SP);
             // List<Camera.Size> supported = mParams.getSupportedPictureSizes();
 
@@ -200,14 +201,14 @@ public class CameraInterface {
     }
 
     // 控制图像的正确显示方向
-    private void setDispaly(Camera camera,Parameters parameters) {
-        if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
-            setDisplayOrientation(camera, -90);
-        } else {
-            parameters.setRotation(-90);
-        }
-
-    }
+//    private void setDispaly(Camera camera,Parameters parameters) {
+//        if (Integer.parseInt(Build.VERSION.SDK) >= 8) {
+//            setDisplayOrientation(camera, -90);
+//        } else {
+//            parameters.setRotation(-90);
+//        }
+//
+//    }
 
     // 实现的图像的正确显示
     private void setDisplayOrientation(Camera camera, int i) {

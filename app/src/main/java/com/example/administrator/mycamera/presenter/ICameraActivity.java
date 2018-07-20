@@ -1,5 +1,7 @@
 package com.example.administrator.mycamera.presenter;
 
+import android.view.KeyEvent;
+
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 
 /**
@@ -23,4 +25,6 @@ public interface ICameraActivity {
     void switchCamera(CameraProxy cameraProxy);
 
     void onConfigurationChanged();
+
+    void onKeyUp(int keyCode, KeyEvent event);
 }
