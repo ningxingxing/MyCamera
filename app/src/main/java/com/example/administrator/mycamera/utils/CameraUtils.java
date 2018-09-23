@@ -133,11 +133,12 @@ public class CameraUtils {
         // documentation.
         Camera.CameraInfo info = new Camera.CameraInfo();
         //modify by nsc
-        if (hasFrontFacingCamera() && cameraId==0) {
-            Camera.getCameraInfo(cameraId, info);
-        }else if (hasBackFacingCamera() && cameraId==1){
-            Camera.getCameraInfo(cameraId, info);
-        }
+        Camera.getCameraInfo(cameraId, info);
+//        if (hasFrontFacingCamera() && cameraId==0) {
+//            Camera.getCameraInfo(cameraId, info);
+//        }else if (hasBackFacingCamera() && cameraId==1){
+//            Camera.getCameraInfo(cameraId, info);
+//        }
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;

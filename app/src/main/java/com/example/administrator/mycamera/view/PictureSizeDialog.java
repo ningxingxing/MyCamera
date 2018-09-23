@@ -28,9 +28,9 @@ public class PictureSizeDialog extends Dialog {
     private PictureSizeAdapter mAdapter;
     private CameraParameter mCameraParameter;
 
-    public PictureSizeDialog(Context context,Parameters parameter) {
+    public PictureSizeDialog(Context context, Parameters parameter) {
         super(context);
-        LogUtils.e(TAG,"PictureSizeDialog parameter="+parameter);
+        LogUtils.e(TAG, "PictureSizeDialog parameter=" + parameter);
         View contentView = LayoutInflater.from(context).inflate(R.layout.dialog_picture_size, null);
         mRecyclerView = (RecyclerView) contentView.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -38,25 +38,28 @@ public class PictureSizeDialog extends Dialog {
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
         //创建并设置Adapter
-        mAdapter = new PictureSizeAdapter(context,getData(parameter));
-        mRecyclerView.setAdapter(mAdapter);
         mCameraParameter = new CameraParameter();
+        mAdapter = new PictureSizeAdapter(context, getData(parameter));
+        mRecyclerView.setAdapter(mAdapter);
         setContentView(contentView);
     }
 
 
     public List<PictureSizeData> getData(Parameters parameter) {
         List<PictureSizeData> pictureSize = new ArrayList<>();
-        List<Camera.Size> supportedSize =  mCameraParameter.getSupportedPictureSizes(parameter);
-        if (supportedSize!=null && supportedSize.size()>0) {
-            for (int i = 0; i < supportedSize.size(); i++) {
-                PictureSizeData pictureData = new PictureSizeData();
-                pictureData.setPictureWidth(String.valueOf(supportedSize.get(i).width));
-                pictureData.setPictureHeight(String.valueOf(supportedSize.get(i).height));
-                //LogUtils.e(TAG,"supportedSize="+supportedSize.get(i).width + " "+supportedSize.get(i).height);
-                pictureSize.add(pictureData);
-            }
+        LogUtils.e(TAG,"getData="+mCameraParameter);
+        if (mCameraParameter != null) {
+            List<Camera.Size> supportedSize = mCameraParameter.getSupportedPictureSizes(parameter);
+            if (supportedSize != null && supportedSize.size() > 0) {
+                for (int i = 0; i < supportedSize.size(); i++) {
+                    PictureSizeData pictureData = new PictureSizeData();
+                    pictureData.setPictureWidth(String.valueOf(supportedSize.get(i).width));
+                    pictureData.setPictureHeight(String.valueOf(supportedSize.get(i).height));
+                    //LogUtils.e(TAG,"supportedSize="+supportedSize.get(i).width + " "+supportedSize.get(i).height);
+                    pictureSize.add(pictureData);
+                }
 
+            }
         }
         return pictureSize;
     }

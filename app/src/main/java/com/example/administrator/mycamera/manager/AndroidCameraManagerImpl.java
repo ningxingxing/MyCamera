@@ -281,6 +281,7 @@ class AndroidCameraManagerImpl implements CameraManager {
                         return;
 
                     case SET_DISPLAY_ORIENTATION:
+                        LogUtils.e(TAG,"setDisplayOrientation="+msg.arg1);
                         mCamera.setDisplayOrientation(msg.arg1);
                         return;
 

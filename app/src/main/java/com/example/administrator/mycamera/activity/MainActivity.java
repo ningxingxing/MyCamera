@@ -4,15 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
-
-import com.example.administrator.mycamera.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +26,6 @@ public class MainActivity extends Activity {
     //还需申请的权限列表
     private List<String> permissionsList = new ArrayList<>();
     //申请权限后的返回码
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

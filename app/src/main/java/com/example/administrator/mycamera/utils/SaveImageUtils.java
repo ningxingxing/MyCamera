@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 
+import com.example.administrator.mycamera.model.CameraPreference;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,7 +34,12 @@ public class SaveImageUtils {
      */
     public static void saveImage(Handler handler, Context context, byte[] data) {
         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        bmp = rotateBitmapByDegree(bmp, 90);
+        int cameraId =   CameraPreference.getCameraId(context);
+        if (cameraId==0) {
+            bmp = rotateBitmapByDegree(bmp, 90);
+        }else {
+            bmp = rotateBitmapByDegree(bmp, -90);
+        }
         FileOutputStream fOut = null;
         String path = getSaveImagePath();
         try {
