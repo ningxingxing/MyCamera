@@ -87,6 +87,7 @@ public class TakePhotoPresenter implements ICameraActivity {
                     case CameraConstant.FOCUS_SUCCESS:
                         if (isLongClick) {
                             takePicture();
+                            isLongClick = false;
                         }
                         break;
                 }
@@ -146,14 +147,14 @@ public class TakePhotoPresenter implements ICameraActivity {
     @Override
     public void longClickTakePicture() {
         if (mPaused) return;
-        manuallyAutoFocus();
         isLongClick = true;
+        manuallyAutoFocus();
     }
 
     @Override
     public void onClickAutoFocus() {
         if (mCameraDevice == null || mPaused) return;
-        isLongClick = false;
+        //isLongClick = false;
         manuallyAutoFocus();
 
     }
@@ -325,6 +326,7 @@ public class TakePhotoPresenter implements ICameraActivity {
                         mSoundPool.startPlay(SoundPlay.START_VIDEO_RECORDING);
 
                     }
+                   // mCameraDevice.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上
 
                 }
                 LogUtils.e(TAG, "manuallyAutoFocus success=" + success);

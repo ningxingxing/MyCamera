@@ -5,10 +5,14 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.TextureView.SurfaceTextureListener;
+import android.view.View;
+
+import com.example.administrator.mycamera.utils.LogUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,6 +22,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
+    private final String TAG = "Cam_CameraGLSurfaceView";
     private Context mContext;
     private SurfaceTexture mSurface;
     private int mTextureID = -1;

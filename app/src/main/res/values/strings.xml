@@ -23,6 +23,13 @@
     <string name="summery_hd_preview">是否高清预览</string>
     <string name="picture_x">x</string>
 
+    <string name="count_down_title_text">0</string>
+    <string name="count_down_top_close">关闭</string>
+    <string name="count_down_top_two">2s</string>
+    <string name="count_down_top_five">5s</string>
+    <string name="count_down_top_ten">10s</string>
+
+
 
     <string name="pref_camera_whitebalance_entry_auto">Auto</string>
     <string name="pref_camera_whitebalance_entry_incandescent">Incandescent</string>

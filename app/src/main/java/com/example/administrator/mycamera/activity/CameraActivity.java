@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -26,7 +27,7 @@ import com.example.administrator.mycamera.fragment.ModelFragment;
 import com.example.administrator.mycamera.fragment.SettingFragment;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
-import com.example.administrator.mycamera.manager.GestureDetectorManager;
+import com.example.administrator.mycamera.manager.MyGestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.port.IBottomItem;
 import com.example.administrator.mycamera.port.IGestureDetectorManager;
@@ -45,11 +46,13 @@ import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
+import com.example.administrator.mycamera.view.CountDownView;
 import com.example.administrator.mycamera.view.PictureSizeDialog;
 import com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
 import com.example.administrator.mycamera.view.buttonview.CameraTopView;
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
+import com.example.administrator.mycamera.view.buttonview.CountDownTopView;
 import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
 import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
@@ -58,7 +61,8 @@ import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
  */
 
 public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
-        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView {
+        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView
+     ,CameraGLSurfaceView.OnTouchListener{
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -72,6 +76,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private FocusAnimationView mFocusAnimationView;
     private CameraTopView mCameraTop;
     private WhiteBalanceView mWhiteBalance;
+    private CountDownView mCountDownView;
+    private CountDownTopView mCountDownTopView;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -113,6 +119,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mVideoPresenter = new VideoPresenter(CameraActivity.this, this);
         mGlSurfaceView = (CameraGLSurfaceView) findViewById(R.id.gl_surfaceView);
         mGlSurfaceView.setSurfaceTextureListener(this);
+        mGlSurfaceView.setOnTouchListener(this);
 
         mCameraBottom = (CameraBottomView) findViewById(R.id.camera_bottom);
         mCameraBottom.setBottomClickListener(this);
@@ -131,8 +138,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mWhiteBalance = (WhiteBalanceView) findViewById(R.id.white_balance);
         mWhiteBalance.setWhiteBalanceViewClickListener(this);
 
+        mCountDownView = (CountDownView)findViewById(R.id.count_down_to_capture);
+        mCountDownView.setVisibility(View.VISIBLE);
+        mCountDownView.setCountDownTime(10);
+        mCountDownView.startCountDown();
+
+        mCountDownTopView = (CountDownTopView)findViewById(R.id.count_down_top_view);
+
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
-        mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new GestureDetectorManager(CameraActivity.this, this));
+        mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new MyGestureDetectorManager(CameraActivity.this, this));
 
     }
 
@@ -219,10 +233,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        float downY = ev.getY();
-        if (downY < mScreenHeight - mCameraBottom.getHeight() && downY > mCameraTop.getHeight()) {
+       // float downY = ev.getY();
+//        if (downY < mScreenHeight - mCameraBottom.getHeight() && downY > mCameraTop.getHeight()) {
             mGestureDetector.onTouchEvent(ev);
-        }
+//        }
         return super.dispatchTouchEvent(ev);
     }
 
@@ -344,7 +358,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void cameraDelay() {
-
+        if (mCountDownTopView.getVisibility()==View.GONE) {
+            mCountDownTopView.setVisibility(View.VISIBLE);
+            mCameraTop.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -520,4 +537,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
                     LogUtils.e(TAG,"CameraOpenErrorCallback onReconnectionFailure="+mgr.toString());
                 }
             };
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onClickAutoFocus();
+            mFocusAnimationView.setVisibility(View.VISIBLE);
+            mFocusAnimationView.startFocusAnimation(event.getX(), event.getY());
+        }
+        return true;
+    }
 }

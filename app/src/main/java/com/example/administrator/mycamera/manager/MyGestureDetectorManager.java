@@ -13,12 +13,12 @@ import com.example.administrator.mycamera.utils.LogUtils;
  * Created by Administrator on 2018/6/28.
  */
 
-public class GestureDetectorManager extends Gesture implements GestureDetector.OnGestureListener {
+public class MyGestureDetectorManager extends Gesture implements GestureDetector.OnGestureListener {
     private final String TAG = "GestureDetectorManager";
     private Context mContext;
     private IGestureDetectorManager mGestureDetectorManager;
 
-    public GestureDetectorManager(Context context, IGestureDetectorManager gestureDetectorManager) {
+    public MyGestureDetectorManager(Context context, IGestureDetectorManager gestureDetectorManager) {
         this.mContext = context;
         this.mGestureDetectorManager = gestureDetectorManager;
     }
@@ -36,9 +36,9 @@ public class GestureDetectorManager extends Gesture implements GestureDetector.O
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         if (mGestureDetectorManager != null) {
-            mGestureDetectorManager.onAutoFocus(e);
+           // mGestureDetectorManager.onAutoFocus(e);
         }
-        return false;
+        return true;
     }
 
     @Override
