@@ -75,7 +75,11 @@ public class CountDownView extends FrameLayout {
 
     public void setCountDownTime(int time) {
         this.mCount = time;
-        // tvCountDown.setText(time + "");
+         tvCountDown.setText(time + "");
+    }
+
+    public int getCountDownCurrentTime(){
+        return mCount;
     }
 
     public void startCountDown() {

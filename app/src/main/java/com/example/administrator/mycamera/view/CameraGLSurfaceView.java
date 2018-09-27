@@ -31,7 +31,7 @@ public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.
     private Context mContext;
     private SurfaceTexture mSurface;
     private int mTextureID = -1;
-    private DirectDrawer mDirectDrawer;
+    private DirectDrawer2 mDirectDrawer;
     private SurfaceTextureListener mSurfaceTextureListener;
 
     public void setSurfaceTextureListener(SurfaceTextureListener l) {
@@ -68,7 +68,7 @@ public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.
         mTextureID = createTextureID();
         mSurface = new SurfaceTexture(mTextureID);
         mSurface.setOnFrameAvailableListener(this);
-        mDirectDrawer = new DirectDrawer(mTextureID);
+        mDirectDrawer = new DirectDrawer2(mTextureID);
         if (mSurfaceTextureListener != null) {
             mSurfaceTextureListener.onSurfaceTextureAvailable(mSurface, getWidth(), getHeight());
         }

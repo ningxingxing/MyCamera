@@ -1,6 +1,7 @@
 package com.example.administrator.mycamera.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -161,5 +162,23 @@ public class CameraUtils {
         return 0;
     }
 
+    /**
+     * 获取倒计时时间
+     * @param context
+     * @return
+     */
+    public int getCountDownTime(Context context){
+        String countDownDuration = (String)CameraPreference.get(context,CameraPreference.KEY_COUNT_DOWN,context.getString(R.string.count_down_top_close));
+        if (context.getString(R.string.count_down_top_two).equals(countDownDuration)){
+            return 2;
+        }else if (context.getString(R.string.count_down_top_five).equals(countDownDuration)){
+            return 5;
+        }else if (context.getString(R.string.count_down_top_ten).equals(countDownDuration)){
+            return 10;
+        } else{
+            return 0;
+        }
+
+    }
 
 }

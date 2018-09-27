@@ -37,6 +37,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:name=".activity.CameraActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity android:name=".activity.CameraPreferenceSettingActivity"/>
     </application>
 
 </manifest>

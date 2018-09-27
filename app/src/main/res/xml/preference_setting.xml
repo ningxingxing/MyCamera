@@ -14,6 +14,11 @@
         android:summary="@string/title_window_proportion_size"
         android:title="@string/title_window_proportion" />
 
+    <Preference
+        android:icon="@drawable/setting_count_down"
+        android:key="key_count_down"
+        android:summary="@string/summery_count_down"
+        android:title="@string/title_count_down" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:icon="@drawable/setting_auxiliary_line"

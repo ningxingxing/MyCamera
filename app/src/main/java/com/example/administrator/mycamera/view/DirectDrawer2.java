@@ -1,34 +1,27 @@
 package com.example.administrator.mycamera.view;
 
-import android.opengl.GLES11Ext;
-import android.opengl.GLES20;
-import android.opengl.Matrix;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-/**
- * 负责将SurfaceTexture内容绘制到屏幕上
- * Created by Administrator on 2018/5/31.
- */
+import android.opengl.GLES11Ext;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 
-public class DirectDrawer {
+public class DirectDrawer2 {
     private final String vertexShaderCode =
-            "attribute vec4 vPosition;\n" +
+            "attribute vec4 vPosition;" +
                     "attribute vec2 inputTextureCoordinate;" +
-                    "uniform mat4 uSTMatrix;\n" +
-                    "varying vec2 textureCoordinate;\n" +
+                    "varying vec2 textureCoordinate;" +
                     "void main()" +
-                    "{\n" +
-                    "gl_Position = vPosition;\n" +
-                     "textureCoordinate = inputTextureCoordinate;\n" +
-                    //"textureCoordinate = (uSTMatrix * inputTextureCoordinate).xy;\n" +
-                    "}\n";
+                    "{"+
+                    "gl_Position = vPosition;"+
+                    "textureCoordinate = inputTextureCoordinate;" +
+                    "}";
 
     private final String fragmentShaderCode =
-            "#extension GL_OES_EGL_image_external : require\n" +
+            "#extension GL_OES_EGL_image_external : require\n"+
                     "precision mediump float;" +
                     "varying vec2 textureCoordinate;\n" +
                     "uniform samplerExternalOES s_texture;\n" +
@@ -36,14 +29,13 @@ public class DirectDrawer {
                     "  gl_FragColor = texture2D( s_texture, textureCoordinate );\n" +
                     "}";
 
-    private FloatBuffer vertexBuffer, textureVerticesBuffer, matrixBuffer;
+    private FloatBuffer vertexBuffer, textureVerticesBuffer;
     private ShortBuffer drawListBuffer;
     private final int mProgram;
     private int mPositionHandle;
     private int mTextureCoordHandle;
-    private int mTextureTransformHandle;
 
-    private short drawOrder[] = {0, 1, 2, 0, 2, 3}; // order to draw vertices
+    private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
     // number of coordinates per vertex in this array
     private static final int COORDS_PER_VERTEX = 2;
@@ -51,10 +43,10 @@ public class DirectDrawer {
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     static float squareCoords[] = {
-            -1.0f, 1.0f,
+            -1.0f,  1.0f,
             -1.0f, -1.0f,
             1.0f, -1.0f,
-            1.0f, 1.0f,
+            1.0f,  1.0f,
     };
 
     static float textureVertices[] = {
@@ -64,16 +56,10 @@ public class DirectDrawer {
             0.0f, 0.0f,
     };
 
-    private float vertexPosition[] = {
-            -1.f, -1.f, 0.0f, 1.0f, // Position 0
-            1.f, -1.f, 0.0f, 1.0f, // Position 1
-            -1.f, 1.f, 0.0f, 1.0f, // Position 2
-            1.f, 1.f, 0.0f, 1.0f, // Position 3
-    };
-
     private int texture;
 
-    public DirectDrawer(int texture) {
+    public DirectDrawer2(int texture)
+    {
         this.texture = texture;
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4);
@@ -95,24 +81,17 @@ public class DirectDrawer {
         textureVerticesBuffer.put(textureVertices);
         textureVerticesBuffer.position(0);
 
-        ByteBuffer matrixByteBuffer = ByteBuffer.allocateDirect(vertexPosition.length * 4);
-        matrixByteBuffer.order(ByteOrder.nativeOrder());
-        matrixBuffer = matrixByteBuffer.asFloatBuffer();
-        matrixBuffer.put(vertexPosition);
-        matrixBuffer.position(0);
-
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        int vertexShader    = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader  = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
         mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
         GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glGetUniformLocation(mProgram, "textureTransform");
-        mTextureTransformHandle = GLES20.glGetUniformLocation(mProgram, "uSTMatrix");
         GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
     }
 
-    public void draw(float[] mtx) {
+    public void draw(float[] mtx)
+    {
         GLES20.glUseProgram(mProgram);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -130,22 +109,19 @@ public class DirectDrawer {
         mTextureCoordHandle = GLES20.glGetAttribLocation(mProgram, "inputTextureCoordinate");
         GLES20.glEnableVertexAttribArray(mTextureCoordHandle);
 
-        GLES20.glEnableVertexAttribArray(mTextureTransformHandle);
-
-        textureVerticesBuffer.clear();
-        textureVerticesBuffer.put(transformTextureCoordinates(textureVertices, mtx));
-        textureVerticesBuffer.position(0);
+//        textureVerticesBuffer.clear();
+//        textureVerticesBuffer.put( transformTextureCoordinates( textureVertices, mtx ));
+//        textureVerticesBuffer.position(0);
         GLES20.glVertexAttribPointer(mTextureCoordHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, textureVerticesBuffer);
-        //GLES20.glUniformMatrix4fv(mTextureTransformHandle, 1, false, matrixBuffer);//add
+
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mTextureCoordHandle);
-        GLES20.glDisableVertexAttribArray(mTextureTransformHandle);
     }
 
-    private int loadShader(int type, String shaderCode) {
+    private  int loadShader(int type, String shaderCode){
 
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
@@ -157,16 +133,16 @@ public class DirectDrawer {
 
         return shader;
     }
-
-    private float[] transformTextureCoordinates(float[] coords, float[] matrix) {
-        float[] result = new float[coords.length];
+    private float[] transformTextureCoordinates( float[] coords, float[] matrix)
+    {
+        float[] result = new float[ coords.length ];
         float[] vt = new float[4];
 
-        for (int i = 0; i < coords.length; i += 2) {
-            float[] v = {coords[i], coords[i + 1], 0, 1};
+        for ( int i = 0 ; i < coords.length ; i += 2 ) {
+            float[] v = { coords[i], coords[i+1], 0 , 1  };
             Matrix.multiplyMV(vt, 0, matrix, 0, v, 0);
             result[i] = vt[0];
-            result[i + 1] = vt[1];
+            result[i+1] = vt[1];
         }
         return result;
     }

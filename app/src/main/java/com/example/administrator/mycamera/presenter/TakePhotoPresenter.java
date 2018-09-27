@@ -59,6 +59,7 @@ public class TakePhotoPresenter implements ICameraActivity {
     private CameraUtils mCameraUtils;
     private int mDisplayRotation;
     private int mCameraDisplayOrientation;
+    private int mTimerDuration =0;
 
     private class MainHandler extends Handler {
         private WeakReference weakReference;
@@ -90,6 +91,10 @@ public class TakePhotoPresenter implements ICameraActivity {
                             takePicture();
                             isLongClick = false;
                         }
+                        break;
+
+                    case CameraConstant.COUNT_DOWN_TAKE_PHOTO:
+                        takePicture();
                         break;
                 }
             }
@@ -141,8 +146,21 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     @Override
     public void shutterClick() {
-        if (mPaused) return;
-        takePicture();
+        if (mPaused || mCameraUtils==null || mActivity==null) return;
+        int countDownDuration = mCameraUtils.getCountDownTime(mActivity);
+        mTimerDuration = countDownDuration;
+        if (countDownDuration>0){
+            //正在倒计时中，再点击直接拍照
+            if (mTakePhoto.getCurrentCountDownTime()>0){
+                takePicture();
+            }else {
+                mHandler.sendEmptyMessageDelayed(CameraConstant.COUNT_DOWN_TAKE_PHOTO, countDownDuration * 1000);
+                mTakePhoto.startCountDown(mTimerDuration);
+            }
+
+        }else {
+            takePicture();
+        }
     }
 
     @Override

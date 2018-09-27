@@ -65,7 +65,7 @@ import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
 public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
         ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView
-     ,CameraGLSurfaceView.OnTouchListener{
+     ,CameraGLSurfaceView.OnTouchListener,CountDownTopView.ICountDownTop,DrawerLayout.DrawerListener{
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -136,17 +136,18 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mEvSeekBar = (SeekBar) findViewById(R.id.evSeekBar);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //mDrawerLayout.addDrawerListener(this);
+        mDrawerLayout.addDrawerListener(this);
         mAuxiliaryLine = (AuxiliaryLineView) findViewById(R.id.auxiliary_line);
         mWhiteBalance = (WhiteBalanceView) findViewById(R.id.white_balance);
         mWhiteBalance.setWhiteBalanceViewClickListener(this);
 
         mCountDownView = (CountDownView)findViewById(R.id.count_down_to_capture);
-        mCountDownView.setVisibility(View.VISIBLE);
-        mCountDownView.setCountDownTime(10);
-        mCountDownView.startCountDown();
+//        mCountDownView.setVisibility(View.VISIBLE);
+//        mCountDownView.setCountDownTime(10);
+//        mCountDownView.startCountDown();
 
         mCountDownTopView = (CountDownTopView)findViewById(R.id.count_down_top_view);
+        mCountDownTopView.setCountDownTopClick(this);
 
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
         mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new MyGestureDetectorManager(CameraActivity.this, this));
@@ -364,6 +365,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         if (mCountDownTopView.getVisibility()==View.GONE) {
             mCountDownTopView.setVisibility(View.VISIBLE);
             mCameraTop.setVisibility(View.GONE);
+            mCountDownTopView.setCurrentSelect();
         }
     }
 
@@ -470,6 +472,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         pictureSizeDialog.show();
     }
 
+    /**
+     * setting auxiliary line
+     * @param flag
+     */
     @Override
     public void setAuxiliaryLine(boolean flag) {
         mAuxiliaryLine.setAuxiliaryLine(flag);
@@ -484,6 +490,9 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
     }
 
+    /**
+     * 长按拍照
+     */
     @Override
     public void onTakePhoto() {
         if (mTakePhotoPresenter != null) {
@@ -560,4 +569,63 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
         return true;
     }
+
+    /**
+     * setting count down time
+     */
+    @Override
+    public void countDownTopTime() {
+        if (mCameraTop.getVisibility()==View.GONE){
+            mCameraTop.setVisibility(View.VISIBLE);
+            mCountDownTopView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+        LogUtils.e(TAG,"nsc onDrawerOpened="+drawerView.getTag());
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+        LogUtils.e(TAG,"nsc onDrawerClosed="+drawerView.getTag());
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+        LogUtils.e(TAG,"nsc onDrawerStateChanged="+newState);
+    }
+
+    /**
+     * 启动拍照倒计时
+     * @param time
+     */
+    @Override
+    public void startCountDown(int time) {
+        mCountDownView.setCountDownTime(time);
+        mCountDownView.startCountDown();
+    }
+
+    /**
+     * 取消拍照倒计时
+     */
+    @Override
+    public void cancelCountDown() {
+        mCountDownView.cancelCountDown();
+    }
+
+    /**
+     * 获取当前倒计时剩余时间
+     * @return
+     */
+    @Override
+    public int getCurrentCountDownTime() {
+        return mCountDownView.getCountDownCurrentTime();
+    }
+    //count down end
 }
