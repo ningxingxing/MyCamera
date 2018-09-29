@@ -35,6 +35,7 @@ import com.example.administrator.mycamera.manager.MyGestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.port.IBottomItem;
 import com.example.administrator.mycamera.port.IGestureDetectorManager;
+import com.example.administrator.mycamera.port.IScenesView;
 import com.example.administrator.mycamera.port.ISettingFragment;
 import com.example.administrator.mycamera.port.ITopItem;
 import com.example.administrator.mycamera.port.IWhiteBalanceView;
@@ -59,6 +60,7 @@ import com.example.administrator.mycamera.view.buttonview.CameraTopView;
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
 import com.example.administrator.mycamera.view.buttonview.CountDownTopView;
 import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
+import com.example.administrator.mycamera.view.buttonview.ScenesView;
 import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
 /**
@@ -67,7 +69,8 @@ import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
 public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
         ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView
-     ,CameraGLSurfaceView.OnTouchListener,CountDownTopView.ICountDownTop,DrawerLayout.DrawerListener{
+     ,CameraGLSurfaceView.OnTouchListener,CountDownTopView.ICountDownTop,DrawerLayout.DrawerListener,
+        IScenesView{
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -84,6 +87,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private FaceView mFaceView;
     private CountDownView mCountDownView;
     private CountDownTopView mCountDownTopView;
+    private ScenesView mScenesView;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -152,6 +156,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
         mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new MyGestureDetectorManager(CameraActivity.this, this));
 
+        mScenesView = (ScenesView)findViewById(R.id.scenes_view);
+
     }
 
     private void initViewData() {
@@ -186,7 +192,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
             }
         });
-
+        mScenesView.setScenesClickListener(this,mParameters);
         showThumbnail();
     }
 
@@ -397,7 +403,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void cameraScene() {
-        mCameraTop.setBackgroundColor(0);
+        //mCameraTop.setBackgroundColor(0);
+        if (mScenesView.getVisibility()==View.GONE){
+            mScenesView.setVisibility(View.VISIBLE);
+            mCameraTop.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -651,6 +661,22 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     public int getCurrentCountDownTime() {
         return mCountDownView.getCountDownCurrentTime();
+    }
+
+    @Override
+    public void onScenesClick(String sceneMode) {
+        if (mScenesView.getVisibility()==View.VISIBLE){
+            mScenesView.setVisibility(View.GONE);
+            mCameraTop.setVisibility(View.VISIBLE);
+        }
+        String mCurrentWhiteBalance =mCameraParameter.getCameraWhiteBalance(mParameters);
+        if (mCurrentWhiteBalance.equals("auto")) {
+            mCameraParameter.setCameraSceneMode(mParameters, sceneMode);
+            CameraPreference.put(CameraActivity.this,CameraPreference.KEY_SCENE_MODE,sceneMode);
+            Toast.makeText(CameraActivity.this,sceneMode,Toast.LENGTH_SHORT).show();
+        }
+
+
     }
     //count down end
 }

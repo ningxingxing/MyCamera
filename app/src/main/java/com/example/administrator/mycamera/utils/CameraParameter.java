@@ -151,6 +151,19 @@ public class CameraParameter {
         return stringList;
     }
 
+    public static boolean isSupportedSceneMode(Parameters parameters,String scene){
+        List<String> stringList = null;
+        if (parameters != null) {
+            stringList = parameters.getSupportedSceneModes();
+            for (int i = 0; i < stringList.size(); i++) {
+                if (scene.equals(stringList.get(i))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * 设置图片大小
      *

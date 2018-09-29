@@ -88,7 +88,9 @@
         </com.example.administrator.mycamera.view.buttonview.WhiteBalanceView>
 
         <com.example.administrator.mycamera.view.buttonview.ScenesView
+            android:id="@+id/scenes_view"
             android:visibility="gone"
+            android:background="@color/black_four"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.example.administrator.mycamera.view.buttonview.ScenesView>
