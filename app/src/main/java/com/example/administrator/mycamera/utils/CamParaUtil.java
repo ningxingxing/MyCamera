@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
+import android.os.Environment;
 import android.util.Log;
 
 public class CamParaUtil {

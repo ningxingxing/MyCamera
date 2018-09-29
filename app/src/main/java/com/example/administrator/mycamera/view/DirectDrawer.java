@@ -4,6 +4,10 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.example.administrator.mycamera.model.CameraPreference;
+import com.example.administrator.mycamera.utils.CameraUtils;
+import com.example.administrator.mycamera.utils.LogUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -112,12 +116,18 @@ public class DirectDrawer {
         GLES20.glLinkProgram(mProgram);                  // creates OpenGL ES program executables
     }
 
-    public void draw(float[] mtx) {
+    public void draw(float[] mtx,int cameraId) {
+        GLES20.glDisable(GLES20.GL_BLEND);
         GLES20.glUseProgram(mProgram);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture);
 
+        //控制旋转时预览
+        matrixBuffer.clear();
+        matrixBuffer.put(mtx);
+        matrixBuffer.position(0);
+        GLES20.glUniformMatrix4fv(mTextureTransformHandle, 1, false, matrixBuffer);//add
         // get handle to vertex shader's vPosition member
         mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 
@@ -131,18 +141,26 @@ public class DirectDrawer {
         GLES20.glEnableVertexAttribArray(mTextureCoordHandle);
 
         GLES20.glEnableVertexAttribArray(mTextureTransformHandle);
-
-        textureVerticesBuffer.clear();
-        textureVerticesBuffer.put(transformTextureCoordinates(textureVertices, mtx));
-        textureVerticesBuffer.position(0);
+//        LogUtils.e("nsc","draw cameraId="+cameraId);
+//        //控制预览倒立
+//        if (cameraId==1) {
+//            textureVerticesBuffer.clear();
+//            textureVerticesBuffer.put(transformTextureCoordinates(textureVertices, mtx));
+//            textureVerticesBuffer.position(0);
+//        }
         GLES20.glVertexAttribPointer(mTextureCoordHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, textureVerticesBuffer);
-        GLES20.glUniformMatrix4fv(mTextureTransformHandle, 1, false, matrixBuffer);//add
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mTextureCoordHandle);
         GLES20.glDisableVertexAttribArray(mTextureTransformHandle);
+    }
+
+    public void setPreviewInverted(float[] mtx){
+        textureVerticesBuffer.clear();
+        textureVerticesBuffer.put(transformTextureCoordinates(textureVertices, mtx));
+        textureVerticesBuffer.position(0);
     }
 
     private int loadShader(int type, String shaderCode) {

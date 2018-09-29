@@ -9,6 +9,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 
 import com.example.administrator.mycamera.model.CameraPreference;
 
@@ -41,7 +42,7 @@ public class SaveImageUtils {
             bmp = rotateBitmapByDegree(bmp, -90);
         }
         FileOutputStream fOut = null;
-        String path = getSaveImagePath();
+        String path = getSaveImagePath(context);
         try {
             fOut = new FileOutputStream(path);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
@@ -65,15 +66,16 @@ public class SaveImageUtils {
      *
      * @return
      */
-    public static String getSaveImagePath() {
+    public static String getSaveImagePath(Context context) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             String fileName = ms2Date(System.currentTimeMillis()) + ".jpg";
-            String filePath = Environment.getExternalStorageDirectory() + "/DCIM/Camera";
-            File fp = new File(filePath);
+            String folder_path = PreferenceManager.getDefaultSharedPreferences(context).getString(CameraPreference.KEY_STORAGE_PATH, CameraUtils.DEFAULT_SAVE_PATH);
+           // String filePath = Environment.getExternalStorageDirectory() + "/DCIM/Camera";
+            File fp = new File(folder_path);
             if (!fp.exists()) {
                 fp.mkdir();
             }
-            File f = new File(filePath, fileName);
+            File f = new File(folder_path, fileName);
             return f.getPath();
         }
         return System.currentTimeMillis() + ".jpg";

@@ -1,7 +1,9 @@
 package com.example.administrator.mycamera.presenter;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -11,8 +13,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
+import android.view.OrientationEventListener;
 import android.widget.Toast;
 
+import com.bumptech.glide.util.Util;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
@@ -26,6 +30,7 @@ import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SaveImageUtils;
 import com.example.administrator.mycamera.utils.SoundPlay;
+import com.example.administrator.mycamera.view.Rotatable;
 
 import java.lang.ref.WeakReference;
 
@@ -59,6 +64,7 @@ public class TakePhotoPresenter implements ICameraActivity {
     private CameraUtils mCameraUtils;
     private int mDisplayRotation;
     private int mCameraDisplayOrientation;
+    private int mOrientation;
 
     private class MainHandler extends Handler {
         private WeakReference weakReference;
@@ -130,6 +136,8 @@ public class TakePhotoPresenter implements ICameraActivity {
         mPaused = false;
         //打开相机
         prepareCamera();
+       // MyOrientationEventListener myOrientationEventListener = new MyOrientationEventListener(mActivity);
+       // myOrientationEventListener.enable();
     }
 
     private void prepareCamera() {
@@ -175,13 +183,23 @@ public class TakePhotoPresenter implements ICameraActivity {
     }
 
     @Override
-    public void onConfigurationChanged() {
+    public void onConfigurationChanged(Configuration newConfig) {
         setDisplayOrientation();
+        LogUtils.e(TAG,"onConfigurationChanged ="+newConfig.orientation);
     }
 
     @Override
-    public void onKeyUp(int keyCode, KeyEvent event) {
+    public void onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
+            case KeyEvent.KEYCODE_FOCUS:
+
+
+                break;
+
+            case KeyEvent.KEYCODE_CAMERA:
+
+                break;
+
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 shutterClick();
@@ -189,11 +207,16 @@ public class TakePhotoPresenter implements ICameraActivity {
         }
     }
 
+    @Override
+    public void takePhotoDelay() {
+
+    }
+
     private void setDisplayOrientation() {
         if (mCameraUtils != null && mCameraDevice != null && mActivity != null) {
             mDisplayRotation = mCameraUtils.getDisplayRotation(mActivity);
             mCameraDisplayOrientation = mCameraUtils.getDisplayOrientation(mDisplayRotation, mCameraId);
-            LogUtils.e(TAG,"setDisplayOrientation mDisplayRotation="+mDisplayRotation + " mCameraDisplayOrientation="+mCameraDisplayOrientation);
+            LogUtils.e(TAG, "setDisplayOrientation mDisplayRotation=" + mDisplayRotation + " mCameraDisplayOrientation=" + mCameraDisplayOrientation);
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         }
     }
@@ -204,7 +227,11 @@ public class TakePhotoPresenter implements ICameraActivity {
         }
         if (mCameraDevice != null) {
             mParameters = mCameraDevice.getParameters();
-            setDisplayOrientation();
+            if (mCameraId==1) {
+                setDisplayOrientation();
+                //mCameraDevice.setDisplayOrientation(180);
+                LogUtils.e(TAG,"openCamera");
+            }
             mCameraDevice.setPreviewTexture(mActivity.getSurfaceTexture());
             mCameraDevice.startPreview();
         }
@@ -354,5 +381,27 @@ public class TakePhotoPresenter implements ICameraActivity {
         }
     }
 
+    //监听旋转角度
+    public class MyOrientationEventListener extends OrientationEventListener {
 
+        public MyOrientationEventListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            if (orientation == ORIENTATION_UNKNOWN) return;
+            if (orientation == ORIENTATION_UNKNOWN)
+                return;
+        }
+    }
+
+//    private void setOrientationIndicator(int orientation) {
+//        Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
+//                mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
+//                mReviewCancelButton, mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
+//        for (Rotatable indicator : indicators) {
+//            if (indicator != null) indicator.setOrientation(orientation);
+//        }
+//    }
 }

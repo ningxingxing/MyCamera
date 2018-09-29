@@ -36,6 +36,7 @@
         <activity
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:name=".activity.CameraActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 

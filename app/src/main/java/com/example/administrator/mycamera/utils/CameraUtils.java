@@ -2,8 +2,13 @@ package com.example.administrator.mycamera.utils;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.os.Environment;
+import android.util.Log;
+import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,7 +28,13 @@ import java.util.Locale;
  */
 
 public class CameraUtils {
-
+    private static final String TAG = "Cam_CameraUtils";
+    // Orientation hysteresis amount used in rounding, in degrees
+    public static final int ORIENTATION_HYSTERESIS = 5;
+    public static final String SDCARD = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static final String EXTERNAL_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+    public static final String DEFAULT_CAMERA_DIR = EXTERNAL_DIR + "/Camera";
+    public static final String DEFAULT_SAVE_PATH = DEFAULT_CAMERA_DIR;
 
     public static String ms2Date(long ms) {
         Date date = new Date(ms);
@@ -47,11 +58,12 @@ public class CameraUtils {
 
     /**
      * get camera id
+     *
      * @param mActivity
      * @param cameraId
      * @return
      */
-    public int getCameraId(CameraActivity mActivity,int cameraId) {
+    public int getCameraId(CameraActivity mActivity, int cameraId) {
         if (mActivity.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA_FRONT)) {
             if (cameraId == CameraInfo.CAMERA_FACING_FRONT) {
@@ -96,7 +108,7 @@ public class CameraUtils {
 
         Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
         //获取摄像头信息
-        LogUtils.e("nsc","cameraId="+cameraId);
+        LogUtils.e("nsc", "cameraId=" + cameraId);
         android.hardware.Camera.getCameraInfo(cameraId, info);
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         //获取摄像头当前的角度
@@ -125,41 +137,73 @@ public class CameraUtils {
             // back-facing  后置摄像头
             result = (info.orientation - degrees + 360) % 360;
         }
-       return result;
+        return result;
     }
 
-    public static int getDisplayOrientation(int degrees, int cameraId) {
-        // See android.hardware.Camera.setDisplayOrientation for
-        // documentation.
+    public int getDisplayOrientation(int degrees, int cameraId) {
         Camera.CameraInfo info = new Camera.CameraInfo();
-        //modify by nsc
         Camera.getCameraInfo(cameraId, info);
-//        if (hasFrontFacingCamera() && cameraId==0) {
-//            Camera.getCameraInfo(cameraId, info);
-//        }else if (hasBackFacingCamera() && cameraId==1){
-//            Camera.getCameraInfo(cameraId, info);
-//        }
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
+            result = (360 - result) % 360;
+        } else {
             result = (info.orientation - degrees + 360) % 360;
         }
         return result;
     }
 
+    public int getCameraOrientation(int cameraId) {
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
+        return info.orientation;
+    }
+
+    public int roundOrientation(int orientation, int orientationHistory) {
+        boolean changeOrientation = false;
+        if (orientationHistory == OrientationEventListener.ORIENTATION_UNKNOWN) {
+            changeOrientation = true;
+        } else {
+            int dist = Math.abs(orientation - orientationHistory);
+            dist = Math.min(dist, 360 - dist);
+            changeOrientation = (dist >= 45 + ORIENTATION_HYSTERESIS);
+        }
+        if (changeOrientation) {
+            return ((orientation + 45) / 90 * 90) % 360;
+        }
+        return orientationHistory;
+    }
+
     public int getDisplayRotation(Activity activity) {
-        int rotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();
-        switch (rotation) {
-            case Surface.ROTATION_0: return 0;
-            case Surface.ROTATION_90: return 90;
-            case Surface.ROTATION_180: return 180;
-            case Surface.ROTATION_270: return 270;
+        int i = activity.getWindowManager().getDefaultDisplay().getRotation();
+        switch (i) {
+            case Surface.ROTATION_0:
+                return 0;
+            case Surface.ROTATION_90:
+                return 90;
+            case Surface.ROTATION_180:
+                return 180;
+            case Surface.ROTATION_270:
+                return 270;
         }
         return 0;
     }
 
 
+    public static void prepareMatrix(Matrix matrix, boolean mirror, int displayOrientation,
+                                     int viewWidth, int viewHeight) {
+        // Need mirror for front camera.
+        matrix.setScale(mirror ? -1 : 1, 1);
+        // This is the value for android.hardware.Camera.setDisplayOrientation.
+        matrix.postRotate(displayOrientation);
+        // Camera driver coordinates range from (-1000, -1000) to (1000, 1000).
+        // UI coordinates range from (0, 0) to (width, height).
+        matrix.postScale(viewWidth / 2000f, viewHeight / 2000f);
+        matrix.postTranslate(viewWidth / 2f, viewHeight / 2f);
+    }
+
+    public static void dumpRect(RectF rect, String msg) {
+        LogUtils.v(TAG, msg + "=(" + rect.left + "," + rect.top
+                + "," + rect.right + "," + rect.bottom + ")");
+    }
 }

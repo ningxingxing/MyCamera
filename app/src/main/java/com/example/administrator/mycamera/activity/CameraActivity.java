@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -48,6 +49,7 @@ import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
+import com.example.administrator.mycamera.view.FaceView;
 import com.example.administrator.mycamera.view.PictureSizeDialog;
 import com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
@@ -75,6 +77,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private FocusAnimationView mFocusAnimationView;
     private CameraTopView mCameraTop;
     private WhiteBalanceView mWhiteBalance;
+    private FaceView mFaceView;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -134,6 +137,9 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mWhiteBalance = (WhiteBalanceView) findViewById(R.id.white_balance);
         mWhiteBalance.setWhiteBalanceViewClickListener(this);
 
+        mFaceView = (FaceView) findViewById(R.id.face_view);
+
+
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
         mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new GestureDetectorManager(CameraActivity.this, this));
 
@@ -186,6 +192,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mSettingFragment.setISettingFragment(this);
 
+        //初始化是否显示辅助线
+        boolean isAuxiliaryLine = mSharedPreferences.getBoolean(CameraPreference.KEY_AUXILIARY_LINE, false);
+        setAuxiliaryLine(isAuxiliaryLine);
+
     }
 
     @Override
@@ -226,6 +236,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         if (downY < mScreenHeight - mCameraBottom.getHeight() && downY > mCameraTop.getHeight()) {
             mGestureDetector.onTouchEvent(ev);
         }
+
+//        if (mGestureDetector!=null && mGestureDetector.onTouchEvent(ev)){
+//            return true;
+//        }
         return super.dispatchTouchEvent(ev);
     }
 
@@ -347,7 +361,9 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void cameraDelay() {
-
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.takePhotoDelay();
+        }
     }
 
     @Override
@@ -374,11 +390,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
     }
 
-    private void openCamera(){
-        if (mCameraDevice==null) {
+    private void openCamera() {
+        if (mCameraDevice == null) {
             mCameraDevice = CameraInterface.getInstance().openCamera(CameraActivity.this, mCameraId, null, mCameraOpenErrorCallback);
             mParameters = mCameraDevice.getParameters();
-        }else {
+        } else {
             mParameters = mCameraDevice.getParameters();
         }
     }
@@ -501,35 +517,41 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (mTakePhotoPresenter != null) {
-            mTakePhotoPresenter.onConfigurationChanged();
+            mTakePhotoPresenter.onConfigurationChanged(newConfig);
         }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mTakePhotoPresenter!=null){
-            mTakePhotoPresenter.onKeyUp(keyCode,event);
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onKeyDown(keyCode, event);
         }
-       // return super.onKeyDown(keyCode, event);
+        // return super.onKeyDown(keyCode, event);
         return true;//不设置声音
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+        return super.onKeyUp(keyCode, event);
     }
 
     public CameraManager.CameraOpenErrorCallback mCameraOpenErrorCallback =
             new CameraManager.CameraOpenErrorCallback() {
                 @Override
                 public void onCameraDisabled(int cameraId) {
-                    LogUtils.e(TAG,"CameraOpenErrorCallback onCameraDisabled="+cameraId);
+                    LogUtils.e(TAG, "CameraOpenErrorCallback onCameraDisabled=" + cameraId);
                 }
 
                 @Override
                 public void onDeviceOpenFailure(int cameraId) {
-                    LogUtils.e(TAG,"CameraOpenErrorCallback onDeviceOpenFailure="+cameraId);
+                    LogUtils.e(TAG, "CameraOpenErrorCallback onDeviceOpenFailure=" + cameraId);
 
                 }
 
                 @Override
                 public void onReconnectionFailure(CameraManager mgr) {
-                    LogUtils.e(TAG,"CameraOpenErrorCallback onReconnectionFailure="+mgr.toString());
+                    LogUtils.e(TAG, "CameraOpenErrorCallback onReconnectionFailure=" + mgr.toString());
                 }
             };
 }

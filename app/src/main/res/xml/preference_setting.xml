@@ -2,6 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="screen_all">
 
+    <com.example.administrator.mycamera.view.storage.StorageDialogPreference
+        android:icon="@drawable/setting_picture"
+        android:key="key_storage_path"
+        android:title="@string/title_storage_path"
+        />
+
     <Preference
         android:icon="@drawable/setting_picture"
         android:key="key_picture_size"

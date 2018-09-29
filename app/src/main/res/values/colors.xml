@@ -19,4 +19,11 @@
     <color name="share_popup_background">#DA000000</color>
     <color name="share_popup_blackout">#ff090909</color>
     <color name="share_icon_background">#80000000</color>
+
+    <color name="face_detect_start">#80ffffff</color>
+    <color name="face_detect_success">#8050d060</color>
+    <color name="face_detect_fail">#80d05060</color>
+    <color name="storage_dialog_action_bar">#3C3F41</color>
+    <color name="settings_text_floder_color">#333333</color>
+    <color name="line_color_floder">#bfbfbf</color>
 </resources>

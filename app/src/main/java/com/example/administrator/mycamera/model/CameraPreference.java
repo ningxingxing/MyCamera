@@ -27,6 +27,7 @@ public class CameraPreference {
 
     public static final String KEY_ISO_MODE = "iso";
 
+    public static final String KEY_STORAGE_PATH = "key_storage_path";
     public static final String KEY_PICTURE_SIZE="key_picture_size";
     public static final String KEY_AUXILIARY_LINE = "key_auxiliary_line";
     public static final String KEY_LOCATION = "key_location";

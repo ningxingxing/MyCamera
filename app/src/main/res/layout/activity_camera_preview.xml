@@ -74,12 +74,19 @@
             android:id="@+id/auxiliary_line"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="visible">
 
         </com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView>
 
         <com.example.administrator.mycamera.view.buttonview.FocusAnimationView
             android:id="@+id/focus_animation_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <com.example.administrator.mycamera.view.FaceView
+            android:id="@+id/face_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"

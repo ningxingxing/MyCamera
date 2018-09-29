@@ -5,12 +5,15 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.TextureView.SurfaceTextureListener;
 
+import com.example.administrator.mycamera.model.CameraPreference;
+import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
 
 import java.util.Arrays;
@@ -46,7 +49,7 @@ public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.
         setRenderer(this);
         //就是当有数据时才rendered或者主动调用了GLSurfaceView的requestRender
         setRenderMode(RENDERMODE_WHEN_DIRTY);//RENDERMODE_WHEN_DIRTY  RENDERMODE_CONTINUOUSLY
-        setPreserveEGLContextOnPause(false);
+        //setPreserveEGLContextOnPause(false);
     }
 
     /**
@@ -95,7 +98,9 @@ public class CameraGLSurfaceView extends GLSurfaceView implements GLSurfaceView.
       //  LogUtils.e(TAG,"onDrawFrame mtx=" + Arrays.toString(mtx));
         mSurface.getTransformMatrix(mtx);
         //如果不调用mDirectDrawer.draw(mtx);不会显示任何东西
-        mDirectDrawer.draw(mtx);
+        int cameraId = CameraPreference.getCameraId(mContext);
+        mDirectDrawer.draw(mtx,cameraId);
+
     }
 
     private int createTextureID() {

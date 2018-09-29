@@ -282,7 +282,12 @@ class AndroidCameraManagerImpl implements CameraManager {
 
                     case SET_DISPLAY_ORIENTATION:
                         LogUtils.e(TAG,"setDisplayOrientation="+msg.arg1);
-                        mCamera.setDisplayOrientation(msg.arg1);
+                        try {
+                            mCamera.setDisplayOrientation(msg.arg1);
+                        }catch (Exception e){
+
+                        }
+
                         return;
 
                     case SET_ZOOM_CHANGE_LISTENER:
@@ -509,8 +514,7 @@ class AndroidCameraManagerImpl implements CameraManager {
 
         @Override
         public void setDisplayOrientation(int degrees) {
-            mCameraHandler.obtainMessage(SET_DISPLAY_ORIENTATION, degrees, 0)
-                    .sendToTarget();
+            mCameraHandler.obtainMessage(SET_DISPLAY_ORIENTATION, degrees, 0).sendToTarget();
         }
 
         @Override

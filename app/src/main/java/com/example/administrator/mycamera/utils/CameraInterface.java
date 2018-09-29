@@ -105,10 +105,11 @@ public class CameraInterface {
 //          CamParaUtil.getInstance().printSupportPreviewSize(mParams);
             //设置PreviewSize和PictureSize
             Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
-                    mParams.getSupportedPictureSizes(), previewRate, 120);
+                    mParams.getSupportedPictureSizes(), previewRate, 1200);
             mParams.setPictureSize(pictureSize.width, pictureSize.height);
 //            Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
 //                    mParams.getSupportedPreviewSizes(), previewRate, 120);
+            mParams.setFlashMode("auto");
             mParams.setPreviewSize(mParams.getPreviewSize().width, mParams.getPreviewSize().height);
 
             int degree = cameraUtils.getCameraDisplayOrientation(activity, cameraId);

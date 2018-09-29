@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="guide_line_width">1dp</dimen>
+    <dimen name="face_circle_stroke">2dip</dimen>
 </resources>
