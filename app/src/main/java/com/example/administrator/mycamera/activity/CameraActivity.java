@@ -142,9 +142,6 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mWhiteBalance.setWhiteBalanceViewClickListener(this);
 
         mCountDownView = (CountDownView)findViewById(R.id.count_down_to_capture);
-//        mCountDownView.setVisibility(View.VISIBLE);
-//        mCountDownView.setCountDownTime(10);
-//        mCountDownView.startCountDown();
 
         mCountDownTopView = (CountDownTopView)findViewById(R.id.count_down_top_view);
         mCountDownTopView.setCountDownTopClick(this);
@@ -366,6 +363,9 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
             mCountDownTopView.setVisibility(View.VISIBLE);
             mCameraTop.setVisibility(View.GONE);
             mCountDownTopView.setCurrentSelect();
+        }else {
+            mCountDownTopView.setVisibility(View.GONE);
+            mCameraTop.setVisibility(View.VISIBLE);
         }
     }
 
@@ -562,6 +562,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        if (mCountDownTopView.getVisibility()==View.VISIBLE){
+            mCountDownTopView.setVisibility(View.GONE);
+            mCameraTop.setVisibility(View.VISIBLE);
+        }
+
         if (mTakePhotoPresenter != null) {
             mTakePhotoPresenter.onClickAutoFocus();
             mFocusAnimationView.setVisibility(View.VISIBLE);

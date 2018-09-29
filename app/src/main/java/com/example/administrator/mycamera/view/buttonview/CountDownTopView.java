@@ -15,7 +15,7 @@ import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.LogUtils;
 
-public class CountDownTopView extends LinearLayout implements RadioGroup.OnCheckedChangeListener{
+public class CountDownTopView extends LinearLayout implements RadioGroup.OnCheckedChangeListener,View.OnClickListener{
     private final String TAG = "CountDownTopView";
     private View mView;
     private RadioGroup rgCountDown;
@@ -23,6 +23,7 @@ public class CountDownTopView extends LinearLayout implements RadioGroup.OnCheck
     private RadioButton rbTwo;
     private RadioButton rbFive;
     private RadioButton rbTen;
+    private LinearLayout llCountDownTop;
 
     private ICountDownTop mCountDownTopClickListener;
     private Context mContext;
@@ -56,13 +57,51 @@ public class CountDownTopView extends LinearLayout implements RadioGroup.OnCheck
 
     private void initView() {
         rgCountDown = (RadioGroup)findViewById(R.id.rg_count_down);
-        rgCountDown.setOnCheckedChangeListener(this);
         rbClose = (RadioButton)findViewById(R.id.rb_close);
         rbTwo = (RadioButton)findViewById(R.id.rb_two);
         rbFive = (RadioButton)findViewById(R.id.rb_five);
         rbTen = (RadioButton)findViewById(R.id.rb_ten);
+        llCountDownTop = (LinearLayout)findViewById(R.id.ll_count_down_top);
+
+        llCountDownTop.setOnClickListener(this);
+        rgCountDown.setOnCheckedChangeListener(this);
+        rgCountDown.setOnClickListener(this);
+        rbClose.setOnClickListener(this);
+        rbTwo.setOnClickListener(this);
+        rbFive.setOnClickListener(this);
         setCurrentSelect();
     }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.rb_two:
+                if (mCountDownTopClickListener!=null){
+                    mCountDownTopClickListener.countDownTopTime();
+                }
+                break;
+
+            case R.id.rb_close:
+                if (mCountDownTopClickListener!=null){
+                    mCountDownTopClickListener.countDownTopTime();
+                }
+                break;
+
+            case R.id.rb_five:
+                if (mCountDownTopClickListener!=null){
+                    mCountDownTopClickListener.countDownTopTime();
+                }
+                break;
+
+            case R.id.rb_ten:
+                if (mCountDownTopClickListener!=null){
+                    mCountDownTopClickListener.countDownTopTime();
+                }
+                break;
+
+        }
+    }
+
+
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
