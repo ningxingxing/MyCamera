@@ -5,6 +5,10 @@ package com.example.administrator.mycamera.presenter;
  */
 
 public interface ITakePhoto extends IBaseCamera{
+    void startCountDown(int time);
 
+    void cancelCountDown();
+
+    int getCurrentCountDownTime();
 
 }

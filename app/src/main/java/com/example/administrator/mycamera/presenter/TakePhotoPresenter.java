@@ -65,6 +65,7 @@ public class TakePhotoPresenter implements ICameraActivity {
     private int mDisplayRotation;
     private int mCameraDisplayOrientation;
     private int mOrientation;
+    private int mTimerDuration =0;
 
     private class MainHandler extends Handler {
         private WeakReference weakReference;
@@ -94,7 +95,12 @@ public class TakePhotoPresenter implements ICameraActivity {
                     case CameraConstant.FOCUS_SUCCESS:
                         if (isLongClick) {
                             takePicture();
+                            isLongClick = false;
                         }
+                        break;
+
+                    case CameraConstant.COUNT_DOWN_TAKE_PHOTO:
+                        takePicture();
                         break;
                 }
             }
@@ -148,21 +154,34 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     @Override
     public void shutterClick() {
-        if (mPaused) return;
-        takePicture();
+        if (mPaused || mCameraUtils==null || mActivity==null) return;
+        int countDownDuration = mCameraUtils.getCountDownTime(mActivity);
+        mTimerDuration = countDownDuration;
+        if (countDownDuration>0){
+            //正在倒计时中，再点击直接拍照
+            if (mTakePhoto.getCurrentCountDownTime()>0){
+                takePicture();
+            }else {
+                mHandler.sendEmptyMessageDelayed(CameraConstant.COUNT_DOWN_TAKE_PHOTO, countDownDuration * 1000);
+                mTakePhoto.startCountDown(mTimerDuration);
+            }
+
+        }else {
+            takePicture();
+        }
     }
 
     @Override
     public void longClickTakePicture() {
         if (mPaused) return;
-        manuallyAutoFocus();
         isLongClick = true;
+        manuallyAutoFocus();
     }
 
     @Override
     public void onClickAutoFocus() {
         if (mCameraDevice == null || mPaused) return;
-        isLongClick = false;
+        //isLongClick = false;
         manuallyAutoFocus();
 
     }
@@ -363,6 +382,7 @@ public class TakePhotoPresenter implements ICameraActivity {
                         mSoundPool.startPlay(SoundPlay.START_VIDEO_RECORDING);
 
                     }
+                   // mCameraDevice.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上
 
                 }
                 LogUtils.e(TAG, "manuallyAutoFocus success=" + success);

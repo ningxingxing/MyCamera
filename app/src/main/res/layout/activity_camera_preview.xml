@@ -45,6 +45,14 @@
             android:background="@android:color/white"
             android:visibility="gone" />
 
+        <com.example.administrator.mycamera.view.CountDownView
+            android:id="@+id/count_down_to_capture"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content">
+
+        </com.example.administrator.mycamera.view.CountDownView>
 
         <SeekBar
             android:id="@+id/evSeekBar"
@@ -60,6 +68,16 @@
 
         </com.example.administrator.mycamera.view.buttonview.CameraTopView>
 
+        <com.example.administrator.mycamera.view.buttonview.CountDownTopView
+            android:id="@+id/count_down_top_view"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:background="@color/black_four"
+            android:layout_height="wrap_content">
+
+        </com.example.administrator.mycamera.view.buttonview.CountDownTopView>
+
+
         <com.example.administrator.mycamera.view.buttonview.WhiteBalanceView
             android:id="@+id/white_balance"
             android:layout_width="match_parent"
@@ -68,6 +86,12 @@
             android:visibility="gone">
 
         </com.example.administrator.mycamera.view.buttonview.WhiteBalanceView>
+
+        <com.example.administrator.mycamera.view.buttonview.ScenesView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.example.administrator.mycamera.view.buttonview.ScenesView>
 
 
         <com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView

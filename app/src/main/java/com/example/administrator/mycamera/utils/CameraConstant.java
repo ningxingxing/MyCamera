@@ -14,4 +14,13 @@ public class CameraConstant {
     public static final int BEAUTY_MODEL = 1006;
     public static final int PANORAMIC_MODEL = 1007;
 
+
+    public static final int COUNT_DOWN_O = 0;
+    public static final int COUNT_DOWN_2 = 2;
+    public static final int COUNT_DOWN_5 = 5;
+    public static final int COUNT_DOWN_10 = 10;
+
+    public static final String COUNT_DOWN_DATA="count_down_data";
+    public static final int COUNT_DOWN_TAKE_PHOTO = 1008;
+
 }

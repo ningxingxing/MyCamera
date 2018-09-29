@@ -38,6 +38,8 @@
             android:name=".activity.CameraActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity android:name=".activity.CameraPreferenceSettingActivity"/>
     </application>
 
 </manifest>

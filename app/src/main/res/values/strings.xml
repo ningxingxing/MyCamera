@@ -8,6 +8,8 @@
     <string name="summery_picture_size">1200万像素</string>
     <string name="title_window_proportion">拍照画幅</string>
     <string name="title_window_proportion_size">标准 4:3</string>
+    <string name="title_count_down">倒计时拍照</string>
+    <string name="summery_count_down">关闭</string>
     <string name="title_auxiliary_line">辅助线</string>
     <string name="summery_auxiliary_line">拍照时添加辅助线</string>
     <string name="title_save_position_info">存储位置信息</string>
@@ -23,6 +25,13 @@
     <string name="title_hd_preview">高清预览</string>
     <string name="summery_hd_preview">是否高清预览</string>
     <string name="picture_x">x</string>
+
+    <string name="count_down_title_text">0</string>
+    <string name="count_down_top_close">关闭</string>
+    <string name="count_down_top_two">2s</string>
+    <string name="count_down_top_five">5s</string>
+    <string name="count_down_top_ten">10s</string>
+
 
 
     <string name="pref_camera_whitebalance_entry_auto">Auto</string>

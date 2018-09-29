@@ -6,11 +6,15 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.TextureView.SurfaceTextureListener;
+import android.view.View;
+
+import com.example.administrator.mycamera.utils.LogUtils;
 
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.utils.CameraUtils;

@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -30,7 +31,7 @@ import com.example.administrator.mycamera.fragment.ModelFragment;
 import com.example.administrator.mycamera.fragment.SettingFragment;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
-import com.example.administrator.mycamera.manager.GestureDetectorManager;
+import com.example.administrator.mycamera.manager.MyGestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.port.IBottomItem;
 import com.example.administrator.mycamera.port.IGestureDetectorManager;
@@ -50,11 +51,13 @@ import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
 import com.example.administrator.mycamera.view.FaceView;
+import com.example.administrator.mycamera.view.CountDownView;
 import com.example.administrator.mycamera.view.PictureSizeDialog;
 import com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView;
 import com.example.administrator.mycamera.view.buttonview.CameraBottomView;
 import com.example.administrator.mycamera.view.buttonview.CameraTopView;
 import com.example.administrator.mycamera.view.buttonview.CircleImageView;
+import com.example.administrator.mycamera.view.buttonview.CountDownTopView;
 import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
 import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
@@ -63,7 +66,8 @@ import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
  */
 
 public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
-        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView {
+        ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView
+     ,CameraGLSurfaceView.OnTouchListener,CountDownTopView.ICountDownTop,DrawerLayout.DrawerListener{
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -78,6 +82,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private CameraTopView mCameraTop;
     private WhiteBalanceView mWhiteBalance;
     private FaceView mFaceView;
+    private CountDownView mCountDownView;
+    private CountDownTopView mCountDownTopView;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -119,6 +125,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mVideoPresenter = new VideoPresenter(CameraActivity.this, this);
         mGlSurfaceView = (CameraGLSurfaceView) findViewById(R.id.gl_surfaceView);
         mGlSurfaceView.setSurfaceTextureListener(this);
+        mGlSurfaceView.setOnTouchListener(this);
 
         mCameraBottom = (CameraBottomView) findViewById(R.id.camera_bottom);
         mCameraBottom.setBottomClickListener(this);
@@ -132,16 +139,18 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mEvSeekBar = (SeekBar) findViewById(R.id.evSeekBar);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //mDrawerLayout.addDrawerListener(this);
+        mDrawerLayout.addDrawerListener(this);
         mAuxiliaryLine = (AuxiliaryLineView) findViewById(R.id.auxiliary_line);
         mWhiteBalance = (WhiteBalanceView) findViewById(R.id.white_balance);
         mWhiteBalance.setWhiteBalanceViewClickListener(this);
-
         mFaceView = (FaceView) findViewById(R.id.face_view);
+        mCountDownView = (CountDownView)findViewById(R.id.count_down_to_capture);
 
+        mCountDownTopView = (CountDownTopView)findViewById(R.id.count_down_top_view);
+        mCountDownTopView.setCountDownTopClick(this);
 
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
-        mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new GestureDetectorManager(CameraActivity.this, this));
+        mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new MyGestureDetectorManager(CameraActivity.this, this));
 
     }
 
@@ -363,6 +372,14 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     public void cameraDelay() {
         if (mTakePhotoPresenter != null) {
             mTakePhotoPresenter.takePhotoDelay();
+            if (mCountDownTopView.getVisibility() == View.GONE) {
+                mCountDownTopView.setVisibility(View.VISIBLE);
+                mCameraTop.setVisibility(View.GONE);
+                mCountDownTopView.setCurrentSelect();
+            } else {
+                mCountDownTopView.setVisibility(View.GONE);
+                mCameraTop.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -469,6 +486,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         pictureSizeDialog.show();
     }
 
+    /**
+     * setting auxiliary line
+     * @param flag
+     */
     @Override
     public void setAuxiliaryLine(boolean flag) {
         mAuxiliaryLine.setAuxiliaryLine(flag);
@@ -483,6 +504,9 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
     }
 
+    /**
+     * 长按拍照
+     */
     @Override
     public void onTakePhoto() {
         if (mTakePhotoPresenter != null) {
@@ -554,4 +578,79 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
                     LogUtils.e(TAG, "CameraOpenErrorCallback onReconnectionFailure=" + mgr.toString());
                 }
             };
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (mCountDownTopView.getVisibility()==View.VISIBLE){
+            mCountDownTopView.setVisibility(View.GONE);
+            mCameraTop.setVisibility(View.VISIBLE);
+        }
+
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onClickAutoFocus();
+            mFocusAnimationView.setVisibility(View.VISIBLE);
+            mFocusAnimationView.startFocusAnimation(event.getX(), event.getY());
+        }
+        return true;
+    }
+
+    /**
+     * setting count down time
+     */
+    @Override
+    public void countDownTopTime() {
+        if (mCameraTop.getVisibility()==View.GONE){
+            mCameraTop.setVisibility(View.VISIBLE);
+            mCountDownTopView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+        LogUtils.e(TAG,"nsc onDrawerOpened="+drawerView.getTag());
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+        LogUtils.e(TAG,"nsc onDrawerClosed="+drawerView.getTag());
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+        LogUtils.e(TAG,"nsc onDrawerStateChanged="+newState);
+    }
+
+    /**
+     * 启动拍照倒计时
+     * @param time
+     */
+    @Override
+    public void startCountDown(int time) {
+        mCountDownView.setCountDownTime(time);
+        mCountDownView.startCountDown();
+    }
+
+    /**
+     * 取消拍照倒计时
+     */
+    @Override
+    public void cancelCountDown() {
+        mCountDownView.cancelCountDown();
+    }
+
+    /**
+     * 获取当前倒计时剩余时间
+     * @return
+     */
+    @Override
+    public int getCurrentCountDownTime() {
+        return mCountDownView.getCountDownCurrentTime();
+    }
+    //count down end
 }

@@ -7,4 +7,12 @@
         <item>@drawable/icon_flash_off</item>
         <item>@drawable/icon_flash_off</item>
     </array>
+
+    <array name="count_down_time">
+
+        <item>@string/count_down_top_close</item>
+        <item>@string/count_down_top_two</item>
+        <item>@string/count_down_top_five</item>
+        <item>@string/count_down_top_ten</item>
+    </array>
 </resources>
