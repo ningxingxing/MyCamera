@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_picture_size"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp">
 
@@ -36,11 +36,36 @@
             android:gravity="center"
             android:text="1280"
             android:textColor="@android:color/white" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="("
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/tv_picture_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="M)"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
     <CheckBox
         android:id="@+id/cb_picture_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:button="@drawable/selector_radio_button"
+        android:gravity="center"
+        android:textSize="0sp" />
 </RelativeLayout>

@@ -594,8 +594,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     public boolean onTouch(View v, MotionEvent event) {
         if (mCountDownTopView.getVisibility()==View.VISIBLE){
             mCountDownTopView.setVisibility(View.GONE);
-            mCameraTop.setVisibility(View.VISIBLE);
         }
+        if (mScenesView.getVisibility()==View.VISIBLE){
+            mScenesView.setVisibility(View.GONE);
+        }
+        mCameraTop.setVisibility(View.VISIBLE);
 
         if (mTakePhotoPresenter != null) {
             mTakePhotoPresenter.onClickAutoFocus();

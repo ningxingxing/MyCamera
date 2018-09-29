@@ -20,6 +20,7 @@ import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.model.CameraPreference;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -224,5 +225,10 @@ public class CameraUtils {
     public static void dumpRect(RectF rect, String msg) {
         LogUtils.v(TAG, msg + "=(" + rect.left + "," + rect.top
                 + "," + rect.right + "," + rect.bottom + ")");
+    }
+
+    public static String doubleToString(double num){
+        //使用0.00不足位补0，#.##仅保留有效位
+        return new DecimalFormat("0.00").format(num);
     }
 }

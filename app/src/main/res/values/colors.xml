@@ -26,4 +26,10 @@
     <color name="storage_dialog_action_bar">#3C3F41</color>
     <color name="settings_text_floder_color">#333333</color>
     <color name="line_color_floder">#bfbfbf</color>
+
+    <color name="transparent_background_fifty">#80000000</color>
+    <color name="transparent_background_sixty">#99000000</color>
+    <color name="transparent_background_seventy">#e3000000</color>
+    <color name="transparent_background_eight">#cc000000</color>
+    <color name="transparent_background_night">#1a000000</color>
 </resources>

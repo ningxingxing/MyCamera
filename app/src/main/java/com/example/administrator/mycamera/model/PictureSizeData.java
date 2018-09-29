@@ -9,8 +9,17 @@ public class PictureSizeData {
     private String pictureHeight;
     private int currentPictureWidth;
     private int currentPictureHeight;
+    private boolean isSelect;
 
     public PictureSizeData() {
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 
     public String getPictureWidth() {

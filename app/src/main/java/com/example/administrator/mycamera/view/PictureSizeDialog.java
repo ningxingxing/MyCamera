@@ -22,11 +22,13 @@ import java.util.List;
  * Created by Administrator on 2018/6/20.
  */
 
-public class PictureSizeDialog extends Dialog {
+public class PictureSizeDialog extends Dialog implements PictureSizeAdapter.IPictureClick{
     private final String TAG = "Cam_PictureSizeDialog";
     private RecyclerView mRecyclerView;
     private PictureSizeAdapter mAdapter;
     private CameraParameter mCameraParameter;
+    private List<PictureSizeData> pictureSizeDataList = new ArrayList<>();
+    private int mLastPosition = -1;
 
     public PictureSizeDialog(Context context, Parameters parameter) {
         super(context);
@@ -42,11 +44,13 @@ public class PictureSizeDialog extends Dialog {
         mAdapter = new PictureSizeAdapter(context, getData(parameter));
         mRecyclerView.setAdapter(mAdapter);
         setContentView(contentView);
+
+        mAdapter.setPictureSizeClickListener(this);
     }
 
 
     public List<PictureSizeData> getData(Parameters parameter) {
-        List<PictureSizeData> pictureSize = new ArrayList<>();
+
         LogUtils.e(TAG,"getData="+mCameraParameter);
         if (mCameraParameter != null) {
             List<Camera.Size> supportedSize = mCameraParameter.getSupportedPictureSizes(parameter);
@@ -56,11 +60,25 @@ public class PictureSizeDialog extends Dialog {
                     pictureData.setPictureWidth(String.valueOf(supportedSize.get(i).width));
                     pictureData.setPictureHeight(String.valueOf(supportedSize.get(i).height));
                     //LogUtils.e(TAG,"supportedSize="+supportedSize.get(i).width + " "+supportedSize.get(i).height);
-                    pictureSize.add(pictureData);
+                    pictureSizeDataList.add(pictureData);
                 }
 
             }
         }
-        return pictureSize;
+        return pictureSizeDataList;
+    }
+
+    @Override
+    public void onItemClickListener(int position) {
+        if (pictureSizeDataList==null)return;
+        if (mLastPosition!=-1 && mLastPosition<pictureSizeDataList.size()){
+            pictureSizeDataList.get(mLastPosition).setSelect(false);
+        }
+        pictureSizeDataList.get(position).setSelect(true);
+
+        mAdapter.setData(pictureSizeDataList,position);
+        mLastPosition = position;
+
+        dismiss();
     }
 }
