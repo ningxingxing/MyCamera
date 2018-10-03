@@ -68,9 +68,9 @@ public class PictureSizeAdapter extends RecyclerView.Adapter<PictureSizeAdapter.
         });
 
         holder.cbPictureSize.setChecked(mPictureSizeList.get(position).isSelect());
-        double pictureSize =(double) (Integer.valueOf(mPictureSizeList.get(position).getPictureWidth())
-                *Integer.valueOf(mPictureSizeList.get(position).getPictureHeight()))/1000000;
-        holder.tvPictureSize.setText(""+ CameraUtils.doubleToString(pictureSize));
+        long pictureSize =(long) (Integer.valueOf(mPictureSizeList.get(position).getPictureWidth())
+                *Integer.valueOf(mPictureSizeList.get(position).getPictureHeight()));
+        holder.tvPictureSize.setText(""+ CameraUtils.longToSize(pictureSize));
 
     }
 

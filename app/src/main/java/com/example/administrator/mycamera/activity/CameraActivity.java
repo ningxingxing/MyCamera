@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -69,8 +71,8 @@ import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
 public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
         ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView
-     ,CameraGLSurfaceView.OnTouchListener,CountDownTopView.ICountDownTop,DrawerLayout.DrawerListener,
-        IScenesView{
+        , CameraGLSurfaceView.OnTouchListener, CountDownTopView.ICountDownTop, DrawerLayout.DrawerListener,
+        IScenesView, PictureSizeDialog.IPictureSizeClick {
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -148,15 +150,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mWhiteBalance = (WhiteBalanceView) findViewById(R.id.white_balance);
         mWhiteBalance.setWhiteBalanceViewClickListener(this);
         mFaceView = (FaceView) findViewById(R.id.face_view);
-        mCountDownView = (CountDownView)findViewById(R.id.count_down_to_capture);
+        mCountDownView = (CountDownView) findViewById(R.id.count_down_to_capture);
 
-        mCountDownTopView = (CountDownTopView)findViewById(R.id.count_down_top_view);
+        mCountDownTopView = (CountDownTopView) findViewById(R.id.count_down_top_view);
         mCountDownTopView.setCountDownTopClick(this);
 
         mFocusAnimationView = (FocusAnimationView) findViewById(R.id.focus_animation_view);
         mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new MyGestureDetectorManager(CameraActivity.this, this));
 
-        mScenesView = (ScenesView)findViewById(R.id.scenes_view);
+        mScenesView = (ScenesView) findViewById(R.id.scenes_view);
 
     }
 
@@ -192,7 +194,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
             }
         });
-        mScenesView.setScenesClickListener(this,mParameters);
+        mScenesView.setScenesClickListener(this, mParameters);
         showThumbnail();
     }
 
@@ -404,7 +406,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     public void cameraScene() {
         //mCameraTop.setBackgroundColor(0);
-        if (mScenesView.getVisibility()==View.GONE){
+        if (mScenesView.getVisibility() == View.GONE) {
             mScenesView.setVisibility(View.VISIBLE);
             mCameraTop.setVisibility(View.GONE);
         }
@@ -478,11 +480,17 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
      */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        LogUtils.e(TAG, "nsc onWindowFocusChanged=" + hasFocus);
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             boolean isHdPreview = mSharedPreferences.getBoolean(CameraPreference.KEY_HD_PREVIEW, false);
             CameraUtils.setBrightnessForCamera(getWindow(), isHdPreview);
         }
+    }
+
+    @Override
+    public void openSettingFragment() {
+        addFragment(mSettingFragment, R.id.content_setting, "setting");
     }
 
     @Override
@@ -492,12 +500,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void showPictureSizeSelect() {
-        PictureSizeDialog pictureSizeDialog = new PictureSizeDialog(CameraActivity.this, mParameters);
+        PictureSizeDialog pictureSizeDialog = new PictureSizeDialog(CameraActivity.this, mParameters, mCameraDevice, this);
         pictureSizeDialog.show();
     }
 
     /**
      * setting auxiliary line
+     *
      * @param flag
      */
     @Override
@@ -592,10 +601,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (mCountDownTopView.getVisibility()==View.VISIBLE){
+        if (mCountDownTopView.getVisibility() == View.VISIBLE) {
             mCountDownTopView.setVisibility(View.GONE);
         }
-        if (mScenesView.getVisibility()==View.VISIBLE){
+        if (mScenesView.getVisibility() == View.VISIBLE) {
             mScenesView.setVisibility(View.GONE);
         }
         mCameraTop.setVisibility(View.VISIBLE);
@@ -613,7 +622,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
      */
     @Override
     public void countDownTopTime() {
-        if (mCameraTop.getVisibility()==View.GONE){
+        if (mCameraTop.getVisibility() == View.GONE) {
             mCameraTop.setVisibility(View.VISIBLE);
             mCountDownTopView.setVisibility(View.GONE);
         }
@@ -626,21 +635,22 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void onDrawerOpened(View drawerView) {
-        LogUtils.e(TAG,"nsc onDrawerOpened="+drawerView.getTag());
+        LogUtils.e(TAG, "nsc onDrawerOpened=" + drawerView.getTag());
     }
 
     @Override
     public void onDrawerClosed(View drawerView) {
-        LogUtils.e(TAG,"nsc onDrawerClosed="+drawerView.getTag());
+        LogUtils.e(TAG, "nsc onDrawerClosed=" + drawerView.getTag());
     }
 
     @Override
     public void onDrawerStateChanged(int newState) {
-        LogUtils.e(TAG,"nsc onDrawerStateChanged="+newState);
+        LogUtils.e(TAG, "nsc onDrawerStateChanged=" + newState);
     }
 
     /**
      * 启动拍照倒计时
+     *
      * @param time
      */
     @Override
@@ -659,6 +669,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     /**
      * 获取当前倒计时剩余时间
+     *
      * @return
      */
     @Override
@@ -668,18 +679,25 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void onScenesClick(String sceneMode) {
-        if (mScenesView.getVisibility()==View.VISIBLE){
+        if (mScenesView.getVisibility() == View.VISIBLE) {
             mScenesView.setVisibility(View.GONE);
             mCameraTop.setVisibility(View.VISIBLE);
         }
-        String mCurrentWhiteBalance =mCameraParameter.getCameraWhiteBalance(mParameters);
+        String mCurrentWhiteBalance = mCameraParameter.getCameraWhiteBalance(mParameters);
         if (mCurrentWhiteBalance.equals("auto")) {
             mCameraParameter.setCameraSceneMode(mParameters, sceneMode);
-            CameraPreference.put(CameraActivity.this,CameraPreference.KEY_SCENE_MODE,sceneMode);
-            Toast.makeText(CameraActivity.this,sceneMode,Toast.LENGTH_SHORT).show();
+            CameraPreference.put(CameraActivity.this, CameraPreference.KEY_SCENE_MODE, sceneMode);
+            Toast.makeText(CameraActivity.this, sceneMode, Toast.LENGTH_SHORT).show();
         }
 
 
+    }
+
+    @Override
+    public void onsettingPictureSize(int width, int height) {
+        if (mTakePhotoPresenter!=null){
+            mTakePhotoPresenter.onSettingPictureSize(width,height);
+        }
     }
     //count down end
 }

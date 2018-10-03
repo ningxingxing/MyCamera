@@ -55,6 +55,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 public boolean onPreferenceClick(Preference preference) {
                     if (mISettingFragment != null) {
                         mISettingFragment.showPictureSizeSelect();
+                        //mISettingFragment.closeSettingFragment();
                     }
                     return true;
                 }
@@ -71,7 +72,6 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 Intent intent = new Intent(getActivity(), CameraPreferenceSettingActivity.class);
                 intent.putExtra(CameraPreference.KEY_COUNT_DOWN,CameraConstant.COUNT_DOWN_DATA);
                 startActivityForResult(intent,COUNT_DOWN_RESULT);
-
                 return true;
             }
         });
@@ -147,7 +147,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        LogUtils.e(TAG,"nsc ="+requestCode);
         if (resultCode==RESULT_OK){
 
             if (requestCode==COUNT_DOWN_RESULT){

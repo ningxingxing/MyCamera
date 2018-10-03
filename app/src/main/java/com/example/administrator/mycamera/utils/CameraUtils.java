@@ -231,4 +231,23 @@ public class CameraUtils {
         //使用0.00不足位补0，#.##仅保留有效位
         return new DecimalFormat("0.00").format(num);
     }
+
+    public static String longToSize(long fileS) {
+        DecimalFormat df = new DecimalFormat("#.0");
+        String fileSizeString = "";
+        String wrongSize = "(0B)";
+        if (fileS == 0) {
+            return wrongSize;
+        }
+        if (fileS < 1000) {
+            fileSizeString = df.format((double) fileS) + "B)";
+        } else if (fileS < 1000000) {
+            fileSizeString = df.format((double) fileS / 1024) + "K)";
+        } else if (fileS < 1000000000) {
+            fileSizeString = df.format((double) fileS / 1048576) + "M)";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "G)";
+        }
+        return fileSizeString;
+    }
 }

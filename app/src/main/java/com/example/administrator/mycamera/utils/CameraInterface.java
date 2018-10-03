@@ -14,6 +14,7 @@ import com.example.administrator.mycamera.activity.CameraActivity;
 import com.example.administrator.mycamera.manager.CameraManager;
 import com.example.administrator.mycamera.manager.CameraManager.CameraProxy;
 import com.example.administrator.mycamera.manager.CameraManagerFactory;
+import com.example.administrator.mycamera.model.CameraPreference;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -100,15 +101,21 @@ public class CameraInterface {
         if (mCameraDevice != null) {
             mParams = mCameraDevice.getParameters();
             mParams.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
-            LogUtils.e(TAG, "ev=" + mParams.getMaxExposureCompensation());
+            //LogUtils.e(TAG, "ev=" + mParams.getMaxExposureCompensation());
 //          CamParaUtil.getInstance().printSupportPictureSize(mParams);
 //          CamParaUtil.getInstance().printSupportPreviewSize(mParams);
             //设置PreviewSize和PictureSize
             Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
                     mParams.getSupportedPictureSizes(), previewRate, 1200);
-            mParams.setPictureSize(pictureSize.width, pictureSize.height);
+            String picture = (String) CameraPreference.get(activity,CameraPreference.KEY_PICTURE_SIZE,pictureSize.width+"x"+pictureSize.height);
+
+            String[] sp = picture.split("x");
+            LogUtils.e(TAG,"width ="+sp[0] + " htight="+sp[1]);
+            //mParams.setPictureSize(pictureSize.width, pictureSize.height);
 //            Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
 //                    mParams.getSupportedPreviewSizes(), previewRate, 120);
+            mParams.setPictureSize(Integer.valueOf(sp[0]),Integer.valueOf(sp[1]));
+            //mParams.setPreviewSize(Integer.valueOf(sp[0]),Integer.valueOf(sp[1]));
             mParams.setFlashMode("auto");
             mParams.setPreviewSize(mParams.getPreviewSize().width, mParams.getPreviewSize().height);
 
@@ -130,8 +137,8 @@ public class CameraInterface {
             mPreviwRate = previewRate;
 
             mParams = mCameraDevice.getParameters(); //重新get一次
-            LogUtils.e(TAG, "最终设置:PreviewSize--With = " + mParams.getPreviewSize().width
-                    + "Height = " + mParams.getPreviewSize().height);
+            LogUtils.e(TAG, "最终设置:PreviewSize--With = " + mParams.getPictureSize().width
+                    + "Height = " + mParams.getPictureSize().height);
         }
     }
 

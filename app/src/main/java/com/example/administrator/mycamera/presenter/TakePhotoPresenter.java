@@ -160,6 +160,7 @@ public class TakePhotoPresenter implements ICameraActivity {
         if (countDownDuration>0){
             //正在倒计时中，再点击直接拍照
             if (mTakePhoto.getCurrentCountDownTime()>0){
+                mTakePhoto.cancelCountDown();
                 takePicture();
             }else {
                 mHandler.sendEmptyMessageDelayed(CameraConstant.COUNT_DOWN_TAKE_PHOTO, countDownDuration * 1000);
@@ -228,6 +229,30 @@ public class TakePhotoPresenter implements ICameraActivity {
 
     @Override
     public void takePhotoDelay() {
+
+    }
+
+    /**
+     * 设置拍照图片大小
+     * @param width
+     * @param height
+     */
+    @Override
+    public void onSettingPictureSize(int width, int height) {
+        closeCamera();
+        if (mCameraDevice == null) {
+            mCameraDevice = CameraInterface.getInstance().openCamera(mActivity, mCameraId, mHandler, mActivity.mCameraOpenErrorCallback);
+        }
+        if (mCameraDevice != null) {
+            mParameters = mCameraDevice.getParameters();
+            if (mCameraId==1) {
+                setDisplayOrientation();
+            }
+            mParameters.setPictureSize(width,height);
+            mCameraDevice.setParameters(mParameters);
+            mCameraDevice.setPreviewTexture(mActivity.getSurfaceTexture());
+            mCameraDevice.startPreview();
+        }
 
     }
 
@@ -400,6 +425,7 @@ public class TakePhotoPresenter implements ICameraActivity {
             mCameraDevice = null;
         }
     }
+
 
     //监听旋转角度
     public class MyOrientationEventListener extends OrientationEventListener {

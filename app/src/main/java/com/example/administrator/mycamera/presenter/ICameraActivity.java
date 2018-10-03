@@ -30,4 +30,6 @@ public interface ICameraActivity {
     void onKeyDown(int keyCode, KeyEvent event);
 
     void takePhotoDelay();
+
+    void onSettingPictureSize(int width,int height);
 }

@@ -11,6 +11,8 @@ import android.view.View;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.adapter.PictureSizeAdapter;
+import com.example.administrator.mycamera.manager.CameraManager;
+import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.model.PictureSizeData;
 import com.example.administrator.mycamera.utils.CameraParameter;
 import com.example.administrator.mycamera.utils.LogUtils;
@@ -25,13 +27,23 @@ import java.util.List;
 public class PictureSizeDialog extends Dialog implements PictureSizeAdapter.IPictureClick{
     private final String TAG = "Cam_PictureSizeDialog";
     private RecyclerView mRecyclerView;
+    private Context mContext;
     private PictureSizeAdapter mAdapter;
     private CameraParameter mCameraParameter;
+    private CameraManager.CameraProxy mCameraDevice;
     private List<PictureSizeData> pictureSizeDataList = new ArrayList<>();
     private int mLastPosition = -1;
 
-    public PictureSizeDialog(Context context, Parameters parameter) {
+    private IPictureSizeClick iPictureSizeClick;
+    public interface IPictureSizeClick{
+        void onsettingPictureSize(int width ,int height);
+    }
+
+    public PictureSizeDialog(Context context, Parameters parameter,CameraManager.CameraProxy cameraDevice,IPictureSizeClick iPictureSizeClick) {
         super(context);
+        this.mContext = context;
+        this.mCameraDevice = cameraDevice;
+        this.iPictureSizeClick = iPictureSizeClick;
         LogUtils.e(TAG, "PictureSizeDialog parameter=" + parameter);
         View contentView = LayoutInflater.from(context).inflate(R.layout.dialog_picture_size, null);
         mRecyclerView = (RecyclerView) contentView.findViewById(R.id.recycler_view);
@@ -51,7 +63,11 @@ public class PictureSizeDialog extends Dialog implements PictureSizeAdapter.IPic
 
     public List<PictureSizeData> getData(Parameters parameter) {
 
-        LogUtils.e(TAG,"getData="+mCameraParameter);
+        String picture = (String)CameraPreference.get(mContext,CameraPreference.KEY_PICTURE_SIZE,"x");
+        String[] p = picture.split("x");
+        int pWidth = Integer.valueOf(p[0]);
+        int pHeight = Integer.valueOf(p[1]);
+
         if (mCameraParameter != null) {
             List<Camera.Size> supportedSize = mCameraParameter.getSupportedPictureSizes(parameter);
             if (supportedSize != null && supportedSize.size() > 0) {
@@ -60,6 +76,12 @@ public class PictureSizeDialog extends Dialog implements PictureSizeAdapter.IPic
                     pictureData.setPictureWidth(String.valueOf(supportedSize.get(i).width));
                     pictureData.setPictureHeight(String.valueOf(supportedSize.get(i).height));
                     //LogUtils.e(TAG,"supportedSize="+supportedSize.get(i).width + " "+supportedSize.get(i).height);
+                    if (pWidth==supportedSize.get(i).width && pHeight==supportedSize.get(i).height){
+                        pictureData.setSelect(true);
+                    }else {
+                        pictureData.setSelect(false);
+                    }
+
                     pictureSizeDataList.add(pictureData);
                 }
 
@@ -79,6 +101,12 @@ public class PictureSizeDialog extends Dialog implements PictureSizeAdapter.IPic
         mAdapter.setData(pictureSizeDataList,position);
         mLastPosition = position;
 
+        String width =pictureSizeDataList.get(position).getPictureWidth();
+        String height = pictureSizeDataList.get(position).getPictureHeight();
+        CameraPreference.put(mContext,CameraPreference.KEY_PICTURE_SIZE,(width + "x"+height));
+        if (iPictureSizeClick!=null){
+            iPictureSizeClick.onsettingPictureSize(Integer.valueOf(width),Integer.valueOf(height));
+        }
         dismiss();
     }
 }

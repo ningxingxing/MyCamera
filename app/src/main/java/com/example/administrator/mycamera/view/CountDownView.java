@@ -92,6 +92,7 @@ public class CountDownView extends FrameLayout {
     public void cancelCountDown() {
         if (mHandler!=null){
             mHandler.removeMessages(SET_TIMER_TEXT);
+            mView.setVisibility(GONE);
         }
 
     }

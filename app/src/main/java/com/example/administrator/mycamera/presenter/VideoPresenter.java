@@ -76,4 +76,9 @@ public class VideoPresenter implements ICameraActivity {
     public void takePhotoDelay() {
 
     }
+
+    @Override
+    public void onSettingPictureSize(int width, int height) {
+
+    }
 }

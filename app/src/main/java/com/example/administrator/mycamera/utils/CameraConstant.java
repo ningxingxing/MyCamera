@@ -24,4 +24,6 @@ public class CameraConstant {
     public static final int COUNT_DOWN_TAKE_PHOTO = 1008;
 
 
+
+
 }

@@ -6,6 +6,8 @@ package com.example.administrator.mycamera.port;
 
 public interface ISettingFragment {
 
+    void openSettingFragment();
+
     void closeSettingFragment();
 
     void showPictureSizeSelect();
