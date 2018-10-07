@@ -16,14 +16,18 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -65,6 +69,8 @@ import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
 import com.example.administrator.mycamera.view.buttonview.ScenesView;
 import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by Administrator on 2018/5/21.
  */
@@ -90,6 +96,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private CountDownView mCountDownView;
     private CountDownTopView mCountDownTopView;
     private ScenesView mScenesView;
+    private FrameLayout mFlPreview;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -115,6 +122,35 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     private String mWhiteBalanceMode[] = {"auto", "daylight", "fluorescent", "incandescent", "cloudy-daylight"};
     private CameraUtils mCameraUtils;
+
+    private final int CHANGE_PREVIEW = 1;
+    private CameraHandler mCameraHandler = null;
+
+    private class CameraHandler extends Handler {
+        private WeakReference weakReference;
+
+        public CameraHandler(CameraActivity parent) {
+            super(Looper.getMainLooper());
+            weakReference = new WeakReference(parent);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            CameraActivity parent = (CameraActivity) weakReference.get();
+            if (parent != null) {
+
+                switch (msg.what) {
+
+                    case CHANGE_PREVIEW:
+                        setPreviewScale();
+                        break;
+
+                }
+
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +195,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mGestureDetector = new GestureDetectorCompat(CameraActivity.this, new MyGestureDetectorManager(CameraActivity.this, this));
 
         mScenesView = (ScenesView) findViewById(R.id.scenes_view);
+        mFlPreview = (FrameLayout) findViewById(R.id.fl_preview);
 
     }
 
@@ -168,6 +205,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
         mCameraParameter = new CameraParameter();
         mCameraUtils = new CameraUtils();
+        mCameraHandler = new CameraHandler(CameraActivity.this);
     }
 
     private void initData() {
@@ -351,6 +389,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         LogUtils.e(TAG, "onSurfaceTextureSizeChanged");
+        if (mCameraHandler != null) {
+            mCameraHandler.sendEmptyMessage(CHANGE_PREVIEW);
+        }
+
     }
 
     @Override
@@ -365,6 +407,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         LogUtils.e(TAG, "onSurfaceTextureUpdated");
+
     }
 
     @Override
@@ -480,7 +523,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
      */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        LogUtils.e(TAG, "nsc onWindowFocusChanged=" + hasFocus);
+        // LogUtils.e(TAG, "nsc onWindowFocusChanged=" + hasFocus);
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             boolean isHdPreview = mSharedPreferences.getBoolean(CameraPreference.KEY_HD_PREVIEW, false);
@@ -695,9 +738,38 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void onsettingPictureSize(int width, int height) {
-        if (mTakePhotoPresenter!=null){
-            mTakePhotoPresenter.onSettingPictureSize(width,height);
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onSettingPictureSize(width, height);
         }
     }
+
     //count down end
+
+    /**
+     * 设置预览界面大小
+     */
+    private void setPreviewScale() {
+        int top = 0;
+        int height = mCameraUtils.getScreenHeight(CameraActivity.this);;
+        int width = mCameraUtils.getScreenWidth(CameraActivity.this);
+        String previewSize = (String) CameraPreference.get(CameraActivity.this, CameraPreference.KEY_PREVIEW_SCALE, "4:3");
+
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mGlSurfaceView.getLayoutParams();
+        if (getString(R.string.preview_scale_43).equals(previewSize)) {
+            height = width*4/3;
+            top = mCameraTop.getHeight();
+
+        } else if (getString(R.string.preview_scale_11).equals(previewSize)) {
+            top = (height - width) / 3;
+            height = width;
+
+        } else {
+            top = 0;
+        }
+
+        params.width = mGlSurfaceView.getWidth();
+        params.height = height;
+        params.setMargins(0, top, 0, 0);
+        mGlSurfaceView.setLayoutParams(params);
+    }
 }

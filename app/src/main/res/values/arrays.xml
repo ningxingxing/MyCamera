@@ -15,4 +15,11 @@
         <item>@string/count_down_top_five</item>
         <item>@string/count_down_top_ten</item>
     </array>
+    
+    
+    <array name="preview_scale">
+        <item>4:3</item>
+        <item>1:1</item>
+        <item>18:9</item>
+    </array>
 </resources>

@@ -39,7 +39,9 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     private ISettingFragment mISettingFragment;
     private Preference mPreference;
     private Preference mCountDown;
+    private Preference mPreviewScale;
     private int COUNT_DOWN_RESULT = 1;
+    private int PREVIEW_SCALE = 2;
 
 
     @Override
@@ -70,11 +72,25 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
 
                 //getCountDownData();
                 Intent intent = new Intent(getActivity(), CameraPreferenceSettingActivity.class);
-                intent.putExtra(CameraPreference.KEY_COUNT_DOWN,CameraConstant.COUNT_DOWN_DATA);
+                intent.putExtra(CameraConstant.SETTING_FRAGMENT,CameraConstant.COUNT_DOWN_DATA);
                 startActivityForResult(intent,COUNT_DOWN_RESULT);
                 return true;
             }
         });
+
+        //拍照画幅
+        mPreviewScale = findPreference(CameraPreference.KEY_PREVIEW_SCALE);
+        findPreference(CameraPreference.KEY_PREVIEW_SCALE).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                Intent intent = new Intent(getActivity(), CameraPreferenceSettingActivity.class);
+                intent.putExtra(CameraConstant.SETTING_FRAGMENT,CameraPreference.KEY_PREVIEW_SCALE);
+                startActivityForResult(intent,PREVIEW_SCALE);
+                return false;
+            }
+        });
+
     }
 
     @Nullable
@@ -141,13 +157,14 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                     mISettingFragment.setAuxiliaryLine(isAuxiliaryLine);
                 }
                 break;
+
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        LogUtils.e(TAG,"nsc ="+requestCode);
+       // LogUtils.e(TAG,"nsc ="+requestCode);
         if (resultCode==RESULT_OK){
 
             if (requestCode==COUNT_DOWN_RESULT){
@@ -155,6 +172,12 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 if (data!=null){
                     String countDown = data.getStringExtra("countDownTime");
                     mCountDown.setSummary(countDown+"");
+                }
+
+            }else if (requestCode ==PREVIEW_SCALE){
+                if (data!=null){
+                    String previewScale = data.getStringExtra("previewScale");
+                    mPreviewScale.setSummary(previewScale);
                 }
 
             }
@@ -165,7 +188,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        LogUtils.e(TAG,"nsc setUserVisibleHint ="+isVisibleToUser);
+        //LogUtils.e(TAG,"nsc setUserVisibleHint ="+isVisibleToUser);
         if (isVisibleToUser){
             String countDownTime = (String) CameraPreference.get(getActivity(),CameraPreference.KEY_COUNT_DOWN,"0");
             mCountDown.setSummary(countDownTime+"");
@@ -175,13 +198,13 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        LogUtils.e(TAG,"nsc onHiddenChanged ="+hidden);
+        //LogUtils.e(TAG,"nsc onHiddenChanged ="+hidden);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        LogUtils.e(TAG,"nsc onResume =");
+        //LogUtils.e(TAG,"nsc onResume =");
         String countDownTime = (String) CameraPreference.get(getActivity(),CameraPreference.KEY_COUNT_DOWN,"0");
         mCountDown.setSummary(countDownTime+"");
     }

@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -249,5 +250,30 @@ public class CameraUtils {
             fileSizeString = df.format((double) fileS / 1073741824) + "G)";
         }
         return fileSizeString;
+    }
+
+
+
+
+    /**
+     * 获取屏幕宽度
+     * @return
+     */
+    public int getScreenWidth(Activity activity) {
+        DisplayMetrics dm = new DisplayMetrics();
+        //获取屏幕信息
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
+    }
+
+    /**
+     * 获取屏幕高度
+     * @return
+     */
+    public int getScreenHeight(Activity activity){
+        DisplayMetrics dm = new DisplayMetrics();
+        //获取屏幕信息
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm.heightPixels;
     }
 }

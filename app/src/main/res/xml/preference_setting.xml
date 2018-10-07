@@ -16,7 +16,7 @@
 
     <Preference
         android:icon="@drawable/setting_picture"
-        android:key="key_picture_size"
+        android:key="key_preview_scale"
         android:summary="@string/title_window_proportion_size"
         android:title="@string/title_window_proportion" />
 

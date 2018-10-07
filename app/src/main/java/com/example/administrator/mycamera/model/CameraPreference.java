@@ -40,6 +40,7 @@ public class CameraPreference {
     public static final String KEY_VOLUME_SOUND= "key_volume_sound";
     public static final String KEY_HD_PREVIEW = "key_hd_preview";
     public static final String KEY_COUNT_DOWN = "key_count_down";
+    public static final String KEY_PREVIEW_SCALE = "key_preview_scale";
 
     public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
 

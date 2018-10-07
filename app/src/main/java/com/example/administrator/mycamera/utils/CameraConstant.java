@@ -22,6 +22,7 @@ public class CameraConstant {
 
     public static final String COUNT_DOWN_DATA="count_down_data";
     public static final int COUNT_DOWN_TAKE_PHOTO = 1008;
+    public static final String SETTING_FRAGMENT = "setting_fragment";
 
 
 

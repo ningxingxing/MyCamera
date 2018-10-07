@@ -48,9 +48,11 @@ public class CameraPreferenceSettingActivity extends Activity implements CameraP
 
     private void initGetData(){
 
-        mPreferenceKey = getIntent().getStringExtra(CameraPreference.KEY_COUNT_DOWN);
+        mPreferenceKey = getIntent().getStringExtra(CameraConstant.SETTING_FRAGMENT);
         if (mPreferenceKey.equals(CameraConstant.COUNT_DOWN_DATA)){
             getCountDownData();
+        }else if (mPreferenceKey.equals(CameraPreference.KEY_PREVIEW_SCALE)) {
+            getPreviewScale();
         }
 
     }
@@ -80,9 +82,26 @@ public class CameraPreferenceSettingActivity extends Activity implements CameraP
 
     }
 
+    private void getPreviewScale(){
+        mSettingDataList.clear();
+        String previewScale = (String)CameraPreference.get(CameraPreferenceSettingActivity.this,
+                CameraPreference.KEY_PREVIEW_SCALE,"4:3");
+        String[] items = getResources().getStringArray(R.array.preview_scale);
+        for (int i=0;i<items.length;i++){
+            CameraPreferenceSettingData preferenceSettingData = new CameraPreferenceSettingData();
+            preferenceSettingData.setTitle(items[i]);
+            if (previewScale.equals(items[i])){
+                preferenceSettingData.setSelect(true);
+            }else {
+                preferenceSettingData.setSelect(false);
+            }
+            mSettingDataList.add(preferenceSettingData);
+        }
+
+    }
+
     @Override
     public void onItemClick(int position, String title) {
-        CameraPreference.put(CameraPreferenceSettingActivity.this,CameraPreference.KEY_COUNT_DOWN,title);
 
         if (mSettingDataList.get(position).isSelect()) {
             mSettingDataList.get(position).setSelect(false);
@@ -92,7 +111,13 @@ public class CameraPreferenceSettingActivity extends Activity implements CameraP
         mCameraPreferenceSettingAdapter.setData(mSettingDataList,position);
        // LogUtils.e(TAG," position="+position + " title="+title);
         Intent intent = new Intent();
-        intent.putExtra("countDownTime",title);
+        if (mPreferenceKey.equals(CameraConstant.COUNT_DOWN_DATA)) {
+            intent.putExtra("countDownTime", title);
+            CameraPreference.put(CameraPreferenceSettingActivity.this,CameraPreference.KEY_COUNT_DOWN,title);
+        }else if (mPreferenceKey.equals(CameraPreference.KEY_PREVIEW_SCALE)){
+            intent.putExtra("previewScale",title);
+            CameraPreference.put(CameraPreferenceSettingActivity.this,CameraPreference.KEY_PREVIEW_SCALE,title);
+        }
         setResult(RESULT_OK,intent);
         finish();
     }
