@@ -1,6 +1,6 @@
 package com.example.administrator.mycamera.presenter;
 
-public interface IVideoPresenter {
+public interface IVideoPresenter extends IBaseCamera{
 
 
 }

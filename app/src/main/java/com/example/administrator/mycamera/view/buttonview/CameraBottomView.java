@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.port.IBottomItem;
+import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.LogUtils;
 
 /**
@@ -116,6 +117,35 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
                 .error(R.drawable.icon_photo_error)
                 .into(ibImage);
     }
+
+    public void updateIcon(int mode) {
+
+        switch (mode) {
+
+            case CameraConstant.PHOTO_MODEL:
+                ibVideo.setImageResource(R.drawable.selector_video);
+                ibShutter.setImageResource(R.drawable.shutter_button_selector);
+
+                break;
+
+
+            case CameraConstant.VIDEO_MODEL:
+                ibVideo.setImageResource(R.drawable.btn_shutter_recording);
+                ibShutter.setImageResource(R.drawable.icon_video_stop);
+                break;
+
+            case CameraConstant.START_RECORDING:
+                ibShutter.setImageResource(R.drawable.btn_shutter_video_default);
+                break;
+
+            case CameraConstant.STOP_RECORDING:
+                ibShutter.setImageResource(R.drawable.icon_video_stop);
+                break;
+        }
+
+    }
+
+
 
 
 }

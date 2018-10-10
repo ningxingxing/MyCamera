@@ -32,4 +32,6 @@ public interface ICameraActivity {
     void takePhotoDelay();
 
     void onSettingPictureSize(int width,int height);
+
+
 }

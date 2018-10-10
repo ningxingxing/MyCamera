@@ -117,6 +117,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private int mScreenHeight = 0;
 
     private int mCurrentModel = CameraConstant.PHOTO_MODEL;
+    private int mVideoModel = CameraConstant.STOP_RECORDING;
     private int mWhiteBalanceIcons[] = {R.drawable.wb_automatic, R.drawable.wb_daylight,
             R.drawable.wb_fluorescence, R.drawable.wb_incandescent, R.drawable.wb_overcast};
 
@@ -257,6 +258,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     protected void onPause() {
         super.onPause();
         mTakePhotoPresenter.onPauseSuper();
+        mVideoPresenter.onPauseSuper();
         mGlSurfaceView.onPause();
         LogUtils.e(TAG, "onPause");
     }
@@ -272,8 +274,9 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mGlSurfaceView.onResume();
         mGlSurfaceView.bringToFront();
         mTakePhotoPresenter.onResumeSuper(mCameraDevice);
+        mVideoPresenter.onResumeSuper(mCameraDevice);
         initData();
-        LogUtils.e(TAG, "onResume");
+
     }
 
 
@@ -305,6 +308,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         } else if (mCurrentModel == CameraConstant.VIDEO_MODEL) {
             mCurrentModel = CameraConstant.PHOTO_MODEL;
         }
+
+        mCameraBottom.updateIcon(mCurrentModel);
     }
 
     @Override
@@ -313,7 +318,15 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
             mTakePhotoPresenter.shutterClick();
         }
         if (mVideoPresenter != null && mCurrentModel == CameraConstant.VIDEO_MODEL) {
-            mVideoPresenter.shutterClick();
+
+            if (mVideoModel==CameraConstant.STOP_RECORDING){
+                mVideoModel = CameraConstant.START_RECORDING;
+                mVideoPresenter.videoStart();
+            }else if (mVideoModel==CameraConstant.START_RECORDING){
+                mVideoModel = CameraConstant.STOP_RECORDING;
+                mVideoPresenter.videoStop();
+            }
+            mCameraBottom.updateIcon(mVideoModel);
         }
     }
 
@@ -333,9 +346,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     public void showThumbnail() {
         //Bitmap bitmap = Thumbnail.getImageThumbnail(CameraActivity.this);
-        String path = Thumbnail.getImageThumbnail(CameraActivity.this);
+      // String path = Thumbnail.getImageThumbnail(CameraActivity.this);
+        String path = Thumbnail.comparedThumbPath(CameraActivity.this);
         if (path != null) {
             mCameraBottom.showThumbnailPath(path);
+            LogUtils.e(TAG,"showThumbnail path ="+path);
         }
     }
 
@@ -750,13 +765,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
      */
     private void setPreviewScale() {
         int top = 0;
-        int height = mCameraUtils.getScreenHeight(CameraActivity.this);;
+        int height = mCameraUtils.getScreenHeight(CameraActivity.this);
         int width = mCameraUtils.getScreenWidth(CameraActivity.this);
         String previewSize = (String) CameraPreference.get(CameraActivity.this, CameraPreference.KEY_PREVIEW_SCALE, "4:3");
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mGlSurfaceView.getLayoutParams();
         if (getString(R.string.preview_scale_43).equals(previewSize)) {
-            height = width*4/3;
+            height = width * 4 / 3;
             top = mCameraTop.getHeight();
 
         } else if (getString(R.string.preview_scale_11).equals(previewSize)) {

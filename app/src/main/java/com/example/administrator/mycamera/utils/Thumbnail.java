@@ -9,12 +9,16 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import java.io.File;
+
 /**
  * Created by Administrator on 2018/6/26.
  */
 
 public class Thumbnail {
     private static final String TAG = "Thumbnail";
+    private static long imageTime = 0;
+    private static long videoTime = 0;
 
     /**
      * 获取缩略图显示
@@ -42,6 +46,7 @@ public class Thumbnail {
                     int thumbPathIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
                     //  long modifyData = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
                     path = cursor.getString(thumbPathIndex);
+                    imageTime = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_MODIFIED));
                     LogUtils.e(TAG, "getImageThumbnail path=" + path);
                 }
 
@@ -59,7 +64,7 @@ public class Thumbnail {
         return String.valueOf(path.toLowerCase().hashCode());
     }
 
-    public static Bitmap getVideoThumbnail(Context context) {
+    public static String getVideoThumbnail(Context context) {
         String path = null;
         String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
         String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
@@ -70,16 +75,40 @@ public class Thumbnail {
         String[] selectionArgs = {CAMERA_IMAGE_BUCKET_ID};
         Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 projection,
-                selection,
-                selectionArgs,
-                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC");
+                null,
+                null,
+                null);
         if (cursor.moveToFirst()) {
-            int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.Thumbnails.DATA);
+            int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
             //  long modifyData = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DATE_MODIFIED));
             path = cursor.getString(thumbPathIndex);
+            LogUtils.e(TAG,"getVideoThumbnail path="+path);
+            videoTime = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATE_MODIFIED));
         }
+        return path;
+        //return getImageThumbnail(path, 300, 300);
+    }
 
-        return getImageThumbnail(path, 300, 300);
+
+    public static String comparedThumbPath(Context context) {
+        String imagePath = getImageThumbnail(context);
+        String videoPath = getVideoThumbnail(context);
+//        File videoFile = null;
+//        File imageFile = new File(imagePath);
+//        if (videoPath!=null) {
+//            videoFile = new File(videoPath);
+//        }
+        LogUtils.e(TAG,"imageTime="+SaveImageUtils.ms2Date(imageTime) + " videoTime="+SaveImageUtils.ms2Date(videoTime));
+        if (imagePath!=null && videoPath!=null) {
+            if (imageTime > videoTime) {//时间短的最新
+                return imagePath;
+            } else {
+                return videoPath;
+            }
+
+        }
+        return imagePath;
+
     }
 
     /**
