@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.mycamera.R;
@@ -67,6 +68,7 @@ import com.example.administrator.mycamera.view.buttonview.CircleImageView;
 import com.example.administrator.mycamera.view.buttonview.CountDownTopView;
 import com.example.administrator.mycamera.view.buttonview.FocusAnimationView;
 import com.example.administrator.mycamera.view.buttonview.ScenesView;
+import com.example.administrator.mycamera.view.buttonview.VideoTimingView;
 import com.example.administrator.mycamera.view.buttonview.WhiteBalanceView;
 
 import java.lang.ref.WeakReference;
@@ -97,6 +99,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     private CountDownTopView mCountDownTopView;
     private ScenesView mScenesView;
     private FrameLayout mFlPreview;
+    private VideoTimingView mVideoTime;
 
     private CameraProxy mCameraDevice;
     private Parameters mParameters;
@@ -197,6 +200,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
         mScenesView = (ScenesView) findViewById(R.id.scenes_view);
         mFlPreview = (FrameLayout) findViewById(R.id.fl_preview);
+
+        mVideoTime = (VideoTimingView) findViewById(R.id.video_time);
 
     }
 
@@ -305,8 +310,10 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     public void videoClick() {
         if (mCurrentModel == CameraConstant.PHOTO_MODEL) {
             mCurrentModel = CameraConstant.VIDEO_MODEL;
+            mVideoTime.stopVideoTime();
         } else if (mCurrentModel == CameraConstant.VIDEO_MODEL) {
             mCurrentModel = CameraConstant.PHOTO_MODEL;
+            mVideoTime.hideVideoTime();
         }
 
         mCameraBottom.updateIcon(mCurrentModel);
@@ -316,15 +323,18 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     public void shutterClick(ImageButton id) {
         if (mTakePhotoPresenter != null && mCurrentModel == CameraConstant.PHOTO_MODEL) {
             mTakePhotoPresenter.shutterClick();
+            mVideoTime.hideVideoTime();
         }
         if (mVideoPresenter != null && mCurrentModel == CameraConstant.VIDEO_MODEL) {
 
             if (mVideoModel==CameraConstant.STOP_RECORDING){
                 mVideoModel = CameraConstant.START_RECORDING;
                 mVideoPresenter.videoStart();
+                mVideoTime.startVideoTime();
             }else if (mVideoModel==CameraConstant.START_RECORDING){
                 mVideoModel = CameraConstant.STOP_RECORDING;
                 mVideoPresenter.videoStop();
+                mVideoTime.stopVideoTime();
             }
             mCameraBottom.updateIcon(mVideoModel);
         }

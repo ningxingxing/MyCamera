@@ -17,8 +17,6 @@ import java.io.File;
 
 public class Thumbnail {
     private static final String TAG = "Thumbnail";
-    private static long imageTime = 0;
-    private static long videoTime = 0;
 
     /**
      * 获取缩略图显示
@@ -46,7 +44,6 @@ public class Thumbnail {
                     int thumbPathIndex = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
                     //  long modifyData = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
                     path = cursor.getString(thumbPathIndex);
-                    imageTime = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_MODIFIED));
                     LogUtils.e(TAG, "getImageThumbnail path=" + path);
                 }
 
@@ -80,10 +77,8 @@ public class Thumbnail {
                 null);
         if (cursor.moveToFirst()) {
             int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
-            //  long modifyData = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.Media.DATE_MODIFIED));
             path = cursor.getString(thumbPathIndex);
-            LogUtils.e(TAG,"getVideoThumbnail path="+path);
-            videoTime = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATE_MODIFIED));
+            LogUtils.e(TAG, "getVideoThumbnail path=" + path);
         }
         return path;
         //return getImageThumbnail(path, 300, 300);
@@ -91,24 +86,21 @@ public class Thumbnail {
 
 
     public static String comparedThumbPath(Context context) {
+
         String imagePath = getImageThumbnail(context);
         String videoPath = getVideoThumbnail(context);
-//        File videoFile = null;
-//        File imageFile = new File(imagePath);
-//        if (videoPath!=null) {
-//            videoFile = new File(videoPath);
-//        }
-        LogUtils.e(TAG,"imageTime="+SaveImageUtils.ms2Date(imageTime) + " videoTime="+SaveImageUtils.ms2Date(videoTime));
-        if (imagePath!=null && videoPath!=null) {
-            if (imageTime > videoTime) {//时间短的最新
-                return imagePath;
-            } else {
-                return videoPath;
-            }
 
+
+       // Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Images.Thumbnails.MICRO_KIND);
+        // 图片Bitmap转file
+       // File file = CommonUtils.compressImage(bitmap);
+
+        LogUtils.e(TAG,"nsc image="+imagePath + " video="+videoPath);
+        if (new File(imagePath).lastModified() > new File(videoPath).lastModified()) {//时间短的最新
+            return imagePath;
+        } else {
+            return videoPath;
         }
-        return imagePath;
-
     }
 
     /**

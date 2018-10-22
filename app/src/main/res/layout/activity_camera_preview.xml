@@ -2,8 +2,8 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:background="@android:color/black"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -30,6 +30,14 @@
 
         </FrameLayout>
 
+        <com.example.administrator.mycamera.view.buttonview.VideoTimingView
+            android:id="@+id/video_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/camera_bottom"
+            android:layout_centerHorizontal="true"
+            />
+
         <com.example.administrator.mycamera.view.buttonview.CameraBottomView
             android:id="@+id/camera_bottom"
             android:layout_width="match_parent"
@@ -49,10 +57,10 @@
 
         <com.example.administrator.mycamera.view.CountDownView
             android:id="@+id/count_down_to_capture"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
 
         </com.example.administrator.mycamera.view.CountDownView>
 
@@ -73,9 +81,9 @@
         <com.example.administrator.mycamera.view.buttonview.CountDownTopView
             android:id="@+id/count_down_top_view"
             android:layout_width="match_parent"
-            android:visibility="gone"
+            android:layout_height="wrap_content"
             android:background="@color/black_four"
-            android:layout_height="wrap_content">
+            android:visibility="gone">
 
         </com.example.administrator.mycamera.view.buttonview.CountDownTopView>
 
@@ -91,11 +99,10 @@
 
         <com.example.administrator.mycamera.view.buttonview.ScenesView
             android:id="@+id/scenes_view"
-            android:visibility="gone"
-            android:background="@color/black_four"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </com.example.administrator.mycamera.view.buttonview.ScenesView>
+            android:layout_height="wrap_content"
+            android:background="@color/black_four"
+            android:visibility="gone"></com.example.administrator.mycamera.view.buttonview.ScenesView>
 
 
         <com.example.administrator.mycamera.view.buttonview.AuxiliaryLineView

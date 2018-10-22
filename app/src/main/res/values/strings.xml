@@ -47,4 +47,6 @@
     <string name="preview_scale_43">4:3</string>
     <string name="preview_scale_11">1:1</string>
     <string name="preview_scale_189">18:9</string>
+
+    <string name="default_video_time">00:00</string>
 </resources>

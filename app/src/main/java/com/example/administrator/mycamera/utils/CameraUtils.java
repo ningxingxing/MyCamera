@@ -194,18 +194,19 @@ public class CameraUtils {
 
     /**
      * 获取倒计时时间
+     *
      * @param context
      * @return
      */
-    public int getCountDownTime(Context context){
-        String countDownDuration = (String)CameraPreference.get(context,CameraPreference.KEY_COUNT_DOWN,context.getString(R.string.count_down_top_close));
-        if (context.getString(R.string.count_down_top_two).equals(countDownDuration)){
+    public int getCountDownTime(Context context) {
+        String countDownDuration = (String) CameraPreference.get(context, CameraPreference.KEY_COUNT_DOWN, context.getString(R.string.count_down_top_close));
+        if (context.getString(R.string.count_down_top_two).equals(countDownDuration)) {
             return 2;
-        }else if (context.getString(R.string.count_down_top_five).equals(countDownDuration)){
+        } else if (context.getString(R.string.count_down_top_five).equals(countDownDuration)) {
             return 5;
-        }else if (context.getString(R.string.count_down_top_ten).equals(countDownDuration)){
+        } else if (context.getString(R.string.count_down_top_ten).equals(countDownDuration)) {
             return 10;
-        } else{
+        } else {
             return 0;
         }
 
@@ -228,7 +229,7 @@ public class CameraUtils {
                 + "," + rect.right + "," + rect.bottom + ")");
     }
 
-    public static String doubleToString(double num){
+    public static String doubleToString(double num) {
         //使用0.00不足位补0，#.##仅保留有效位
         return new DecimalFormat("0.00").format(num);
     }
@@ -253,10 +254,9 @@ public class CameraUtils {
     }
 
 
-
-
     /**
      * 获取屏幕宽度
+     *
      * @return
      */
     public int getScreenWidth(Activity activity) {
@@ -268,12 +268,40 @@ public class CameraUtils {
 
     /**
      * 获取屏幕高度
+     *
      * @return
      */
-    public int getScreenHeight(Activity activity){
+    public int getScreenHeight(Activity activity) {
         DisplayMetrics dm = new DisplayMetrics();
         //获取屏幕信息
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
         return dm.heightPixels;
     }
+
+    /**
+     * 将秒分转成时间
+     * @param second
+     * @param minute
+     * @return
+     */
+    public String timeStyle(int second, int minute) {
+        String s = "00";
+        String m = "00";
+        if (second < 10) {
+            s = "0" + second;
+        }
+        if (minute < 10) {
+            m = "0" + minute;
+        }
+        return s + ":" + m;
+    }
+
+    public static String msToTime(int m,int s){
+        long millisecond = (m*60+s)*1000;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+        Date date = new Date(millisecond);
+        String dateStr = simpleDateFormat.format(date);
+        return dateStr;
+    }
+
 }
