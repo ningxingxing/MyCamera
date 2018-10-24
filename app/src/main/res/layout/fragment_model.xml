@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="模式选择"
+        android:textColor="@android:color/white"
+        android:textSize="22sp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_hdr"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:drawableTop="@drawable/icon_iso"
+            android:button="@null"
+            android:text="@string/model_hdr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <RadioButton
+            android:gravity="center"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/icon_iso"
+            android:button="@null"
+            android:text="@string/model_hdr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

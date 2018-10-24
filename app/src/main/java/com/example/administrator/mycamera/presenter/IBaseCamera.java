@@ -1,5 +1,7 @@
 package com.example.administrator.mycamera.presenter;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Administrator on 2018/6/5.
  */
@@ -13,7 +15,7 @@ public interface IBaseCamera {
 
     void displayProgress(boolean disable);
 
-    void showThumbnail();
+    void showThumbnail(Bitmap bitmap);
 
     void focusAnimationFinish();
 }

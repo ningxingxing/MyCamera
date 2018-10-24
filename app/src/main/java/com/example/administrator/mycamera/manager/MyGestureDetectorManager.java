@@ -3,6 +3,7 @@ package com.example.administrator.mycamera.manager;
 
 import android.content.Context;
 import android.gesture.Gesture;
+import android.util.FloatMath;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -37,12 +38,24 @@ public class MyGestureDetectorManager extends Gesture implements GestureDetector
     public boolean onSingleTapUp(MotionEvent e) {
         if (mGestureDetectorManager != null) {
            // mGestureDetectorManager.onAutoFocus(e);
+            mGestureDetectorManager.onePointerTouch(e);
         }
         return true;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+        if (mGestureDetectorManager!=null){
+            if (e2.getPointerCount()==1){
+               // mGestureDetectorManager.onePointerTouch(e2);
+            }else if (e2.getPointerCount()==2){
+                mGestureDetectorManager.zoomPreview(e2);
+            }
+        }
+
+       // LogUtils.e(TAG,"nsc 1="+e2.getX(0)+ " 2= "+e2.getX(1) + " distanceX="+Math.sqrt(x*x + y*y));
+
         return false;
     }
 

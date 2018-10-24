@@ -10,6 +10,7 @@ import android.hardware.Camera.CameraInfo;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.Window;
@@ -303,5 +304,17 @@ public class CameraUtils {
         String dateStr = simpleDateFormat.format(date);
         return dateStr;
     }
+
+    /**
+     *  计算预览界面缩放倍书
+     * @param event
+     * @return
+     */
+    public static int getDistance(MotionEvent event){
+        float dx = event.getX(0) -event.getX(1);
+        float dy = event.getY(0) -event.getX(1);
+        return (int)Math.sqrt(dx *dx + dy * dy);
+    }
+
 
 }

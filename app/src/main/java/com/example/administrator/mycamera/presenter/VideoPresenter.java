@@ -2,12 +2,15 @@ package com.example.administrator.mycamera.presenter;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.hardware.Camera.Parameters;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 
 import com.example.administrator.mycamera.activity.CameraActivity;
@@ -174,7 +177,8 @@ public class VideoPresenter implements IVideoCameraActivity {
     }
 
     private void updateVideo(Context context, String filename) {
-
+        Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(filename, MediaStore.Video.Thumbnails.MINI_KIND);
+        mIVideoPresenter.showThumbnail(SaveImageUtils.rotateBitmapByDegree(thumbnail,90));
         MediaScannerConnection.scanFile(context,
                 new String[]{filename}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
@@ -182,7 +186,7 @@ public class VideoPresenter implements IVideoCameraActivity {
                         File file = new File(path);
 
                         LogUtils.e("updateImageToDb success", "path " + path + ":" + "uri=" + file.length());
-                        mIVideoPresenter.showThumbnail();
+
                     }
                 });
     }

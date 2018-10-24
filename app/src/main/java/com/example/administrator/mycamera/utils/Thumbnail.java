@@ -75,7 +75,7 @@ public class Thumbnail {
                 null,
                 null,
                 null);
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToLast()) {
             int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
             path = cursor.getString(thumbPathIndex);
             LogUtils.e(TAG, "getVideoThumbnail path=" + path);

@@ -28,6 +28,9 @@ public class CameraConstant {
     public static final int START_RECORDING = 1012;
     public static final int STOP_RECORDING = 1013;
 
+    public static final int ID_SORT_TIME_ASC = 1018;
+    public static final int ID_SORT_TIME_DEC = 1019;
+
 
 
 

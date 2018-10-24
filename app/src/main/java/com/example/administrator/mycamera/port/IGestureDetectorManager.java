@@ -11,4 +11,8 @@ public interface IGestureDetectorManager {
     void onAutoFocus(MotionEvent event);
 
     void onTakePhoto();
+
+    void zoomPreview(MotionEvent event);
+
+    void onePointerTouch(MotionEvent event);
 }

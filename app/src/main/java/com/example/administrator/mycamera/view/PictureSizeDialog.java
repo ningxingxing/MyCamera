@@ -63,7 +63,7 @@ public class PictureSizeDialog extends Dialog implements PictureSizeAdapter.IPic
 
     public List<PictureSizeData> getData(Parameters parameter) {
 
-        String picture = (String)CameraPreference.get(mContext,CameraPreference.KEY_PICTURE_SIZE,"x");
+        String picture = (String)CameraPreference.get(mContext,CameraPreference.KEY_PICTURE_SIZE,"720x1280");
         String[] p = picture.split("x");
         int pWidth = Integer.valueOf(p[0]);
         int pHeight = Integer.valueOf(p[1]);

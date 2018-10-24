@@ -7,7 +7,9 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ImageFormat;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -22,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.TextureView;
@@ -42,6 +45,7 @@ import com.example.administrator.mycamera.manager.MyGestureDetectorManager;
 import com.example.administrator.mycamera.model.CameraPreference;
 import com.example.administrator.mycamera.port.IBottomItem;
 import com.example.administrator.mycamera.port.IGestureDetectorManager;
+import com.example.administrator.mycamera.port.IModeFragment;
 import com.example.administrator.mycamera.port.IScenesView;
 import com.example.administrator.mycamera.port.ISettingFragment;
 import com.example.administrator.mycamera.port.ITopItem;
@@ -80,7 +84,7 @@ import java.lang.ref.WeakReference;
 public class CameraActivity extends Activity implements ITakePhoto, IVideoPresenter, IBottomItem, ITopItem,
         ISettingFragment, TextureView.SurfaceTextureListener, IGestureDetectorManager, IWhiteBalanceView
         , CameraGLSurfaceView.OnTouchListener, CountDownTopView.ICountDownTop, DrawerLayout.DrawerListener,
-        IScenesView, PictureSizeDialog.IPictureSizeClick {
+        IScenesView, PictureSizeDialog.IPictureSizeClick ,IModeFragment{
 
     private final String TAG = "Cam_CameraActivity";
     private CameraGLSurfaceView mGlSurfaceView;
@@ -129,6 +133,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     private final int CHANGE_PREVIEW = 1;
     private CameraHandler mCameraHandler = null;
+    private int mZoomRate = 0;//0-support max
+    private float mOldDistance = 0;
 
     private class CameraHandler extends Handler {
         private WeakReference weakReference;
@@ -239,7 +245,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
             }
         });
         mScenesView.setScenesClickListener(this, mParameters);
-        showThumbnail();
+        showThumbnail(null);
     }
 
     private void initFragment() {
@@ -327,11 +333,11 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
         if (mVideoPresenter != null && mCurrentModel == CameraConstant.VIDEO_MODEL) {
 
-            if (mVideoModel==CameraConstant.STOP_RECORDING){
+            if (mVideoModel == CameraConstant.STOP_RECORDING) {
                 mVideoModel = CameraConstant.START_RECORDING;
                 mVideoPresenter.videoStart();
                 mVideoTime.startVideoTime();
-            }else if (mVideoModel==CameraConstant.START_RECORDING){
+            } else if (mVideoModel == CameraConstant.START_RECORDING) {
                 mVideoModel = CameraConstant.STOP_RECORDING;
                 mVideoPresenter.videoStop();
                 mVideoTime.stopVideoTime();
@@ -354,13 +360,17 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     }
 
     @Override
-    public void showThumbnail() {
+    public void showThumbnail(Bitmap bitmap) {
         //Bitmap bitmap = Thumbnail.getImageThumbnail(CameraActivity.this);
-      // String path = Thumbnail.getImageThumbnail(CameraActivity.this);
-        String path = Thumbnail.comparedThumbPath(CameraActivity.this);
-        if (path != null) {
-            mCameraBottom.showThumbnailPath(path);
-            LogUtils.e(TAG,"showThumbnail path ="+path);
+        // String path = Thumbnail.getImageThumbnail(CameraActivity.this);
+        if (bitmap != null) {
+            mCameraBottom.showThumbnail(bitmap);
+        } else {
+            String path = Thumbnail.comparedThumbPath(CameraActivity.this);
+            if (path != null) {
+                mCameraBottom.showThumbnailPath(path);
+                LogUtils.e(TAG, "showThumbnail path =" + path);
+            }
         }
     }
 
@@ -373,10 +383,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
 
     @Override
     public void imageClick(CircleImageView imageButton) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, CameraConstant.OPEN_CAMERA_PHOTO);
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(intent, CameraConstant.OPEN_CAMERA_PHOTO);
+
+        Intent intent = new Intent(CameraActivity.this,GalleryActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -601,6 +614,62 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
     }
 
+
+    /**
+     * 缩放界面
+     *
+     * @param event
+     */
+    @Override
+    public void zoomPreview(MotionEvent event) {
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_POINTER_DOWN:
+                mOldDistance = CameraUtils.getDistance(event);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float newDist = CameraUtils.getDistance(event);
+                if (newDist > mOldDistance) {
+                    handleZoom(true);
+                } else if (newDist < mOldDistance) {
+                    handleZoom(false);
+                }
+                mOldDistance = newDist;
+                break;
+        }
+
+    }
+
+    /**
+     * 点击聚焦
+     * @param event
+     */
+    @Override
+    public void onePointerTouch(MotionEvent event) {
+        if (mTakePhotoPresenter != null) {
+            mTakePhotoPresenter.onClickAutoFocus();
+            mFocusAnimationView.setVisibility(View.VISIBLE);
+            mFocusAnimationView.startFocusAnimation(event.getX(), event.getY());
+        }
+    }
+
+    private void handleZoom(boolean isZoomIn) {
+        if (mParameters == null || mCameraDevice == null) return;
+        if (mParameters.isZoomSupported()) {
+            int maxZoom = mParameters.getMaxZoom();
+            int zoom = mParameters.getZoom();
+            if (isZoomIn && zoom < maxZoom) {
+                zoom =zoom+2;
+            } else if (zoom > 0) {
+                zoom =zoom-2;
+            }
+            mParameters.setZoom(zoom);
+            mCameraDevice.setParameters(mParameters);
+        } else {
+            Log.i(TAG, "zoom not supported");
+        }
+    }
+
     @Override
     public void onWhiteBalanceClick(String tag, int index) {
         if (mCameraDevice != null && mParameters != null) {
@@ -677,11 +746,12 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         }
         mCameraTop.setVisibility(View.VISIBLE);
 
-        if (mTakePhotoPresenter != null) {
-            mTakePhotoPresenter.onClickAutoFocus();
-            mFocusAnimationView.setVisibility(View.VISIBLE);
-            mFocusAnimationView.startFocusAnimation(event.getX(), event.getY());
-        }
+//        if (mTakePhotoPresenter != null) {
+//            mTakePhotoPresenter.onClickAutoFocus();
+//            mFocusAnimationView.setVisibility(View.VISIBLE);
+//            mFocusAnimationView.startFocusAnimation(event.getX(), event.getY());
+//        }
+        LogUtils.e(TAG,"nsc touch");
         return true;
     }
 
@@ -796,5 +866,13 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         params.height = height;
         params.setMargins(0, top, 0, 0);
         mGlSurfaceView.setLayoutParams(params);
+    }
+
+    @Override
+    public void openHdr(boolean isOpen) {
+        if (mCameraDevice!=null && mCameraParameter!=null){
+            mCameraParameter.switchHDR(mParameters);
+            mCameraDevice.setParameters(mParameters);
+        }
     }
 }

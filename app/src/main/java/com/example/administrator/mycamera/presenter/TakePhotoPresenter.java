@@ -89,7 +89,7 @@ public class TakePhotoPresenter implements ICameraActivity {
                         break;
 
                     case CameraConstant.SUCCESS_UPDATE_IMAGE_ToDb:
-                        mTakePhoto.showThumbnail();
+                        mTakePhoto.showThumbnail(null);
                         break;
 
                     case CameraConstant.FOCUS_SUCCESS:
