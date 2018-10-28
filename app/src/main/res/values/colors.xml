@@ -32,4 +32,7 @@
     <color name="transparent_background_seventy">#e3000000</color>
     <color name="transparent_background_eight">#cc000000</color>
     <color name="transparent_background_night">#1a000000</color>
+
+    <color name="black">#444444</color>
+    <color name="dialog_blue">#00aeff</color>
 </resources>

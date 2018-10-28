@@ -6,6 +6,7 @@ import com.example.administrator.mycamera.model.FileInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by 550211 on 2017/6/2.
@@ -17,7 +18,7 @@ public class SortUtils {
     private FileTimeComparator mFileTimeDecComp = new FileTimeComparator(false);//降序
     private Object mLock = new Object();
 
-    public void sort(ArrayList<FileInfo> mFileList, int sortType) {
+    public void sort(List<FileInfo> mFileList, int sortType) {
 
         Comparator<? super FileInfo> comparator = mFileTimeAscComp;
         switch (sortType) {

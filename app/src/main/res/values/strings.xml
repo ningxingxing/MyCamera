@@ -51,4 +51,12 @@
     <string name="default_video_time">00:00</string>
 
     <string name="model_hdr">HDR</string>
+
+    <string name="gallery_share">分享</string>
+    <string name="gallery_edit">编辑</string>
+    <string name="gallery_delete">删除</string>
+    <string name="gallery_more">更多</string>
+
+    <string name="gallery_delete_ok">是否要删除选中文件</string>
+    <string name="gallery_delete_success">删除成功</string>
 </resources>
