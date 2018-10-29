@@ -68,7 +68,7 @@ public class GalleryUtils {
         String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
         String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
         String[] projection = {MediaStore.Video.Media.DATA,
-                MediaStore.Video.Media.DATE_MODIFIED};
+                MediaStore.Video.Media.DURATION};
         String selection = MediaStore.Video.Media.BUCKET_ID + " = ?";
 
         String[] selectionArgs = {CAMERA_IMAGE_BUCKET_ID};
@@ -82,13 +82,17 @@ public class GalleryUtils {
                 FileInfo fileInfo = new FileInfo();
                 while ( cursor.moveToNext()) {
                     int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
-                    //  long modifyData = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
+                    int durationIndex =cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION);
+
                     String path = cursor.getString(thumbPathIndex);
+                    long duration = cursor.getLong(durationIndex);
                     File file = new File(path);
                     //LogUtils.e(TAG,"nsc path="+path);
                     fileInfo.setFilePath(path);
                     fileInfo.setFile(file.isFile());
                     fileInfo.setModifiedData(file.lastModified());
+
+                    fileInfo.setFileS(duration);
                     fileInfoList.add(fileInfo);
                 }
 

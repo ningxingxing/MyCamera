@@ -6,6 +6,9 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,9 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.util.Util;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.model.FileInfo;
 import com.example.administrator.mycamera.utils.CameraConstant;
+import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.DeleteFileUtils;
 import com.example.administrator.mycamera.utils.GalleryUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
@@ -36,6 +41,8 @@ import com.example.administrator.mycamera.utils.SortUtils;
 import com.example.administrator.mycamera.view.ZoomImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +80,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
     private void initView() {
         ivAllFile = (ImageView)findViewById(R.id.iv_all_file);
         ivDetail = (ImageView)findViewById(R.id.iv_detail);
+        ivDetail.setOnClickListener(this);
         ivImage = (ZoomImageView)findViewById(R.id.iv_image);
         mViewpager = (ViewPager)findViewById(R.id.view_pager);
 
@@ -222,8 +230,71 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
             case R.id.rb_delete:
                 showDeleteDialog();
                 break;
+
+            case R.id.rb_share:
+
+                break;
+
+            case R.id.iv_detail:
+                showDetailDialog();
+            break;
         }
 
     }
 
+    private void showDetailDialog() {
+        final Dialog detailDialog = new Dialog(this, R.style.DialogTheme);
+        detailDialog.setCanceledOnTouchOutside(true);
+        detailDialog.show();
+        Window window = detailDialog.getWindow();
+        window.setContentView(R.layout.dialog_detail);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        params.dimAmount = 0.5f;
+        //window.setGravity(Gravity.BOTTOM);
+        window.setAttributes(params);
+
+        TextView tvFileName = (TextView)detailDialog.findViewById(R.id.tv_file_name);
+        TextView tvFileType = (TextView)detailDialog.findViewById(R.id.tv_file_type);
+        TextView tvFileDuration = (TextView)detailDialog.findViewById(R.id.tv_file_duration);
+        TextView tvFileTime = (TextView)detailDialog.findViewById(R.id.tv_file_time);
+        TextView tvFime = (TextView)detailDialog.findViewById(R.id.tv_time);
+        TextView tvFileModify = (TextView)detailDialog.findViewById(R.id.tv_file_modify);
+        TextView tvFilePath = (TextView)detailDialog.findViewById(R.id.tv_file_path);
+
+        File file = new File(mFileInfoList.get(mCurrentPosition).getFilePath());
+        tvFileName.setText(file.getName()+"");
+
+        String ext = file.getName().substring(file.getName().lastIndexOf(".")
+                + 1, file.getName().length()).toLowerCase();
+        if (GalleryUtils.getFileType(file)==GalleryUtils.VIDEO){
+            tvFileType.setText("Video/"+ext);
+            tvFime.setText(getResources().getString(R.string.gallery_file_time));
+            tvFileTime.setText(CameraUtils.msToTime(mFileInfoList.get(mCurrentPosition).getFileS()));
+        }else if (GalleryUtils.getFileType(file) == GalleryUtils.IMAGE){
+            tvFileType.setText("Image/"+ext);
+            tvFime.setText(getResources().getString(R.string.gallery_file_resolution));
+
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file.getPath());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap  = BitmapFactory.decodeStream(fis);
+            if (bitmap!=null) {
+                tvFileTime.setText(bitmap.getWidth() + "x" + bitmap.getHeight());
+            }
+        }
+
+        tvFileDuration.setText(CameraUtils.longToSize(file.length()));
+
+        tvFileModify.setText(CameraUtils.ms2Date(file.lastModified()) + "");
+        tvFilePath.setText(file.getPath() + " ");
+
+
+    }
 }
+

@@ -59,4 +59,13 @@
 
     <string name="gallery_delete_ok">是否要删除选中文件</string>
     <string name="gallery_delete_success">删除成功</string>
+    <string name="gallery_detail">详情</string>
+
+    <string name="gallery_file_name">文件名称：</string>
+    <string name="gallery_file_type">文件种类：</string>
+    <string name="gallery_file_duration">文件大小：</string>
+    <string name="gallery_file_modify">修改时间：</string>
+    <string name="gallery_file_time">时长：</string>
+    <string name="gallery_file_resolution">分辨率：</string>
+    <string name="gallery_file_path">路径：</string>
 </resources>

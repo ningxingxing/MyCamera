@@ -305,6 +305,14 @@ public class CameraUtils {
         return dateStr;
     }
 
+
+    public static String msToTime(long m){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+        Date date = new Date(m);
+        String dateStr = simpleDateFormat.format(date);
+        return dateStr;
+    }
+
     /**
      *  计算预览界面缩放倍书
      * @param event

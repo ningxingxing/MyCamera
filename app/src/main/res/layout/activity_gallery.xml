@@ -5,28 +5,6 @@
     android:background="@color/black_eight"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="10dp">
-
-        <ImageView
-            android:id="@+id/iv_all_file"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/gallery_all_file" />
-
-        <ImageView
-            android:id="@+id/iv_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/gallery_info_details" />
-
-    </RelativeLayout>
-
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
@@ -37,6 +15,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.view.ViewPager>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_four"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/iv_all_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/gallery_all_file" />
+
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:id="@+id/iv_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/gallery_info_details" />
+
+    </RelativeLayout>
 
     <RadioGroup
         android:id="@+id/rg_gallery"
