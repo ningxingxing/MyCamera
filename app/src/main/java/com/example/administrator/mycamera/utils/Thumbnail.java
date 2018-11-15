@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import java.io.File;
@@ -89,7 +90,11 @@ public class Thumbnail {
 
         String imagePath = getImageThumbnail(context);
         String videoPath = getVideoThumbnail(context);
-
+        if (TextUtils.isEmpty(imagePath)){
+            return videoPath;
+        }else if (TextUtils.isEmpty(videoPath)){
+            return imagePath;
+        }
 
        // Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Images.Thumbnails.MICRO_KIND);
         // 图片Bitmap转file
@@ -116,7 +121,7 @@ public class Thumbnail {
      * @param height    指定输出图像的高度
      * @return 生成的缩略图
      */
-    private static Bitmap getImageThumbnail(String imagePath, int width, int height) {
+    public static Bitmap getImageThumbnail(String imagePath, int width, int height) {
         Bitmap bitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -158,7 +163,7 @@ public class Thumbnail {
      *                  其中，MINI_KIND: 512 x 384，MICRO_KIND: 96 x 96
      * @return 指定大小的视频缩略图
      */
-    private Bitmap getVideoThumbnail(String videoPath, int width, int height,
+    public static Bitmap getVideoThumbnailBitmap(String videoPath, int width, int height,
                                      int kind) {
         Bitmap bitmap = null;
         // 获取视频的缩略图

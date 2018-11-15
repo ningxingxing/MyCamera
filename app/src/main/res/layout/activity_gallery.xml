@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_eight"
-    >
+    android:background="@color/black_eight">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
@@ -16,6 +15,14 @@
             android:layout_height="match_parent" />
     </android.support.v4.view.ViewPager>
 
+    <ImageView
+        android:id="@+id/iv_video"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/gallery_video" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,30 +31,30 @@
         android:padding="10dp">
 
         <ImageView
-            android:layout_marginLeft="10dp"
             android:id="@+id/iv_all_file"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/gallery_all_file" />
 
         <ImageView
-            android:layout_marginRight="10dp"
             android:id="@+id/iv_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
             android:src="@drawable/gallery_info_details" />
 
     </RelativeLayout>
 
     <RadioGroup
         android:id="@+id/rg_gallery"
-        android:background="@color/black_four"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:background="@color/black_four"
         android:orientation="horizontal"
         android:padding="5dp">
 
@@ -55,52 +62,49 @@
             android:id="@+id/rb_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@null"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:textSize="12sp"
-            android:text="@string/gallery_share"
-            android:drawableTop="@drawable/gallery_share"
             android:layout_weight="1"
-            />
+            android:button="@null"
+            android:drawableTop="@drawable/gallery_share"
+            android:gravity="center"
+            android:text="@string/gallery_share"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <RadioButton
             android:id="@+id/rb_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:button="@null"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
+            android:drawableTop="@drawable/gallery_delete"
             android:gravity="center"
             android:text="@string/gallery_delete"
-            android:drawableTop="@drawable/gallery_delete"
-            android:layout_weight="1"
-            />
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <RadioButton
             android:id="@+id/rb_edit"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:button="@null"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:text="@string/gallery_edit"
             android:drawableTop="@drawable/gallery_edit"
-            android:layout_weight="1" />
+            android:gravity="center"
+            android:text="@string/gallery_edit"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <RadioButton
             android:id="@+id/rb_more"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@null"
-            android:textSize="12sp"
-            android:textColor="@android:color/white"
-            android:text="@string/gallery_more"
-            android:drawableTop="@drawable/gallery_more"
             android:layout_weight="1"
-            />
+            android:button="@null"
+            android:drawableTop="@drawable/gallery_more"
+            android:gravity="center"
+            android:text="@string/gallery_more"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
     </RadioGroup>
 
 </RelativeLayout>

@@ -79,18 +79,16 @@ public class GalleryUtils {
                 MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC");
         if (cursor != null) {
             try {
-                FileInfo fileInfo = new FileInfo();
                 while ( cursor.moveToNext()) {
                     int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
                     int durationIndex =cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION);
-
+                    FileInfo fileInfo = new FileInfo();
                     String path = cursor.getString(thumbPathIndex);
                     long duration = cursor.getLong(durationIndex);
                     File file = new File(path);
                     fileInfo.setFilePath(path);
                     fileInfo.setFile(file.isFile());
                     fileInfo.setModifiedData(file.lastModified());
-
                     fileInfo.setFileS(duration);
                     fileInfoList.add(fileInfo);
                 }
@@ -100,6 +98,7 @@ public class GalleryUtils {
             }
 
         }
+        LogUtils.e(TAG,"nsc path ="+fileInfoList.size());
         return fileInfoList;
     }
 
