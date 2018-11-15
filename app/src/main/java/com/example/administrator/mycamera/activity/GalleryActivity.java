@@ -1,14 +1,18 @@
 package com.example.administrator.mycamera.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -29,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.MediaStoreSignature;
 import com.bumptech.glide.util.Util;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.model.FileInfo;
@@ -46,7 +51,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryActivity extends Activity implements View.OnClickListener{
+public class GalleryActivity extends Activity implements View.OnClickListener {
 
     private final String TAG = "Cam_GalleryActivity";
 
@@ -62,7 +67,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
     private RadioButton rbMore;
 
     private List<FileInfo> mFileInfoList = new ArrayList<>();
-    private float mDownX =0;
+    private float mDownX = 0;
     private float mDownY = 0;
     private int mCurrentPosition = 0;
     private int mLastPosition = 0;
@@ -78,30 +83,30 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
     }
 
     private void initView() {
-        ivAllFile = (ImageView)findViewById(R.id.iv_all_file);
-        ivDetail = (ImageView)findViewById(R.id.iv_detail);
+        ivAllFile = (ImageView) findViewById(R.id.iv_all_file);
+        ivDetail = (ImageView) findViewById(R.id.iv_detail);
         ivDetail.setOnClickListener(this);
-        ivImage = (ZoomImageView)findViewById(R.id.iv_image);
-        mViewpager = (ViewPager)findViewById(R.id.view_pager);
+        ivImage = (ZoomImageView) findViewById(R.id.iv_image);
+        mViewpager = (ViewPager) findViewById(R.id.view_pager);
 
-        rgGallery = (RadioGroup)findViewById(R.id.rg_gallery);
-        rbShare = (RadioButton)findViewById(R.id.rb_share);
+        rgGallery = (RadioGroup) findViewById(R.id.rg_gallery);
+        rbShare = (RadioButton) findViewById(R.id.rb_share);
         rbShare.setOnClickListener(this);
-        rbDelete = (RadioButton)findViewById(R.id.rb_delete);
+        rbDelete = (RadioButton) findViewById(R.id.rb_delete);
         rbDelete.setOnClickListener(this);
-        rbEdit = (RadioButton)findViewById(R.id.rb_edit);
+        rbEdit = (RadioButton) findViewById(R.id.rb_edit);
         rbEdit.setOnClickListener(this);
-        rbMore = (RadioButton)findViewById(R.id.rb_more);
+        rbMore = (RadioButton) findViewById(R.id.rb_more);
         rbMore.setOnClickListener(this);
 
     }
 
     private void initData() {
-        if (mFileInfoList!=null){
+        if (mFileInfoList != null) {
             mFileInfoList.clear();
         }
-       List<FileInfo> videoList = GalleryUtils.getVideo(GalleryActivity.this);
-       List<FileInfo> imageList = GalleryUtils.getImage(GalleryActivity.this);
+        List<FileInfo> videoList = GalleryUtils.getVideo(GalleryActivity.this);
+        List<FileInfo> imageList = GalleryUtils.getImage(GalleryActivity.this);
         mFileInfoList.addAll(videoList);
         mFileInfoList.addAll(imageList);
 
@@ -116,7 +121,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
 
     }
 
-    private void showImage(){
+    private void showImage() {
         mImageViews = new ImageView[mFileInfoList.size()];
         mViewpager.setAdapter(new PagerAdapter() {
 
@@ -128,7 +133,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
                 Glide.with(getApplication())
                         .load(file)
                         .into(zoomImageView);
-
                 mImageViews[position] = zoomImageView;
 
                 container.addView(zoomImageView);
@@ -189,26 +193,26 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 File file = new File(mFileInfoList.get(mCurrentPosition).getFilePath());
-               // DeleteFileUtils.batchDeleteFile(GalleryActivity.this,mFileInfoList.get(mCurrentPosition).getFilePath());
+                // DeleteFileUtils.batchDeleteFile(GalleryActivity.this,mFileInfoList.get(mCurrentPosition).getFilePath());
 
-                if (GalleryUtils.getFileType(file) == GalleryUtils.IMAGE){
+                if (GalleryUtils.getFileType(file) == GalleryUtils.IMAGE) {
 
-                    DeleteFileUtils.imageDeleteRecord(mFileInfoList.get(mCurrentPosition).getFilePath(),GalleryActivity.this);
+                    DeleteFileUtils.imageDeleteRecord(mFileInfoList.get(mCurrentPosition).getFilePath(), GalleryActivity.this);
 
-                }else if (GalleryUtils.getFileType(file) ==GalleryUtils.VIDEO){
+                } else if (GalleryUtils.getFileType(file) == GalleryUtils.VIDEO) {
 
-                    DeleteFileUtils.videoDeleteRecord(mFileInfoList.get(mCurrentPosition).getFilePath(),GalleryActivity.this);
+                    DeleteFileUtils.videoDeleteRecord(mFileInfoList.get(mCurrentPosition).getFilePath(), GalleryActivity.this);
 
                 }
                 mFileInfoList.remove(mCurrentPosition);
                 mLastPosition = mCurrentPosition;
                 showImage();
-                if (mLastPosition>=mFileInfoList.size()){
+                if (mLastPosition >= mFileInfoList.size()) {
                     mLastPosition--;
                 }
-                LogUtils.e(TAG," nsc instantiateItem="+mCurrentPosition);
+                LogUtils.e(TAG, " nsc instantiateItem=" + mCurrentPosition);
                 mViewpager.setCurrentItem(mLastPosition);
-                Toast.makeText(GalleryActivity.this,getString(R.string.gallery_delete_success),Toast.LENGTH_SHORT).show();
+                Toast.makeText(GalleryActivity.this, getString(R.string.gallery_delete_success), Toast.LENGTH_SHORT).show();
 
                 dialogDelete.dismiss();
             }
@@ -225,23 +229,26 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.rb_delete:
                 showDeleteDialog();
                 break;
 
             case R.id.rb_share:
-
+                sharedFile();
                 break;
 
             case R.id.iv_detail:
                 showDetailDialog();
-            break;
+                break;
         }
 
     }
 
+    /**
+     * 显示详情
+     */
     private void showDetailDialog() {
         final Dialog detailDialog = new Dialog(this, R.style.DialogTheme);
         detailDialog.setCanceledOnTouchOutside(true);
@@ -256,25 +263,25 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
         //window.setGravity(Gravity.BOTTOM);
         window.setAttributes(params);
 
-        TextView tvFileName = (TextView)detailDialog.findViewById(R.id.tv_file_name);
-        TextView tvFileType = (TextView)detailDialog.findViewById(R.id.tv_file_type);
-        TextView tvFileDuration = (TextView)detailDialog.findViewById(R.id.tv_file_duration);
-        TextView tvFileTime = (TextView)detailDialog.findViewById(R.id.tv_file_time);
-        TextView tvFime = (TextView)detailDialog.findViewById(R.id.tv_time);
-        TextView tvFileModify = (TextView)detailDialog.findViewById(R.id.tv_file_modify);
-        TextView tvFilePath = (TextView)detailDialog.findViewById(R.id.tv_file_path);
+        TextView tvFileName = (TextView) detailDialog.findViewById(R.id.tv_file_name);
+        TextView tvFileType = (TextView) detailDialog.findViewById(R.id.tv_file_type);
+        TextView tvFileDuration = (TextView) detailDialog.findViewById(R.id.tv_file_duration);
+        TextView tvFileTime = (TextView) detailDialog.findViewById(R.id.tv_file_time);
+        TextView tvFime = (TextView) detailDialog.findViewById(R.id.tv_time);
+        TextView tvFileModify = (TextView) detailDialog.findViewById(R.id.tv_file_modify);
+        TextView tvFilePath = (TextView) detailDialog.findViewById(R.id.tv_file_path);
 
         File file = new File(mFileInfoList.get(mCurrentPosition).getFilePath());
-        tvFileName.setText(file.getName()+"");
+        tvFileName.setText(file.getName() + "");
 
         String ext = file.getName().substring(file.getName().lastIndexOf(".")
                 + 1, file.getName().length()).toLowerCase();
-        if (GalleryUtils.getFileType(file)==GalleryUtils.VIDEO){
-            tvFileType.setText("Video/"+ext);
+        if (GalleryUtils.getFileType(file) == GalleryUtils.VIDEO) {
+            tvFileType.setText("Video/" + ext);
             tvFime.setText(getResources().getString(R.string.gallery_file_time));
             tvFileTime.setText(CameraUtils.msToTime(mFileInfoList.get(mCurrentPosition).getFileS()));
-        }else if (GalleryUtils.getFileType(file) == GalleryUtils.IMAGE){
-            tvFileType.setText("Image/"+ext);
+        } else if (GalleryUtils.getFileType(file) == GalleryUtils.IMAGE) {
+            tvFileType.setText("Image/" + ext);
             tvFime.setText(getResources().getString(R.string.gallery_file_resolution));
 
             FileInputStream fis = null;
@@ -283,8 +290,8 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            Bitmap bitmap  = BitmapFactory.decodeStream(fis);
-            if (bitmap!=null) {
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            if (bitmap != null) {
                 tvFileTime.setText(bitmap.getWidth() + "x" + bitmap.getHeight());
             }
         }
@@ -296,5 +303,18 @@ public class GalleryActivity extends Activity implements View.OnClickListener{
 
 
     }
+
+    /**
+     * 实现文件分享
+     */
+    private void sharedFile() {
+        File file = new File(mFileInfoList.get(mCurrentPosition).getFilePath());
+        Intent mShareIntent = new Intent();
+        mShareIntent.setAction(Intent.ACTION_SEND);
+        mShareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(file.getPath()));
+        mShareIntent.setType("*/*");
+        startActivity(Intent.createChooser(mShareIntent, ""));
+    }
+
 }
 

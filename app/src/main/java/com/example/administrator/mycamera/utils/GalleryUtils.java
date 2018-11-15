@@ -87,7 +87,6 @@ public class GalleryUtils {
                     String path = cursor.getString(thumbPathIndex);
                     long duration = cursor.getLong(durationIndex);
                     File file = new File(path);
-                    //LogUtils.e(TAG,"nsc path="+path);
                     fileInfo.setFilePath(path);
                     fileInfo.setFile(file.isFile());
                     fileInfo.setModifiedData(file.lastModified());
@@ -148,4 +147,5 @@ public class GalleryUtils {
         }
         return type;
     }
+
 }

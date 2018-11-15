@@ -128,9 +128,12 @@ public class VideoPresenter implements IVideoCameraActivity {
             mRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
             mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+            mRecorder.setAudioChannels(2);
             //3.设置音频的编码格式
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-            //设置图像的编码格式
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+          //  mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            // 设置视频的编码格式
             mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 
            // mRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
@@ -138,8 +141,22 @@ public class VideoPresenter implements IVideoCameraActivity {
            // mRecorder.setMaxDuration(1000*60*60);
            // mRecorder.setOrientationHint(90);
             //设置录像的分辨率
-            //mRecorder.setVideoSize(352, 288);
-
+            mRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
+            mRecorder.setVideoFrameRate(25);
+            mRecorder.setVideoSize(mParameters.getSupportedVideoSizes().get(0).width, mParameters.getSupportedVideoSizes().get(0).height);
+//            CamcorderProfile profile = null;
+//            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+//                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+//            } /*else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+//                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+//            } */ else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
+//                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
+//            } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_HIGH)) {
+//                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+//            } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_LOW)) {
+//                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+//            }
+//            mRecorder.setProfile(profile);
             String path = CameraUtils.EXTERNAL_DIR;
             if (path != null) {
 

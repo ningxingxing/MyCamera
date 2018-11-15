@@ -44,6 +44,7 @@
             android:theme="@style/Transparent"/>
 
         <activity android:name=".activity.GalleryActivity"/>
+
     </application>
 
 </manifest>
