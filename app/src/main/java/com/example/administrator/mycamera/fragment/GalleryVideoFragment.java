@@ -1,6 +1,5 @@
 package com.example.administrator.mycamera.fragment;
 
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -8,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.example.administrator.mycamera.model.ImageFolder;
 
