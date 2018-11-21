@@ -69,6 +69,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
     private void initView() {
         ivAllFile = (ImageView) findViewById(R.id.iv_all_file);
+        ivAllFile.setOnClickListener(this);
         ivDetail = (ImageView) findViewById(R.id.iv_detail);
         ivDetail.setOnClickListener(this);
         ivImage = (ZoomImageView) findViewById(R.id.iv_image);
@@ -234,6 +235,11 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
             case R.id.iv_detail:
                 showDetailDialog();
+                break;
+
+            case R.id.iv_all_file:
+                Intent intent = new Intent(this,GalleryDetailActivity.class);
+                startActivity(intent);
                 break;
         }
 

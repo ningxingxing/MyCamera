@@ -6,10 +6,18 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.GalleryActivity;
+import com.example.administrator.mycamera.adapter.GalleryImageAdapter;
 import com.example.administrator.mycamera.model.ImageFolder;
 
 import java.util.ArrayList;
@@ -20,16 +28,52 @@ import java.util.Map;
 
 public class GalleryImageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
+    private RecyclerView mImageRecyclerView;
+
     private HashMap<String, ImageFolder> mBucketList = new HashMap<>();
     private List<ImageFolder> mImageList = new ArrayList<>();
+
+    private GalleryImageAdapter mGalleryImageAdapter;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActivity().getLoaderManager().initLoader(1, null, GalleryImageFragment.this);
+
+
     }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_gallery_image, container, false);
+
+        initView(view);
+
+        initData();
+        return view;
+
+    }
+
+    private void initView(View view) {
+
+        mImageRecyclerView = (RecyclerView)view.findViewById(R.id.image_recyclerView);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity() );
+        mImageRecyclerView.setLayoutManager(layoutManager);
+        mGalleryImageAdapter = new GalleryImageAdapter(getActivity(),mImageList);
+        mImageRecyclerView.setAdapter(mGalleryImageAdapter);
+
+    }
+
+    private void initData(){
+
+        getActivity().getLoaderManager().initLoader(1, null, GalleryImageFragment.this);
+
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -74,6 +118,7 @@ public class GalleryImageFragment extends Fragment implements LoaderManager.Load
                     .next();
             mImageList.add(entry.getValue());
         }
+        mGalleryImageAdapter.setData(mImageList);
     }
 
     @Override

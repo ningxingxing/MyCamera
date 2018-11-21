@@ -45,7 +45,9 @@
 
         <activity android:name=".activity.GalleryActivity"/>
 
-        <activity android:name=".activity.GalleryDetailActivity"/>
+        <activity android:name=".activity.GalleryDetailActivity"
+            android:theme="@style/no_title_bar"
+           />
 
     </application>
 

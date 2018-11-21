@@ -4,13 +4,59 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+   <LinearLayout
+       android:id="@+id/ll_detail"
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/rg_play_music">
+       <RadioGroup
+           android:id="@+id/rg_detail"
+           android:layout_width="match_parent"
+           android:layout_height="40dp"
+           android:orientation="horizontal">
 
-    </android.support.v4.view.ViewPager>
+           <RadioButton
+               android:id="@+id/rb_time"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:background="@drawable/gallery_radio_selector"
+               android:button="@null"
+               android:gravity="center"
+               android:text="@string/gallery_time"
+               android:textColor="@android:color/white" />
+
+           <RadioButton
+               android:id="@+id/rb_image"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:background="@drawable/gallery_radio_selector"
+               android:button="@null"
+               android:gravity="center"
+               android:text="@string/gallery_image"
+               android:textColor="@android:color/white" />
+
+           <RadioButton
+               android:id="@+id/rb_video"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:background="@drawable/gallery_radio_selector"
+               android:button="@null"
+               android:gravity="center"
+               android:text="@string/gallery_video"
+               android:textColor="@android:color/white" />
+       </RadioGroup>
+
+
+       <android.support.v4.view.ViewPager
+           android:id="@+id/view_pager"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+       </android.support.v4.view.ViewPager>
+   </LinearLayout>
 
 </LinearLayout>

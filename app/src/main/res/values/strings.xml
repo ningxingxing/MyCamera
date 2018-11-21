@@ -68,4 +68,9 @@
     <string name="gallery_file_time">时长：</string>
     <string name="gallery_file_resolution">分辨率：</string>
     <string name="gallery_file_path">路径：</string>
+    <string name="gallery_video">视频</string>
+    <string name="gallery_image">图片</string>
+    <string name="gallery_time">时间</string>
+    <string name="gallery_image_num">张照片</string>
+    <string name="gallery_video_num">个视频</string>
 </resources>

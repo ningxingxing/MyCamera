@@ -40,6 +40,7 @@ public class CameraUtils {
     public static final String DEFAULT_CAMERA_DIR = EXTERNAL_DIR + "/Camera";
     public static final String DEFAULT_SAVE_PATH = DEFAULT_CAMERA_DIR;
 
+
     public static String ms2Date(long ms) {
         Date date = new Date(ms);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
