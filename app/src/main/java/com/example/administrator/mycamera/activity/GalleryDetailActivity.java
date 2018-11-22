@@ -1,125 +1,91 @@
 package com.example.administrator.mycamera.activity;
 
 import android.app.Activity;
-import android.os.Build;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.example.administrator.mycamera.R;
-import com.example.administrator.mycamera.adapter.GalleryDetailAdapter;
+import com.example.administrator.mycamera.model.FileInfo;
+import com.example.administrator.mycamera.model.ImageTimeFolder;
 import com.example.administrator.mycamera.utils.GalleryUtils;
+import com.example.administrator.mycamera.utils.LogUtils;
 
-public class GalleryDetailActivity extends FragmentActivity implements ViewPager.OnPageChangeListener,
-        RadioGroup.OnCheckedChangeListener {
-    public static final int PAGE_ONE = 0;
-    public static final int PAGE_TWO = 1;
-    public static final int PAGE_THREE = 2;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-    private RadioGroup rgDetail;
-    private RadioButton rbTime;
-    private RadioButton rbImage;
-    private RadioButton rbVideo;
-    private LinearLayout llDetail;
+public class GalleryDetailActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private GalleryDetailAdapter mGalleryDetailAdapter;
-    private ViewPager mViewPager;
+    private String mBucketId;
+    private List<ImageTimeFolder> mImageList = new ArrayList<>();
+    private ArrayList<FileInfo> mFileInfo = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         GalleryUtils.setWindowStatusBarColor(this,R.color.blue_dark);
         setContentView(R.layout.activity_gallery_detail);
 
-        initView();
+        getData();
         initData();
     }
 
-    private void initView() {
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        rgDetail = (RadioGroup) findViewById(R.id.rg_detail);
-        rgDetail.setOnCheckedChangeListener(this);
-        rbTime = (RadioButton) findViewById(R.id.rb_time);
-        rbImage = (RadioButton) findViewById(R.id.rb_image);
-        rbVideo = (RadioButton) findViewById(R.id.rb_video);
-
-        llDetail = (LinearLayout)findViewById(R.id.ll_detail);
-
-
+    private void getData(){
+        mBucketId = getIntent().getStringExtra("bucketId");
     }
 
-    private void initData() {
-
-        mGalleryDetailAdapter = new GalleryDetailAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mGalleryDetailAdapter);
-        mViewPager.setCurrentItem(0);
-        mViewPager.addOnPageChangeListener(this);
-
-        rgDetail.check(R.id.rb_time);
-
-        //setTopHeight();
+    private void initData(){
+        getLoaderManager().initLoader(1, null, this);
     }
 
-    private void setTopHeight(){
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String columns[] = new String[]{
+                MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.DATE_ADDED,
+                MediaStore.Images.Thumbnails.DATA};
+        return new CursorLoader(this,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns,
+                MediaStore.Images.Media.BUCKET_ID + "=? ",
+                new String[]{mBucketId}, MediaStore.Images.Media.DATE_ADDED + " desc");
+    }
 
-        int height = GalleryUtils.getStatusBarHeight(this);
-        if (height>0) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.setMargins(0, height, 0, 0);
-            llDetail.setLayoutParams(params);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (mImageList != null && mImageList.size() > 0) {
+            mImageList.clear();
         }
-    }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        if (cursor.moveToNext()) {
+            int thumbPathIndex = cursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA);
+            int timeIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
+            int pathIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+            do {
+                FileInfo fi = new FileInfo();
+                String thumbPath = cursor.getString(thumbPathIndex);
+                Long date = cursor.getLong(timeIndex);
+                String filepath = cursor.getString(pathIndex);
 
-    }
+                File f = new File(filepath);
+                fi.setTime(date);
+                fi.setThumbPath(thumbPath);
+                fi.setFilePath(filepath);
 
-    @Override
-    public void onPageSelected(int position) {
+                fi.setFileName(f.getName());
+                mFileInfo.add(fi);
 
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (state == 2) {
-            switch (mViewPager.getCurrentItem()) {
-                case PAGE_ONE:
-                    rbTime.setChecked(true);
-                    break;
-                case PAGE_TWO:
-                    rbImage.setChecked(true);
-                    break;
-                case PAGE_THREE:
-                    rbVideo.setChecked(true);
-                    break;
-
-            }
+            } while (cursor.moveToNext());
         }
+        LogUtils.e("nsc","size="+mFileInfo.size());
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
+    public void onLoaderReset(Loader<Cursor> loader) {
 
-            case R.id.rb_time:
-                mViewPager.setCurrentItem(PAGE_ONE);
-                break;
-
-            case R.id.rb_image:
-                mViewPager.setCurrentItem(PAGE_TWO);
-                break;
-
-            case R.id.rb_video:
-                mViewPager.setCurrentItem(PAGE_THREE);
-                break;
-
-        }
     }
 }

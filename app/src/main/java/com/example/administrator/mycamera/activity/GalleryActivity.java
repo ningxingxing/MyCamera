@@ -238,7 +238,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.iv_all_file:
-                Intent intent = new Intent(this,GalleryDetailActivity.class);
+                Intent intent = new Intent(this,GalleryListActivity.class);
                 startActivity(intent);
                 break;
         }

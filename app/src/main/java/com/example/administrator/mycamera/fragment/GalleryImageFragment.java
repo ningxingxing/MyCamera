@@ -4,13 +4,16 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.GalleryActivity;
 import com.example.administrator.mycamera.adapter.GalleryImageAdapter;
 import com.example.administrator.mycamera.model.ImageFolder;
+import com.example.administrator.mycamera.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +30,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class GalleryImageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class GalleryImageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final String TAG = "GalleryImageFragment";
     private RecyclerView mImageRecyclerView;
 
     private HashMap<String, ImageFolder> mBucketList = new HashMap<>();
@@ -41,7 +46,6 @@ public class GalleryImageFragment extends Fragment implements LoaderManager.Load
         super.onCreate(savedInstanceState);
 
 
-
     }
 
     @Nullable
@@ -51,7 +55,6 @@ public class GalleryImageFragment extends Fragment implements LoaderManager.Load
         View view = inflater.inflate(R.layout.fragment_gallery_image, container, false);
 
         initView(view);
-
         initData();
         return view;
 
@@ -59,16 +62,17 @@ public class GalleryImageFragment extends Fragment implements LoaderManager.Load
 
     private void initView(View view) {
 
-        mImageRecyclerView = (RecyclerView)view.findViewById(R.id.image_recyclerView);
+        mImageRecyclerView = (RecyclerView) view.findViewById(R.id.image_recyclerView);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity() );
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mImageRecyclerView.setLayoutManager(layoutManager);
-        mGalleryImageAdapter = new GalleryImageAdapter(getActivity(),mImageList);
+        mGalleryImageAdapter = new GalleryImageAdapter(getActivity(), mImageList);
         mImageRecyclerView.setAdapter(mGalleryImageAdapter);
 
     }
 
-    private void initData(){
+
+    private void initData() {
 
         getActivity().getLoaderManager().initLoader(1, null, GalleryImageFragment.this);
 
@@ -77,15 +81,35 @@ public class GalleryImageFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] columns = new String[]{MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME, MediaStore.Images.Media.BUCKET_ID};
-        return new CursorLoader(getActivity(),
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
-                null, MediaStore.Images.Media.DATE_TAKEN + " desc");
+
+
+        String[] columns = new String[]{
+                MediaStore.Video.Media.DATA,
+                MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Video.Media.BUCKET_ID};
+
+
+       return new CursorLoader(getActivity(),
+                               MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
+                                       null, null);
+
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        updateData(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+
+    private void updateData(Cursor cursor) {
+        mImageList.clear();
+        mBucketList.clear();
 
         if (cursor.moveToNext()) {
 
@@ -118,11 +142,8 @@ public class GalleryImageFragment extends Fragment implements LoaderManager.Load
                     .next();
             mImageList.add(entry.getValue());
         }
-        mGalleryImageAdapter.setData(mImageList);
-    }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+        mGalleryImageAdapter.setData(mImageList);
 
     }
 }

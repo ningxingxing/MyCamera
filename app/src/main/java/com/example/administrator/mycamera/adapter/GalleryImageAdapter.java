@@ -66,6 +66,7 @@ public class GalleryImageAdapter extends RecyclerView.Adapter<GalleryImageAdapte
                 .into(holder.ivImageIcon);
 
         holder.tvImageTitle.setText(""+mImageList.get(position).getFolderName());
+        holder.tvImageNum.setText(""+mImageList.get(position).imageCount);
 
         holder.llImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,12 +93,14 @@ public class GalleryImageAdapter extends RecyclerView.Adapter<GalleryImageAdapte
         LinearLayout llImage;
         ImageView  ivImageIcon;
         TextView tvImageTitle;
+        TextView tvImageNum;
 
         public ViewHolder(View view) {
             super(view);
             llImage = (LinearLayout) view.findViewById(R.id.ll_image);
             ivImageIcon = (ImageView) view.findViewById(R.id.iv_image_icon);
             tvImageTitle = (TextView) view.findViewById(R.id.tv_image_title);
+            tvImageNum = (TextView)view.findViewById(R.id.tv_image_num);
         }
     }
 }
