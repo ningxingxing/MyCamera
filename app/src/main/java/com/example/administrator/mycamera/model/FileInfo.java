@@ -29,31 +29,40 @@ public class FileInfo {
 
     private String thumbPath;
     private long time;
+    private long duration;
 
     public FileInfo() {
     }
+//
+//    public FileInfo(int fileImage, String fileSize, long fileS, String fileTime, String fileName, String filePath, String lastPath, int fileNum, boolean canRead,
+//                    boolean canWrite, boolean selected, boolean isHidden, long modifiedData, boolean isDir, boolean isFile, boolean isFavorite, String pinyin,
+//                    String firstLetter) {
+//        this.fileImage = fileImage;
+//        this.fileSize = fileSize;
+//        this.fileS = fileS;
+//        this.fileTime = fileTime;
+//        this.fileName = fileName;
+//        this.filePath = filePath;
+//        this.lastPath = lastPath;
+//        FileNum = fileNum;
+//        this.canRead = canRead;
+//        this.canWrite = canWrite;
+//        this.selected = selected;
+//        this.isHidden = isHidden;
+//        ModifiedData = modifiedData;
+//        this.isDir = isDir;
+//        this.isFile = isFile;
+//        this.isFavorite = isFavorite;
+//        this.pinyin = pinyin;
+//        this.firstLetter = firstLetter;
+//    }
 
-    public FileInfo(int fileImage, String fileSize, long fileS, String fileTime, String fileName, String filePath, String lastPath, int fileNum, boolean canRead,
-                    boolean canWrite, boolean selected, boolean isHidden, long modifiedData, boolean isDir, boolean isFile, boolean isFavorite, String pinyin,
-                    String firstLetter) {
-        this.fileImage = fileImage;
-        this.fileSize = fileSize;
-        this.fileS = fileS;
-        this.fileTime = fileTime;
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.lastPath = lastPath;
-        FileNum = fileNum;
-        this.canRead = canRead;
-        this.canWrite = canWrite;
-        this.selected = selected;
-        this.isHidden = isHidden;
-        ModifiedData = modifiedData;
-        this.isDir = isDir;
-        this.isFile = isFile;
-        this.isFavorite = isFavorite;
-        this.pinyin = pinyin;
-        this.firstLetter = firstLetter;
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public void setTime(long time) {
@@ -216,28 +225,29 @@ public class FileInfo {
         isFile = file;
     }
 
-    @Override
-    public String toString() {
-        return "FileInfo{" +
-                "fileSize='" + fileSize + '\'' +
-                ", fileS=" + fileS +
-                ", fileTime='" + fileTime + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", lastPath='" + lastPath + '\'' +
-                ", FileNum=" + FileNum +
-                ", canRead=" + canRead +
-                ", canWrite=" + canWrite +
-                ", selected=" + selected +
-                ", isHidden=" + isHidden +
-                ", ModifiedData=" + ModifiedData +
-                ", isDir=" + isDir +
-                ", isFile=" + isFile +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "FileInfo{" +
+//                "fileSize='" + fileSize + '\'' +
+//                ", fileS=" + fileS +
+//                ", fileTime='" + fileTime + '\'' +
+//                ", fileName='" + fileName + '\'' +
+//                ", filePath='" + filePath + '\'' +
+//                ", lastPath='" + lastPath + '\'' +
+//                ", FileNum=" + FileNum +
+//                ", canRead=" + canRead +
+//                ", canWrite=" + canWrite +
+//                ", selected=" + selected +
+//                ", isHidden=" + isHidden +
+//                ", ModifiedData=" + ModifiedData +
+//                ", isDir=" + isDir +
+//                ", isFile=" + isFile +
+//                '}';
+//    }
 
     public String getDate() {
-        return new SimpleDateFormat("yyyy年MM月dd日").format(new Date(time * 1000L));
+        return new SimpleDateFormat("yyyy年MM月dd日")
+                .format(new Date(time*1000L));
     }
 
 

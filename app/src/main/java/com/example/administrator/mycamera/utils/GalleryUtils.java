@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import com.example.administrator.mycamera.model.FileInfo;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,11 @@ public class GalleryUtils {
     public static final int ZIP = 7;
     public static final int APK = 8;
     public static final int OTHER = 9;
+
+    public static String KEY_TYPE = "key_type";
+    public static String KEY_POSITION="key_position";
+    public static String TIME_FRAGMENT = "time_fragment";
+    public static String DETAIL_ACTIVITY = "detail_activity";
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -194,6 +200,121 @@ public class GalleryUtils {
             type = OTHER;
         }
         return type;
+    }
+
+
+    public static List<FileInfo> getAllLocalPhotos(Context context) {
+        List<FileInfo> list = new ArrayList<>();
+        String[] projection = {
+                MediaStore.Images.Media.DATA,
+                // MediaStore.Images.Media.DISPLAY_NAME,
+                // MediaStore.Images.Media.SIZE,
+                MediaStore.Images.Media.DATE_ADDED,
+                MediaStore.Images.Thumbnails.DATA
+        };
+        //全部图片
+        String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                + MediaStore.Images.Media.MIME_TYPE + "=?";
+        //指定格式
+        String[] whereArgs = {"image/jpeg", "image/png", "image/jpg"};
+        //查询
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, where, whereArgs,
+                MediaStore.Images.Media.DATE_MODIFIED + " desc ");
+        if (cursor == null) {
+            return list;
+        }
+        //遍历
+        while (cursor.moveToNext()) {
+            FileInfo fileInfo = new FileInfo();
+            //获取图片的名称
+            // fileInfo.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)));
+            //long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)); // 大小
+
+            //获取图片的生成日期
+            int pathIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+            int timeIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
+            int thumbPathIndex = cursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA);
+
+            String path = cursor.getString(pathIndex);
+            Long date = cursor.getLong(timeIndex);
+            String thumbPath = cursor.getString(thumbPathIndex);
+            File file = new File(path);
+
+            //if (size < 5 * 1024 * 1024) {//<5M
+            fileInfo.setTime(date);
+            long time = file.lastModified();
+            fileInfo.setFilePath(path);
+            fileInfo.setModifiedData(time);
+            fileInfo.setFileName(file.getName());
+            fileInfo.setThumbPath(thumbPath);
+            //LogUtils.e(TAG,"nsc ="+file.getName() + " time="+time);
+            list.add(fileInfo);
+            // }
+        }
+        cursor.close();
+        return list;
+    }
+
+
+    public static List<FileInfo> getAllLocalVideos(Context context) {
+        String[] projection = {
+                MediaStore.Video.Media.DATA,
+                MediaStore.Video.Media.DISPLAY_NAME,
+                MediaStore.Video.Media.DURATION,
+                MediaStore.Video.Media.SIZE,
+                MediaStore.Video.Media.DATE_ADDED,
+                MediaStore.Video.Thumbnails.DATA
+        };
+        //全部图片
+        String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=? or "
+                + MediaStore.Video.Media.MIME_TYPE + "=?";
+        String[] whereArgs = {"video/mp4", "video/3gp", "video/aiv", "video/rmvb", "video/vob", "video/flv",
+                "video/mkv", "video/mov", "video/mpg"};
+        List<FileInfo> list = new ArrayList<>();
+        Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                projection, where, whereArgs, MediaStore.Video.Media.DATE_ADDED + " DESC ");
+        if (cursor == null) {
+            return list;
+        }
+        try {
+            while (cursor.moveToNext()) {
+                long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 大小
+
+                int timeIndex = cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED);
+                Long date = cursor.getLong(timeIndex);
+                int thumbPathIndex = cursor.getColumnIndex(MediaStore.Video.Thumbnails.DATA);
+                String thumbPath = cursor.getString(thumbPathIndex);
+
+                //if (size < 600 * 1024 * 1024) {//<600M
+
+                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 路径
+                long duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)); // 时长
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
+                fileInfo.setFilePath(path);
+                fileInfo.setTime(date);
+                fileInfo.setFileS(size);
+                fileInfo.setThumbPath(thumbPath);
+                fileInfo.setDuration(duration);
+
+                list.add(fileInfo);
+                // }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+        }
+        return list;
     }
 
 }

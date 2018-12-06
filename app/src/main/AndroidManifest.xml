@@ -52,6 +52,8 @@
         <activity android:name=".activity.GalleryDetailActivity"
             android:theme="@style/no_title_bar"/>
 
+        <activity android:name=".activity.TestActivity"/>
+
     </application>
 
 </manifest>

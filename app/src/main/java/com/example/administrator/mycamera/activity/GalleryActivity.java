@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -19,7 +20,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
+import com.example.administrator.mycamera.MyApplication;
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.model.FileInfo;
 import com.example.administrator.mycamera.utils.CameraConstant;
@@ -29,6 +32,7 @@ import com.example.administrator.mycamera.utils.GalleryUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SortUtils;
 import com.example.administrator.mycamera.view.ZoomImageView;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,11 +56,10 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private RadioButton rbMore;
 
     private List<FileInfo> mFileInfoList = new ArrayList<>();
-    private float mDownX = 0;
-    private float mDownY = 0;
     private int mCurrentPosition = 0;
     private int mLastPosition = 0;
     private ImageView[] mImageViews;
+    private String mKeyType = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_gallery);
 
         initView();
+        getData();
         initData();
     }
 
@@ -74,7 +78,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         ivDetail.setOnClickListener(this);
         ivImage = (ZoomImageView) findViewById(R.id.iv_image);
         mViewpager = (ViewPager) findViewById(R.id.view_pager);
-        ivVideo = (ImageView)findViewById(R.id.iv_video);
+        ivVideo = (ImageView) findViewById(R.id.iv_video);
 
         rgGallery = (RadioGroup) findViewById(R.id.rg_gallery);
         rbShare = (RadioButton) findViewById(R.id.rb_share);
@@ -88,14 +92,31 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
     }
 
+    private void getData() {
+
+        mKeyType = getIntent().getStringExtra(GalleryUtils.KEY_TYPE);
+        mCurrentPosition = getIntent().getIntExtra(GalleryUtils.KEY_POSITION,0);
+
+    }
+
     private void initData() {
         if (mFileInfoList != null) {
             mFileInfoList.clear();
         }
-        List<FileInfo> videoList = GalleryUtils.getVideo(GalleryActivity.this);
-        List<FileInfo> imageList = GalleryUtils.getImage(GalleryActivity.this);
-        mFileInfoList.addAll(videoList);
-        mFileInfoList.addAll(imageList);
+
+        MyApplication app = (MyApplication) getApplication();
+        if (GalleryUtils.TIME_FRAGMENT.equals(mKeyType)) {
+            mFileInfoList.addAll(app.mImageTimeList);
+
+        } else if (GalleryUtils.DETAIL_ACTIVITY.equals(mKeyType)) {
+            mFileInfoList.addAll(app.mImageDetailList);
+        } else {
+            List<FileInfo> videoList = GalleryUtils.getVideo(GalleryActivity.this);
+            List<FileInfo> imageList = GalleryUtils.getImage(GalleryActivity.this);
+            mFileInfoList.addAll(videoList);
+            mFileInfoList.addAll(imageList);
+        }
+
 
         Glide.with(GalleryActivity.this)
                 .load(mFileInfoList.get(0).getFilePath())
@@ -105,7 +126,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         sortUtils.sort(mFileInfoList, CameraConstant.ID_SORT_TIME_DEC);
 
         showImage();
-
+        mViewpager.setCurrentItem(mCurrentPosition);
     }
 
     private void showImage() {
@@ -117,9 +138,9 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
             public Object instantiateItem(ViewGroup container, int position) {
                 ZoomImageView zoomImageView = new ZoomImageView(getApplication());
                 File file = new File(mFileInfoList.get(position).getFilePath());
-                if (GalleryUtils.getFileType(file) ==GalleryUtils.VIDEO){
+                if (GalleryUtils.getFileType(file) == GalleryUtils.VIDEO) {
                     ivVideo.setAlpha(255);
-                }else {
+                } else {
                     ivVideo.setAlpha(0);
                 }
                 Glide.with(getApplication())
@@ -159,7 +180,6 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         });
 
     }
-
 
 
     private void showDeleteDialog() {
@@ -204,7 +224,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 if (mLastPosition >= mFileInfoList.size()) {
                     mLastPosition--;
                 }
-                LogUtils.e(TAG, " nsc instantiateItem=" + mCurrentPosition);
+               // LogUtils.e(TAG, " nsc instantiateItem=" + mCurrentPosition);
                 mViewpager.setCurrentItem(mLastPosition);
                 Toast.makeText(GalleryActivity.this, getString(R.string.gallery_delete_success), Toast.LENGTH_SHORT).show();
 
@@ -238,8 +258,9 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.iv_all_file:
-                Intent intent = new Intent(this,GalleryListActivity.class);
+                Intent intent = new Intent(this, GalleryListActivity.class);
                 startActivity(intent);
+
                 break;
         }
 

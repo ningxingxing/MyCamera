@@ -114,6 +114,7 @@ public class GalleryListFragment extends Fragment implements AlbumCollection.Alb
         String bucketId = mVideoList.get(position).getBucketId();
         Intent intent = new Intent(getActivity(), GalleryDetailActivity.class);
         intent.putExtra("bucketId", bucketId);
+        intent.putExtra("folderName",mVideoList.get(position).getFolderName());
         startActivity(intent);
     }
 }
