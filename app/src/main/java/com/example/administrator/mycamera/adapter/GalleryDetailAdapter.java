@@ -71,7 +71,7 @@ public class GalleryDetailAdapter extends RecyclerView.Adapter<GalleryDetailAdap
         File file = new File(mImageList.get(position).getFilePath());
 
         if (GalleryUtils.getFileType(file) == GalleryUtils.VIDEO){
-            LogUtils.e(TAG,"nsc ="+file.getPath());
+           // LogUtils.e(TAG,"nsc ="+file.getPath());
             holder.ivMark.setVisibility(View.VISIBLE);
         }else {
             holder.ivMark.setVisibility(View.GONE);

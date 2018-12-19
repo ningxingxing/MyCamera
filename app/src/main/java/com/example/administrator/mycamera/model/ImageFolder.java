@@ -32,6 +32,28 @@ public class ImageFolder {
 
     private boolean selected;
 
+    private int imageNum;
+
+    public int getImageNum() {
+        return imageNum;
+    }
+
+    public void setImageNum(int imageNum) {
+        this.imageNum = imageNum;
+    }
+
+    public int getVideoNum() {
+        return videoNum;
+    }
+
+    public void setVideoNum(int videoNum) {
+        this.videoNum = videoNum;
+    }
+
+    private int videoNum;
+
+
+
     public boolean isSelected() {
         return selected;
     }

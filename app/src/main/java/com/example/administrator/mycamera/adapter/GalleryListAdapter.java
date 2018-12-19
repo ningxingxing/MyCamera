@@ -64,7 +64,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
         holder.tvVideoTitle.setText("" + mVideoList.get(position).getFolderName());
 
-        holder.tvVideoNum.setText(mVideoList.get(position).getImageCount()+"");
+        holder.tvVideoNum.setText(mVideoList.get(position).getVideoNum()+"");
+        holder.tvImageNum.setText(mVideoList.get(position).getImageNum()+"");
 
         holder.llVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +93,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         ImageView ivVideoIcon;
         TextView tvVideoTitle;
         TextView tvVideoNum;
+        TextView tvImageNum;
 
         public ViewHolder(View view) {
             super(view);
@@ -99,6 +101,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
             ivVideoIcon = (ImageView) view.findViewById(R.id.iv_video_icon);
             tvVideoTitle = (TextView) view.findViewById(R.id.tv_video_title);
             tvVideoNum = (TextView)view.findViewById(R.id.tv_video_num);
+            tvImageNum = (TextView)view.findViewById(R.id.tv_image_num);
         }
     }
 }

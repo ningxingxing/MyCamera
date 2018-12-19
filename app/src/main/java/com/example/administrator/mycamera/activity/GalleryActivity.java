@@ -7,14 +7,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,6 +36,7 @@ import com.example.administrator.mycamera.utils.GalleryUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SortUtils;
 import com.example.administrator.mycamera.view.ZoomImageView;
+import com.example.administrator.mycamera.view.dialog.MorePopupWindow;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,6 +65,8 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private int mLastPosition = 0;
     private ImageView[] mImageViews;
     private String mKeyType = "";
+    private MorePopupWindow mMorePopupWindow;
+    private ZoomImageView mZoomImageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +86,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         ivImage = (ZoomImageView) findViewById(R.id.iv_image);
         mViewpager = (ViewPager) findViewById(R.id.view_pager);
         ivVideo = (ImageView) findViewById(R.id.iv_video);
+        ivVideo.setOnClickListener(this);
 
         rgGallery = (RadioGroup) findViewById(R.id.rg_gallery);
         rbShare = (RadioButton) findViewById(R.id.rb_share);
@@ -95,7 +103,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     private void getData() {
 
         mKeyType = getIntent().getStringExtra(GalleryUtils.KEY_TYPE);
-        mCurrentPosition = getIntent().getIntExtra(GalleryUtils.KEY_POSITION,0);
+        mCurrentPosition = getIntent().getIntExtra(GalleryUtils.KEY_POSITION, 0);
 
     }
 
@@ -111,8 +119,8 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         } else if (GalleryUtils.DETAIL_ACTIVITY.equals(mKeyType)) {
             mFileInfoList.addAll(app.mImageDetailList);
         } else {
-            List<FileInfo> videoList = GalleryUtils.getVideo(GalleryActivity.this);
-            List<FileInfo> imageList = GalleryUtils.getImage(GalleryActivity.this);
+            List<FileInfo> videoList = GalleryUtils.getVideo(GalleryActivity.this, "");
+            List<FileInfo> imageList = GalleryUtils.getImage(GalleryActivity.this, "");
             mFileInfoList.addAll(videoList);
             mFileInfoList.addAll(imageList);
         }
@@ -127,22 +135,24 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
         showImage();
         mViewpager.setCurrentItem(mCurrentPosition);
+
+        mMorePopupWindow = new MorePopupWindow(this);
+        mMorePopupWindow.setMoreOnClickListener(new MoreOnClickListener());
     }
 
     private void showImage() {
         mImageViews = new ImageView[mFileInfoList.size()];
         mViewpager.setAdapter(new PagerAdapter() {
 
-
+            ZoomImageView zoomImageView;
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                ZoomImageView zoomImageView = new ZoomImageView(getApplication());
+                zoomImageView = new ZoomImageView(getApplication());
                 File file = new File(mFileInfoList.get(position).getFilePath());
-                if (GalleryUtils.getFileType(file) == GalleryUtils.VIDEO) {
-                    ivVideo.setAlpha(255);
-                } else {
-                    ivVideo.setAlpha(0);
-                }
+
+//                if (mCurrentPosition ==position){
+//                    mZoomImageView = zoomImageView;
+//                }
                 Glide.with(getApplication())
                         .load(file)
                         .into(zoomImageView);
@@ -158,13 +168,20 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView(mImageViews[position]);
+                if (position <= mImageViews.length) {
+                    container.removeView(mImageViews[position]);
+                }
             }
 
             @Override
             public void setPrimaryItem(ViewGroup container, int position, Object object) {
                 mCurrentPosition = position;
-
+                File file = new File(mFileInfoList.get(position).getFilePath());
+                if (GalleryUtils.getFileType(file) == GalleryUtils.VIDEO) {
+                    ivVideo.setVisibility(View.VISIBLE);
+                } else {
+                    ivVideo.setVisibility(View.GONE);
+                }
                 super.setPrimaryItem(container, position, object);
             }
 
@@ -220,11 +237,12 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 }
                 mFileInfoList.remove(mCurrentPosition);
                 mLastPosition = mCurrentPosition;
+                if (mFileInfoList.size() == 0) return;
                 showImage();
                 if (mLastPosition >= mFileInfoList.size()) {
                     mLastPosition--;
                 }
-               // LogUtils.e(TAG, " nsc instantiateItem=" + mCurrentPosition);
+                // LogUtils.e(TAG, " nsc instantiateItem=" + mCurrentPosition);
                 mViewpager.setCurrentItem(mLastPosition);
                 Toast.makeText(GalleryActivity.this, getString(R.string.gallery_delete_success), Toast.LENGTH_SHORT).show();
 
@@ -261,6 +279,23 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
                 Intent intent = new Intent(this, GalleryListActivity.class);
                 startActivity(intent);
 
+                break;
+
+            case R.id.iv_video:
+//                Uri uri = Uri.parse(mFileInfoList.get(mCurrentPosition).getFilePath());
+//                Intent intentVideo = new Intent(Intent.ACTION_VIEW);
+//                intentVideo.setDataAndType(uri, "video/mp4");
+//                startActivity(intentVideo);
+
+                File file = new File(mFileInfoList.get(mCurrentPosition).getFilePath());
+                if (GalleryUtils.VIDEO == GalleryUtils.getFileType(file)) {
+                    Intent intent1 = new Intent(GalleryActivity.this, VideoActivity.class);
+                    intent1.putExtra("videoPath", file.getPath());
+                    startActivity(intent1);
+                }
+
+            case R.id.rb_more:
+                mMorePopupWindow.showPopupWindow(rgGallery);
                 break;
         }
 
@@ -336,5 +371,45 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
         startActivity(Intent.createChooser(mShareIntent, ""));
     }
 
+    class MoreOnClickListener implements MorePopupWindow.OnClickListener {
+
+        @Override
+        public void moreEditClick(Button b) {
+
+        }
+
+        @Override
+        public void playClick(Button b) {
+
+        }
+
+        @Override
+        public void renameClick(Button button) {
+
+        }
+
+        @Override
+        public void shareClick(Button button) {
+            sharedFile();
+        }
+
+        @Override
+        public void rotateClick(Button button) {
+            //showAnimation(mZoomImageView);
+        }
+    }
+
+
+    public void showAnimation(View mView) {
+        final float centerX = mView.getWidth() / 2.0f;
+        final float centerY = mView.getHeight() / 2.0f;
+        //这个是设置需要旋转的角度，我设置的是180度
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 90, centerX,
+                centerY);
+        //这个是设置通话时间的
+        rotateAnimation.setDuration(1000 * 3);
+        rotateAnimation.setFillAfter(true);
+        mView.startAnimation(rotateAnimation);
+    }
 }
 

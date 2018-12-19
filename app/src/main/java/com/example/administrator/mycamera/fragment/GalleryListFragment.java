@@ -16,9 +16,12 @@ import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.GalleryDetailActivity;
 import com.example.administrator.mycamera.adapter.GalleryListAdapter;
 import com.example.administrator.mycamera.model.AlbumCollection;
+import com.example.administrator.mycamera.model.FileInfo;
 import com.example.administrator.mycamera.model.ImageFolder;
+import com.example.administrator.mycamera.utils.GalleryUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -100,6 +103,14 @@ public class GalleryListFragment extends Fragment implements AlbumCollection.Alb
                     .next();
             mVideoList.add(entry.getValue());
         }
+        for (int i=0;i<mVideoList.size();i++) {
+            List<FileInfo> imageList = GalleryUtils.getImage(getActivity(),mVideoList.get(i).getFolderPath());
+            //List<FileInfo> videoList = GalleryUtils.getVideo(getActivity(),mVideoList.get(i).getFolderPath());
+            mVideoList.get(i).setImageNum(imageList.size());
+            int videoNum = mVideoList.get(i).getImageCount()-imageList.size();
+            mVideoList.get(i).setVideoNum(videoNum);
+        }
+
         mGalleryListAdapter.setData(mVideoList);
     }
 
@@ -110,11 +121,23 @@ public class GalleryListFragment extends Fragment implements AlbumCollection.Alb
 
     @Override
     public void onItemClickListener(int position) {
-        LogUtils.e(TAG,"path="+mVideoList.get(position).getFirstImagePath());
+        //LogUtils.e(TAG,"path="+mVideoList.get(position).getFirstImagePath());
         String bucketId = mVideoList.get(position).getBucketId();
         Intent intent = new Intent(getActivity(), GalleryDetailActivity.class);
         intent.putExtra("bucketId", bucketId);
+        intent.putExtra("folderPath",mVideoList.get(position).getFolderPath());
         intent.putExtra("folderName",mVideoList.get(position).getFolderName());
         startActivity(intent);
+    }
+
+    private int getImageSize(List<FileInfo> fileInfoList){
+        int count=0;
+        for (int i=0;i<fileInfoList.size();i++){
+            File file = new File(fileInfoList.get(i).getFilePath());
+            if (GalleryUtils.IMAGE ==GalleryUtils.getFileType(file)){
+                count++;
+            }
+        }
+        return count;
     }
 }

@@ -43,7 +43,8 @@
         <activity android:name=".activity.CameraPreferenceSettingActivity"
             android:theme="@style/Transparent"/>
 
-        <activity android:name=".activity.GalleryActivity"/>
+        <activity android:name=".activity.GalleryActivity"
+            android:theme="@style/no_title_bar"/>
 
         <activity android:name=".activity.GalleryListActivity"
             android:theme="@style/no_title_bar"
@@ -53,6 +54,10 @@
             android:theme="@style/no_title_bar"/>
 
         <activity android:name=".activity.TestActivity"/>
+
+        <activity android:name=".activity.VideoActivity"
+            android:theme="@style/no_title_bar"
+            android:screenOrientation="landscape"/>
 
     </application>
 

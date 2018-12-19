@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -34,7 +35,7 @@ public class GalleryUtils {
     public static final int OTHER = 9;
 
     public static String KEY_TYPE = "key_type";
-    public static String KEY_POSITION="key_position";
+    public static String KEY_POSITION = "key_position";
     public static String TIME_FRAGMENT = "time_fragment";
     public static String DETAIL_ACTIVITY = "detail_activity";
 
@@ -84,9 +85,15 @@ public class GalleryUtils {
         return result;
     }
 
-    public static List<FileInfo> getImage(Context context) {
+    public static List<FileInfo> getImage(Context context, String searchPath) {
         List<FileInfo> fileInfoList = new ArrayList<>();
-        String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
+        String CAMERA_IMAGE_BUCKET_NAME = null;
+        if (TextUtils.isEmpty(searchPath)) {
+            CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
+        }else {
+            CAMERA_IMAGE_BUCKET_NAME=searchPath;
+        }
+
         String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
         String[] projection = {MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.DATE_MODIFIED};
@@ -123,10 +130,16 @@ public class GalleryUtils {
         return fileInfoList;
     }
 
-    public static List<FileInfo> getVideo(Context context) {
+    public static List<FileInfo> getVideo(Context context, String searchPath) {
 
         List<FileInfo> fileInfoList = new ArrayList<>();
-        String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
+        String CAMERA_IMAGE_BUCKET_NAME = null;
+        if (TextUtils.isEmpty(searchPath)) {
+            CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
+        }else {
+            CAMERA_IMAGE_BUCKET_NAME=searchPath;
+        }
+
         String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
         String[] projection = {MediaStore.Video.Media.DATA,
                 MediaStore.Video.Media.DURATION};

@@ -73,4 +73,8 @@
     <string name="gallery_time">时间</string>
     <string name="gallery_image_num">张照片</string>
     <string name="gallery_video_num">个视频</string>
+    <string name="gallery_rotate">旋转</string>
+    <string name="gallery_rename">重命名</string>
+    <string name="gallery_play">播放幻灯片</string>
+    <string name="gallery_more_edit">更多编辑</string>
 </resources>

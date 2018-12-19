@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.administrator.mycamera.MyApplication;
 import com.example.administrator.mycamera.R;
@@ -30,6 +31,7 @@ public class GalleryTimeFragment extends Fragment implements GalleryTimeAdapter.
     private ArrayList<FileInfo> mFileInfoList = new ArrayList<>();
     private GalleryTimeAdapter mGalleryTimeAdapter;
     private TrustyGridGridView gvImage;
+    private ProgressBar pbTime;
     private MyApplication app;
 
     @Override
@@ -50,6 +52,7 @@ public class GalleryTimeFragment extends Fragment implements GalleryTimeAdapter.
 
     private void initView(View view) {
         gvImage = (TrustyGridGridView) view.findViewById(R.id.gv_image);
+        pbTime = (ProgressBar)view.findViewById(R.id.pb_time);
 
     }
 
@@ -57,6 +60,7 @@ public class GalleryTimeFragment extends Fragment implements GalleryTimeAdapter.
         mGalleryTimeAdapter = new GalleryTimeAdapter(getActivity(), mFileInfoList);
         gvImage.setAdapter(mGalleryTimeAdapter);
         mGalleryTimeAdapter.setImageClickListener(this);
+        pbTime.setVisibility(View.VISIBLE);
         new UpdateAsyncTask().execute(mFileInfoList);
     }
 
@@ -93,6 +97,7 @@ public class GalleryTimeFragment extends Fragment implements GalleryTimeAdapter.
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             mGalleryTimeAdapter.setData(mFileInfoList);
+            pbTime.setVisibility(View.GONE);
         }
     }
 }

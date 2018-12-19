@@ -19,8 +19,9 @@
         android:id="@+id/iv_video"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="50dp"
+        android:visibility="gone"
+        android:layout_height="50dp"
         android:src="@drawable/gallery_video" />
 
 
