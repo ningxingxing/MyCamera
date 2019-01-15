@@ -77,4 +77,7 @@
     <string name="gallery_rename">重命名</string>
     <string name="gallery_play">播放幻灯片</string>
     <string name="gallery_more_edit">更多编辑</string>
+    <string name="gallery_rename_not_null">不能为空</string>
+    <string name="gallery_name_exist">名字已存在</string>
+    <string name="gallery_rename_success">重命名成功</string>
 </resources>

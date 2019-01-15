@@ -64,14 +64,14 @@ public class MorePopupWindow extends PopupWindow implements View.OnClickListener
             case R.id.btn_more_edit:
 
                 if (mOnClickListener!=null){
-                    mOnClickListener.rotateClick(btnMoreEdit);
+                    mOnClickListener.moreEditClick(btnMoreEdit);
                 }
                 MorePopupWindow.this.dismiss();
                 break;
 
             case R.id.btn_play:
                 if (mOnClickListener!=null){
-                    mOnClickListener.rotateClick(btnPlay);
+                    mOnClickListener.playClick(btnPlay);
                 }
 
                 this.dismiss();
@@ -80,14 +80,14 @@ public class MorePopupWindow extends PopupWindow implements View.OnClickListener
 
             case R.id.btn_rename:
                 if (mOnClickListener!=null){
-                    mOnClickListener.rotateClick(btnRename);
+                    mOnClickListener.renameClick(btnRename);
                 }
                 this.dismiss();
                 break;
 
             case R.id.btn_share:
                 if (mOnClickListener!=null){
-                    mOnClickListener.rotateClick(btnShare);
+                    mOnClickListener.shareClick(btnShare);
                 }
 
                 this.dismiss();

@@ -37,6 +37,7 @@ import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SortUtils;
 import com.example.administrator.mycamera.view.ZoomImageView;
 import com.example.administrator.mycamera.view.dialog.MorePopupWindow;
+import com.example.administrator.mycamera.view.dialog.RenameDialog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -385,7 +386,16 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
 
         @Override
         public void renameClick(Button button) {
-
+            RenameDialog renameDialog = new RenameDialog(GalleryActivity.this,mFileInfoList.get(mCurrentPosition).getFilePath());
+            renameDialog.setRenameListener(new RenameDialog.IRenameListener() {
+                @Override
+                public void okClick(String path) {
+                    File file = new File(path);
+                    mFileInfoList.get(mCurrentPosition).setFileName(file.getName());
+                    mFileInfoList.get(mCurrentPosition).setFilePath(path);
+                }
+            });
+            renameDialog.show();
         }
 
         @Override

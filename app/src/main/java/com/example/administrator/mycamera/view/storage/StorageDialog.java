@@ -179,7 +179,7 @@ public class StorageDialog extends Dialog implements View.OnClickListener, Dialo
                 return false;
             }
         };
-        File[] files = new File(path).listFiles(filter);
+        File[] files = new File(path).listFiles();
         if (null != files) {
             for (File file : files) {
                 temp.add(file.getAbsolutePath());

@@ -3,6 +3,7 @@ package com.example.administrator.mycamera;
 import android.app.Application;
 
 import com.example.administrator.mycamera.model.FileInfo;
+import com.github.anrwatchdog.ANRWatchDog;
 
 import java.util.ArrayList;
 
@@ -24,5 +25,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        new ANRWatchDog().start();
     }
 }
