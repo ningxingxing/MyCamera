@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.widget.MediaController;
 import android.widget.VideoView;
+
+import androidx.annotation.Nullable;
 
 import com.example.administrator.mycamera.R;
 

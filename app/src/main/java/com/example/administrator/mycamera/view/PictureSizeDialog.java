@@ -4,10 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.adapter.PictureSizeAdapter;

@@ -16,11 +16,13 @@ import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import androidx.appcompat.widget.AppCompatImageView;
+
 /**
  * @author zhy
  * 博客地址：http://blog.csdn.net/lmj623565791
  */
-public class ZoomImageView extends ImageView implements OnScaleGestureListener,
+public class ZoomImageView extends AppCompatImageView implements OnScaleGestureListener,
         OnTouchListener, ViewTreeObserver.OnGlobalLayoutListener
 
 {

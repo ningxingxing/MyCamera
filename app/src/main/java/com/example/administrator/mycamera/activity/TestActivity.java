@@ -3,7 +3,8 @@ package com.example.administrator.mycamera.activity;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.adapter.GalleryTimeAdapter;

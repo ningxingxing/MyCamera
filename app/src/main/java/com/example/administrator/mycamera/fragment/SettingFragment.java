@@ -1,32 +1,28 @@
 package com.example.administrator.mycamera.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.location.SettingInjectorService;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.activity.CameraPreferenceSettingActivity;
 import com.example.administrator.mycamera.model.CameraPreference;
-import com.example.administrator.mycamera.model.CameraPreferenceSettingData;
 import com.example.administrator.mycamera.port.ISettingFragment;
 import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.LogUtils;
-
-import java.util.ArrayList;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Administrator on 2018/6/20.

@@ -1,8 +1,8 @@
 package com.example.administrator.mycamera.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.model.CameraPreferenceSettingData;
@@ -59,7 +61,7 @@ public class CameraPreferenceSettingAdapter extends RecyclerView.Adapter<CameraP
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         holder.tvPreference.setText(mPreferenceList.get(position).getTitle());
         holder.cbPreference.setChecked(mPreferenceList.get(position).isSelect());
         holder.llPreference.setOnClickListener(new View.OnClickListener() {

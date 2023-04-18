@@ -111,8 +111,7 @@ public class CameraBottomView extends LinearLayout implements View.OnClickListen
     public void showThumbnailPath(String path) {
         Glide.with(getContext())
                 .load(path)
-                .animate(R.anim.thumbnail_anim)
-                .centerCrop()
+                .centerCrop()// .animate(R.anim.thumbnail_anim)
                 .thumbnail(1f)
                 .error(R.drawable.icon_photo_error)
                 .into(ibImage);

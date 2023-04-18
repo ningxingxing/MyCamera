@@ -7,12 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,6 +20,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.MyApplication;
 import com.example.administrator.mycamera.R;
@@ -33,7 +32,6 @@ import com.example.administrator.mycamera.utils.CameraConstant;
 import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.DeleteFileUtils;
 import com.example.administrator.mycamera.utils.GalleryUtils;
-import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.SortUtils;
 import com.example.administrator.mycamera.view.ZoomImageView;
 import com.example.administrator.mycamera.view.dialog.MorePopupWindow;

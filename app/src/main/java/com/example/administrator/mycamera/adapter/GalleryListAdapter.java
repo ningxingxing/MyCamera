@@ -1,13 +1,15 @@
 package com.example.administrator.mycamera.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
@@ -56,7 +58,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         Glide.with(mContext)
                 .load(mVideoList.get(position).getFirstImagePath())
                 .centerCrop()

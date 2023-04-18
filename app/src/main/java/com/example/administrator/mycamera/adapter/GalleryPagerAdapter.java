@@ -1,10 +1,11 @@
 package com.example.administrator.mycamera.adapter;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.administrator.mycamera.activity.GalleryListActivity;
 import com.example.administrator.mycamera.fragment.GalleryTimeFragment;

@@ -90,7 +90,7 @@ public class GalleryTimeAdapter extends BaseAdapter implements TrustyGridSimpleA
         if (fileInfo != null && fileInfo.size() > 0) {
 
             File file = new File(fileInfo.get(position).getFilePath());
-            Glide.with(mContext).load(file).asBitmap().dontAnimate().centerCrop()
+            Glide.with(mContext).asBitmap().load(file).dontAnimate().centerCrop()
                     .signature(new MediaStoreSignature("image/jpeg", file.lastModified(), 0))
                     .into(viewHolder.ivImage);
         }

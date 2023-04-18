@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/black_eight">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -13,7 +13,7 @@
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
     <ImageView
         android:id="@+id/iv_video"

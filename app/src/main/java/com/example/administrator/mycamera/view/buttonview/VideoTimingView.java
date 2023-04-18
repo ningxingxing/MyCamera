@@ -3,12 +3,13 @@ package com.example.administrator.mycamera.view.buttonview;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.utils.CameraUtils;

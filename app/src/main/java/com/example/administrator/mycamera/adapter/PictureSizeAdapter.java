@@ -1,13 +1,15 @@
 package com.example.administrator.mycamera.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.model.PictureSizeData;
@@ -55,7 +57,7 @@ public class PictureSizeAdapter extends RecyclerView.Adapter<PictureSizeAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         holder.tvPictureWidth.setText(mPictureSizeList.get(position).getPictureWidth());
         holder.tvPictureHeight.setText(mPictureSizeList.get(position).getPictureHeight());
         holder.rlPictureSize.setOnClickListener(new View.OnClickListener() {

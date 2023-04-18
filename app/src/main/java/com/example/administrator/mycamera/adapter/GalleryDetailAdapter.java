@@ -1,7 +1,7 @@
 package com.example.administrator.mycamera.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.mycamera.R;
@@ -61,9 +63,8 @@ public class GalleryDetailAdapter extends RecyclerView.Adapter<GalleryDetailAdap
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
-
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         Glide.with(mContext)
                 .load(mImageList.get(position).getFilePath())
                 .centerCrop()
