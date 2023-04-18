@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyCamera</string>
+    <string name="app_name">Camera</string>
 
     <!--照片尺寸-->
     <string name="settings">Settings</string>
@@ -41,8 +41,8 @@
     <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
 
     <string name="not_support_front_facing_camera">Your device does not support a front-facing camera.</string>
-    <string name="ok">确定</string>
-    <string name="cancel">取消</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 
     <string name="preview_scale_43">4:3</string>
     <string name="preview_scale_11">1:1</string>
@@ -52,14 +52,14 @@
 
     <string name="model_hdr">HDR</string>
 
-    <string name="gallery_share">分享</string>
-    <string name="gallery_edit">编辑</string>
-    <string name="gallery_delete">删除</string>
-    <string name="gallery_more">更多</string>
+    <string name="gallery_share">Shared</string>
+    <string name="gallery_edit">Edit</string>
+    <string name="gallery_delete">Delete</string>
+    <string name="gallery_more">More</string>
 
     <string name="gallery_delete_ok">是否要删除选中文件</string>
-    <string name="gallery_delete_success">删除成功</string>
-    <string name="gallery_detail">详情</string>
+    <string name="gallery_delete_success">Delete Success</string>
+    <string name="gallery_detail">Details</string>
 
     <string name="gallery_file_name">文件名称：</string>
     <string name="gallery_file_type">文件种类：</string>
@@ -68,9 +68,9 @@
     <string name="gallery_file_time">时长：</string>
     <string name="gallery_file_resolution">分辨率：</string>
     <string name="gallery_file_path">路径：</string>
-    <string name="gallery_video">视频</string>
-    <string name="gallery_image">图片</string>
-    <string name="gallery_time">时间</string>
+    <string name="gallery_video">Video</string>
+    <string name="gallery_image">Photo</string>
+    <string name="gallery_time">Time</string>
     <string name="gallery_image_num">张照片</string>
     <string name="gallery_video_num">个视频</string>
     <string name="gallery_rotate">旋转</string>

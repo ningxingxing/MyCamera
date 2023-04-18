@@ -3,12 +3,13 @@ package com.example.administrator.mycamera.model;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.CallLog;
 import android.provider.MediaStore;
 
 import androidx.loader.content.CursorLoader;
 
 /**
- * @author Haoz
+ * @author nsc
  * @date 2017/11/22.
  */
 
@@ -23,17 +24,18 @@ public class AlbumLoader extends CursorLoader {
 
     private static final String[] COLUMNS = {
             MediaStore.Files.FileColumns._ID,
-            "bucket_id",
-            "bucket_display_name",
+            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DATA,
             COLUMN_COUNT};
 
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
-            "bucket_id",
-            "bucket_display_name",
+            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DATA,
-            "COUNT(*) AS " + COLUMN_COUNT};
+            COLUMN_COUNT
+           };//"COUNT(*) AS " + COLUMN_COUNT
 
     /**
      * (media_type=? OR media_type =?) AND _size>0) GROUP BY (bucket_id

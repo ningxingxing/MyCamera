@@ -1,5 +1,7 @@
 package com.example.administrator.mycamera.activity;
 
+import static com.example.administrator.mycamera.utils.BarUtilsKt.setStatusBarColor;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
@@ -158,6 +161,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarColor(this,true, Color.BLACK);
         setContentView(R.layout.activity_camera_preview);
 
         initView();
@@ -200,7 +204,7 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         mScenesView = (ScenesView) findViewById(R.id.scenes_view);
         mFlPreview = (FrameLayout) findViewById(R.id.fl_preview);
 
-        mVideoTime = (VideoTimingView) findViewById(R.id.video_time);
+        mVideoTime = findViewById(R.id.video_time);
 
     }
 

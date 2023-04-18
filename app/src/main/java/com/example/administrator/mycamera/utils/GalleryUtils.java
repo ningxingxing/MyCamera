@@ -1,8 +1,14 @@
 package com.example.administrator.mycamera.utils;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.RecoverableSecurityException;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.IntentSender;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -10,6 +16,7 @@ import android.provider.MediaStore;
 import androidx.annotation.RequiresApi;
 import androidx.core.view.ViewCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,6 +25,7 @@ import android.view.WindowManager;
 import com.example.administrator.mycamera.model.FileInfo;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -311,7 +319,9 @@ public class GalleryUtils {
                 String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 路径
                 long duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)); // 时长
                 FileInfo fileInfo = new FileInfo();
-                fileInfo.setFileName(cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)));
+
+                int index = cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME);
+                fileInfo.setFileName(cursor.getString(index));
                 fileInfo.setFilePath(path);
                 fileInfo.setTime(date);
                 fileInfo.setFileS(size);

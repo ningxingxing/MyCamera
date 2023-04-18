@@ -80,10 +80,14 @@ public class GalleryListFragment extends Fragment implements AlbumCollection.Alb
     public void onAlbumLoad(Cursor cursor) {
         mVideoList.clear();
         while (cursor.moveToNext()) {
-            String path = cursor.getString(cursor.getColumnIndex("_data"));
-            String bucketName = cursor.getString(cursor.getColumnIndex("bucket_display_name"));
-            String amount = cursor.getString(cursor.getColumnIndex("count"));
-            String bucketId = cursor.getString(cursor.getColumnIndex("bucket_id"));
+            int dataIndex = cursor.getColumnIndex("_data");
+            int bucketNameIndex = cursor.getColumnIndex("bucket_display_name");
+            int countIndex = cursor.getColumnIndex("count");
+            int bucketIdIndex = cursor.getColumnIndex("bucket_id");
+            String path = cursor.getString(dataIndex);
+            String bucketName = cursor.getString(bucketNameIndex);
+            String amount = cursor.getString(countIndex);
+            String bucketId = cursor.getString(bucketIdIndex);
 
             ImageFolder bucket = mBucketList.get(bucketId);
             if (bucket == null) {

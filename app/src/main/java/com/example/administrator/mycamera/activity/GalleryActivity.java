@@ -1,10 +1,13 @@
 package com.example.administrator.mycamera.activity;
 
+import static com.example.administrator.mycamera.utils.BarUtilsKt.setStatusBarColor;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -70,6 +73,7 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarColor(this,true, Color.BLACK);
         setContentView(R.layout.activity_gallery);
 
         initView();
@@ -78,23 +82,23 @@ public class GalleryActivity extends Activity implements View.OnClickListener {
     }
 
     private void initView() {
-        ivAllFile = (ImageView) findViewById(R.id.iv_all_file);
+        ivAllFile = findViewById(R.id.iv_all_file);
         ivAllFile.setOnClickListener(this);
-        ivDetail = (ImageView) findViewById(R.id.iv_detail);
+        ivDetail = findViewById(R.id.iv_detail);
         ivDetail.setOnClickListener(this);
-        ivImage = (ZoomImageView) findViewById(R.id.iv_image);
-        mViewpager = (ViewPager) findViewById(R.id.view_pager);
-        ivVideo = (ImageView) findViewById(R.id.iv_video);
+        ivImage = findViewById(R.id.iv_image);
+        mViewpager = findViewById(R.id.view_pager);
+        ivVideo = findViewById(R.id.iv_video);
         ivVideo.setOnClickListener(this);
 
-        rgGallery = (RadioGroup) findViewById(R.id.rg_gallery);
-        rbShare = (RadioButton) findViewById(R.id.rb_share);
+        rgGallery = findViewById(R.id.rg_gallery);
+        rbShare = findViewById(R.id.rb_share);
         rbShare.setOnClickListener(this);
-        rbDelete = (RadioButton) findViewById(R.id.rb_delete);
+        rbDelete = findViewById(R.id.rb_delete);
         rbDelete.setOnClickListener(this);
-        rbEdit = (RadioButton) findViewById(R.id.rb_edit);
+        rbEdit = findViewById(R.id.rb_edit);
         rbEdit.setOnClickListener(this);
-        rbMore = (RadioButton) findViewById(R.id.rb_more);
+        rbMore = findViewById(R.id.rb_more);
         rbMore.setOnClickListener(this);
 
     }

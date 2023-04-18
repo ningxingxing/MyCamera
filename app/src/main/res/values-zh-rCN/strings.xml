@@ -6,4 +6,45 @@
     <string name="pref_camera_whitebalance_entry_fluorescent">荧光</string>
     <string name="pref_camera_whitebalance_entry_cloudy">阴天</string>
     <string name="not_support_front_facing_camera">您的设备不支持前置摄像头.</string>
+
+
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+
+    <string name="preview_scale_43">4:3</string>
+    <string name="preview_scale_11">1:1</string>
+    <string name="preview_scale_189">18:9</string>
+
+    <string name="default_video_time">00:00</string>
+
+    <string name="model_hdr">HDR</string>
+
+    <string name="gallery_share">分享</string>
+    <string name="gallery_edit">编辑</string>
+    <string name="gallery_delete">删除</string>
+    <string name="gallery_more">更多</string>
+
+    <string name="gallery_delete_ok">是否要删除选中文件</string>
+    <string name="gallery_delete_success">删除成功</string>
+    <string name="gallery_detail">详情</string>
+
+    <string name="gallery_file_name">文件名称：</string>
+    <string name="gallery_file_type">文件种类：</string>
+    <string name="gallery_file_duration">文件大小：</string>
+    <string name="gallery_file_modify">修改时间：</string>
+    <string name="gallery_file_time">时长：</string>
+    <string name="gallery_file_resolution">分辨率：</string>
+    <string name="gallery_file_path">路径：</string>
+    <string name="gallery_video">视频</string>
+    <string name="gallery_image">图片</string>
+    <string name="gallery_time">时间</string>
+    <string name="gallery_image_num">张照片</string>
+    <string name="gallery_video_num">个视频</string>
+    <string name="gallery_rotate">旋转</string>
+    <string name="gallery_rename">重命名</string>
+    <string name="gallery_play">播放幻灯片</string>
+    <string name="gallery_more_edit">更多编辑</string>
+    <string name="gallery_rename_not_null">不能为空</string>
+    <string name="gallery_name_exist">名字已存在</string>
+    <string name="gallery_rename_success">重命名成功</string>
 </resources>

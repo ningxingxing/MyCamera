@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/black_eight">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="MissingClass">
 
         <com.example.administrator.mycamera.view.ZoomImageView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:ignore="MissingClass" />
     </androidx.viewpager.widget.ViewPager>
 
     <ImageView
@@ -36,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/gallery_all_file" />
+            android:src="@drawable/ic_gallery" />
 
         <ImageView
             android:id="@+id/iv_detail"
@@ -44,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:src="@drawable/gallery_info_details" />
+            android:src="@drawable/ic_detail" />
 
     </RelativeLayout>
 
@@ -53,8 +57,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:background="@color/black_four"
         android:orientation="horizontal"
         android:padding="5dp">
@@ -67,6 +69,7 @@
             android:button="@null"
             android:drawableTop="@drawable/gallery_share"
             android:gravity="center"
+            android:drawablePadding="2dp"
             android:text="@string/gallery_share"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
@@ -77,6 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@null"
+            android:drawablePadding="2dp"
             android:drawableTop="@drawable/gallery_delete"
             android:gravity="center"
             android:text="@string/gallery_delete"
@@ -89,8 +93,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@null"
-            android:drawableTop="@drawable/gallery_edit"
+            android:drawableTop="@drawable/ic_edit"
             android:gravity="center"
+            android:drawablePadding="2dp"
             android:text="@string/gallery_edit"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
@@ -101,8 +106,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@null"
-            android:drawableTop="@drawable/gallery_more"
+            android:drawableTop="@drawable/ic_more"
             android:gravity="center"
+            android:drawablePadding="2dp"
             android:text="@string/gallery_more"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
