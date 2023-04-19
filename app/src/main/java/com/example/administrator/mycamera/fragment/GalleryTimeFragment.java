@@ -30,7 +30,7 @@ public class GalleryTimeFragment extends Fragment implements GalleryTimeAdapter.
     private String TAG = "Cam_GalleryTimeFragment";
     private ArrayList<FileInfo> mFileInfoList = new ArrayList<>();
     private GalleryTimeAdapter mGalleryTimeAdapter;
-    private TrustyGridGridView gvImage;
+//    private TrustyGridGridView gvImage;
     private ProgressBar pbTime;
     private MyApplication app;
 
@@ -45,20 +45,20 @@ public class GalleryTimeFragment extends Fragment implements GalleryTimeAdapter.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery_time, container, false);
 
-        initView(view);
-        initData();
+//        initView(view);
+//        initData();
         return view;
     }
 
     private void initView(View view) {
-        gvImage = (TrustyGridGridView) view.findViewById(R.id.gv_image);
+       // gvImage = (TrustyGridGridView) view.findViewById(R.id.gv_image);
         pbTime = (ProgressBar)view.findViewById(R.id.pb_time);
 
     }
 
     private void initData() {
         mGalleryTimeAdapter = new GalleryTimeAdapter(getActivity(), mFileInfoList);
-        gvImage.setAdapter(mGalleryTimeAdapter);
+      //  gvImage.setAdapter(mGalleryTimeAdapter);
         mGalleryTimeAdapter.setImageClickListener(this);
         pbTime.setVisibility(View.VISIBLE);
         new UpdateAsyncTask().execute(mFileInfoList);

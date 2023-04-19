@@ -36,6 +36,7 @@ import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.DeleteFileUtils;
 import com.example.administrator.mycamera.utils.GalleryUtils;
 import com.example.administrator.mycamera.utils.SortUtils;
+import com.example.administrator.mycamera.utils.VideoUtilsKt;
 import com.example.administrator.mycamera.view.ZoomImageView;
 import com.example.administrator.mycamera.view.dialog.MorePopupWindow;
 import com.example.administrator.mycamera.view.dialog.RenameDialog;

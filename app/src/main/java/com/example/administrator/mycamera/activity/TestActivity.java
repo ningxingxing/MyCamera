@@ -33,7 +33,7 @@ public class TestActivity extends Activity {
     }
 
     private void initView() {
-        gvImage = (TrustyGridGridView)findViewById(R.id.gv_image);
+        //gvImage = (TrustyGridGridView)findViewById(R.id.gv_image);
     }
 
     private void initData(){

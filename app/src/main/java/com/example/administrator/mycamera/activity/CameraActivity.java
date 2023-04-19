@@ -57,6 +57,7 @@ import com.example.administrator.mycamera.utils.CameraUtils;
 import com.example.administrator.mycamera.utils.FlashOverlayAnimation;
 import com.example.administrator.mycamera.utils.LogUtils;
 import com.example.administrator.mycamera.utils.Thumbnail;
+import com.example.administrator.mycamera.utils.VideoUtilsKt;
 import com.example.administrator.mycamera.view.CameraGLSurfaceView;
 import com.example.administrator.mycamera.view.FaceView;
 import com.example.administrator.mycamera.view.CountDownView;
@@ -243,6 +244,8 @@ public class CameraActivity extends Activity implements ITakePhoto, IVideoPresen
         });
         mScenesView.setScenesClickListener(this, mParameters);
         showThumbnail(null);
+
+     //   VideoUtilsKt.getVideoFileList(this);
     }
 
     private void initFragment() {

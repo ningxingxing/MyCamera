@@ -1,7 +1,11 @@
 package com.example.administrator.mycamera.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ import com.example.administrator.mycamera.R;
 import com.example.administrator.mycamera.model.ImageFolder;
 
 
+import java.io.File;
 import java.util.List;
 
 /**

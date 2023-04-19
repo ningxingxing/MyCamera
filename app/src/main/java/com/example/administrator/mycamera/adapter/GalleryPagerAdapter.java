@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.administrator.mycamera.activity.GalleryListActivity;
+import com.example.administrator.mycamera.fragment.GalleryImageFragment;
 import com.example.administrator.mycamera.fragment.GalleryTimeFragment;
 import com.example.administrator.mycamera.fragment.GalleryListFragment;
 
@@ -15,13 +16,13 @@ public class GalleryPagerAdapter extends FragmentPagerAdapter {
 
     private final int PAGER_COUNT = 2;
     private GalleryTimeFragment mGalleryTimeFragment = null;
-    //private GalleryListFragment mGalleryImageFragment= null;
+    private GalleryImageFragment mGalleryImageFragment= null;
     private GalleryListFragment mGalleryListFragment = null;
 
     public GalleryPagerAdapter(FragmentManager fm) {
         super(fm);
-        mGalleryTimeFragment = new GalleryTimeFragment();
-       // mGalleryImageFragment = new GalleryListFragment();
+       // mGalleryTimeFragment = new GalleryTimeFragment();
+        mGalleryImageFragment = new GalleryImageFragment();
         mGalleryListFragment = new GalleryListFragment();
     }
 
@@ -30,18 +31,18 @@ public class GalleryPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         Bundle bundle = new Bundle();
         switch (position){
-            case GalleryListActivity.PAGE_ONE:
-                fragment = mGalleryTimeFragment;
-                break;
-//            case GalleryListActivity.PAGE_TWO:
-//                fragment = mGalleryImageFragment ;
-//                bundle.putString("fileType","image");
-//                fragment.setArguments(bundle);
+//            case GalleryListActivity.PAGE_ONE:
+//                fragment = mGalleryTimeFragment;
 //                break;
+            case GalleryListActivity.PAGE_ONE:
+                fragment = mGalleryImageFragment ;
+                bundle.putString("fileType","image");
+                fragment.setArguments(bundle);
+                break;
             case GalleryListActivity.PAGE_TWO:
                 fragment = mGalleryListFragment;
-                //bundle.putString("fileType","video");
-               // fragment.setArguments(bundle);
+                bundle.putString("fileType","video");
+                fragment.setArguments(bundle);
                 break;
         }
         return fragment;
